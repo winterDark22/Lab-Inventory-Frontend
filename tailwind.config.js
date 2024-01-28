@@ -10,6 +10,9 @@ module.exports = {
         primary: "#fc0330",
         pinky: "#fc0356",
       },
+      spacing: {
+        0.5: "0.125rem",
+      },
       boxShadow: {
         red: "0 3px 5px 2px rgba(255, 0, 0, .3)",
       },

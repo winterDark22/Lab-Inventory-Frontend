@@ -5,7 +5,8 @@ import { Outlet, Routes, Route } from "react-router-dom";
 import { Home as ManagerDashboard } from "./Home";
 import { CheckInventory } from "./CheckInventory";
 import { ViewRequests } from "./ViewRequests";
-import { AddItem } from "./AddItem";
+import { UpdateStorage } from "./UpdateStorage";
+import { AddNewItem } from "./AddNewItem";
 
 export function Layout() {
   return (
@@ -19,7 +20,8 @@ export function Layout() {
           <Route path="" element={<ManagerDashboard />} />
           <Route path="checkInventory" element={<CheckInventory />} />
           <Route path="viewRequests" element={<ViewRequests />} />
-          <Route path="addItem" element={<AddItem />} />
+          <Route path="addNewItem" element={<AddNewItem />} />
+          <Route path="updateStorage" element={<UpdateStorage />} />
         </Routes>
         <Outlet />
       </div>
