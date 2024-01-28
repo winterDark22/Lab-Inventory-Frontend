@@ -15,8 +15,9 @@ const LoginForm = () => {
             <div className="min-h-screen flex items-center justify-center bg-cover" style={{ backgroundImage: 'url("./img/images.jpg")' }}>
 
                 <div className="max-w-md w-full p-4 bg-white rounded-lg shadow-md">
-                    <h2 className="text-3xl font-bold mb-6 text-center text-red-600">CSE Lab Inventory <br />Management System</h2>
-                    <form onSubmit={handleLogin}>
+                    <div className='bg-red-600 p-5 rounded-xl mb-3'><h2 className="text-3xl font-bold mb-6 text-center text-white">CSE Lab Inventory <br />Management System</h2></div>
+                    <h3 className='text-center text-2xl font-bold mb-4 text-gray-600'>Log In</h3>
+                    <h3 className='text-center  mb-6 text-gray-400'>Enter Your Information to Log in</h3>                    <form onSubmit={handleLogin}>
                         <div className="mb-4">
 
                             <input
