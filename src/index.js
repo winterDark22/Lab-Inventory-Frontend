@@ -3,12 +3,15 @@ import ReactDOM from "react-dom/client";
 import "./index.css";
 import App from "./App";
 import EquipmentsContextProvider from "./context/EquipmentsContext";
+import AuthContextProvider from "./context/AuthContext";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <React.StrictMode>
-    <EquipmentsContextProvider>
-      <App />
-    </EquipmentsContextProvider>
+    <AuthContextProvider>
+      <EquipmentsContextProvider>
+        <App />
+      </EquipmentsContextProvider>
+    </AuthContextProvider>
   </React.StrictMode>
 );

@@ -1,3 +1,18 @@
+@import url("https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap");
+/* @import url("https://fonts.googleapis.com/icon?family=Material+Icons+Round"); */
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+.nav-link {
+  @apply text-gray-300 font-roboto;
+}
+
+.nav-box {
+  @apply pl-8 py-2 flex items-center  hover:bg-pinky;
+}
+
+.nav-icon {
+  @apply text-white px-4 text-lg;
+  font-family: "Material Symbols Outlined";
+}
