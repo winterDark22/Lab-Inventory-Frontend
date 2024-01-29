@@ -5,15 +5,14 @@ function Card(props) {
 
   function handleClick(e) {
     e.preventDefault();
-    navigate("/student/details");
   }
   return (
-    <div className="m-16">
+    <div className="mt-8 mx-16">
       {/* <h1 className="bg-red-700 font-bold">{props.equipment.equipment_name}</h1>
       <h2>{props.equipment.type}</h2>
       <h3>{props.equipment.available}</h3>
       <button onClick={handleClick}>Request</button> */}
-      <div className="bg-white rounded justify-center flex-col">
+      <div className="bg-white rounded-xl justify-center flex-col">
         <div className="text-wrap p-3 pt-2">
           <div class="float-left">
             <img
@@ -23,10 +22,16 @@ function Card(props) {
             />
           </div>
           <div className="text-end pt-1">
-            <p className="mb-0 text-capitalize" style={{ fontSize: "20px" }}>
+            <p
+              className="mb-0 text-capitalize text-gray-500  mb-2"
+              style={{ fontSize: "20px" }}
+            >
               <b>{props.equipment.equipment_name}</b>
             </p>
-            <button className="bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded hover:shadow-red">
+            <button
+              onClick={handleClick}
+              className="text-white font-bold text-sm bg-red-600 rounded-lg px-4 ml-32 py-2 inline-block text-center hover:bg-red-500 hover:drop-shadow-xl"
+            >
               Details
             </button>
           </div>

@@ -4,6 +4,9 @@ the token authentication hasnot done yet. im just using this to store roles now
 
 permit change kora lageb
 
+in updateStorage equipment pathano hocche with all description but setar kaj koi?
+also update rakhinai storageContext e.. update kora uchit ig local storage eo
+
 
 
 
@@ -47,3 +50,6 @@ this is a CARD
       </div>
     </div>
   );
+
+
+   sudo -u postgres psql

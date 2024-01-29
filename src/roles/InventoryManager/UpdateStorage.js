@@ -1,12 +1,8 @@
 import React, { useState } from "react";
-import { useEquipmentsContext } from "../../context/EquipmentsContext";
-import { ACTION } from "../../context/EquipmentsContext";
 import { useAuthContext } from "../../context/AuthContext";
 
 export function UpdateStorage(params) {
   const { user } = useAuthContext();
-
-  const { dispatch } = useEquipmentsContext();
 
   const [form, setForm] = useState({
     name: "",
@@ -41,7 +37,7 @@ export function UpdateStorage(params) {
 
     if (response.ok) {
       // dispatch({ type: ACTION.UPDATE_STORAGE, payload: responseJSON });
-      console.log(equipment);
+      console.log(responseJSON);
       setForm({
         name: "",
         quantity: "",

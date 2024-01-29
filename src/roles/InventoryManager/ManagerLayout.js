@@ -1,4 +1,4 @@
-import { Navbar } from "../../components/Navbar";
+import { Navbar } from "./ManagerNav";
 import { Topbar } from "../../components/Topbar";
 import { Outlet, Routes, Route } from "react-router-dom";
 

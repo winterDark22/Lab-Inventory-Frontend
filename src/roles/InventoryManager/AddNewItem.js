@@ -1,9 +1,9 @@
 import React, { useState } from "react";
-import { useEquipmentsContext } from "../../context/EquipmentsContext";
-import { ACTION } from "../../context/EquipmentsContext";
+import { useStorageContext } from "../../context/StorageContext";
+import { ACTION } from "../../context/StorageContext";
 
 export function AddNewItem(params) {
-  const { dispatch } = useEquipmentsContext();
+  const { dispatch } = useStorageContext();
 
   const [form, setForm] = useState({
     name: "",
@@ -43,7 +43,7 @@ export function AddNewItem(params) {
       // alert("Equipment added successfully");
 
       //console.log(responseJSON);
-      dispatch({ type: ACTION.ADD_NEW_EQUIPMENT, payload: responseJSON });
+      dispatch({ type: ACTION.ADD_IN_STORAGE, payload: responseJSON });
 
       setForm({
         name: "",

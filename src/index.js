@@ -4,14 +4,17 @@ import "./index.css";
 import App from "./App";
 import EquipmentsContextProvider from "./context/EquipmentsContext";
 import AuthContextProvider from "./context/AuthContext";
+import StorageContextProvider from "./context/StorageContext";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <React.StrictMode>
     <AuthContextProvider>
-      <EquipmentsContextProvider>
-        <App />
-      </EquipmentsContextProvider>
+      <StorageContextProvider>
+        <EquipmentsContextProvider>
+          <App />
+        </EquipmentsContextProvider>
+      </StorageContextProvider>
     </AuthContextProvider>
   </React.StrictMode>
 );
