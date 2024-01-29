@@ -41,7 +41,6 @@ export function Home() {
           className="border-2 border-gray-300 bg-white h-10 px-5 pr-16 rounded-lg text-sm focus:outline-none"
         />
       </div>
-      THIS IS THE HOME PAGE OF INVENTORY MANAGER
       <div className="p-2 ml-56 ">
         {storage &&
           storage

@@ -48,8 +48,10 @@ export function UpdateStorage(params) {
   return (
     <div className="flex flex-col items-center mt-8 h-screen">
       <div className="bg-white space-y-4 w-3/4 ml-60 font-roboto text-gray-700 p-6 mb-8 rounded-lg">
-        <h2 className="text-xl font-extrabold mb-0.5">Add item</h2>
-        <h3 className="text mb-4">Enter the Information of the new item</h3>
+        <h2 className="text-xl font-extrabold mb-0.5">Update Equipment</h2>
+        <h3 className="text mb-4">
+          Enter the Information of the updated equipment
+        </h3>
       </div>
       <form onSubmit={handleSubmit} className="space-y-4 w-3/4 ml-64">
         <div className="flex flex-col">
@@ -76,9 +78,9 @@ export function UpdateStorage(params) {
 
         <button
           type="submit"
-          className=" bg-primary text-white p-2 rounded-2xl"
+          className="text-white text-sm bg-primary rounded-lg px-4 py-2 inline-block text-center hover:bg-red-500 hover:drop-shadow-xl w-full"
         >
-          Submit
+          Update
         </button>
       </form>
     </div>

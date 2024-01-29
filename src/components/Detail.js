@@ -1,6 +1,24 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
+import EquipmentFinder from "../apis/equipmentFinder";
 
 export function ProductDetail(props) {
+  const { id } = useParams();
+
+  const [equipment, setequipment] = useState(null);
+  useEffect(() => {
+    const fetchData = async () => {
+      const equipment = await EquipmentFinder.get(`/${id}`);
+
+      console.log(equipment.data);
+      setequipment(equipment.data);
+    };
+
+    fetchData();
+  }, []);
+
+  //   console.log("here it is my dear dtail");
+  //   console.log(equipment.equipment_name);
   const [quantity, setQuantity] = useState(1);
   const [selectedOption, setSelectedOption] = useState("");
   const [isOpen, setIsOpen] = useState(false);
@@ -21,10 +39,7 @@ export function ProductDetail(props) {
   };
 
   return (
-    <div className="flex-col items-center justify-center w-screen">
-      <div className="mx-auto bg-white p-4 rounded-md shadow-md ">
-        inventory
-      </div>
+    <div className="flex-col items-center justify-center w-2/3 ml-72">
       <div className="mx-auto bg-white p-4 rounded-md shadow-md">
         <img
           src="https://cdn.sparkfun.com/assets/learn_tutorials/4/7/12615-02_Full_Size_Breadboard_Split_Power_Rails.jpg" // Replace with the actual image URL
@@ -32,7 +47,9 @@ export function ProductDetail(props) {
           className="w-full h-40 object-cover mb-4 rounded-md"
         />
 
-        <h1 className="text-3xl font-bold mb-2 text-left pl-6">Breadboard</h1>
+        <h1 className="text-3xl font-bold mb-2 text-left pl-6">
+          {equipment && equipment.equipment_name}
+        </h1>
         <div className="flex text-left">
           <div className="w-1/2 px-8">
             <h4 className="font-bold text-gray-600">Specifications</h4>
@@ -57,13 +74,18 @@ export function ProductDetail(props) {
             <br />
             <ul className="mb-5 text-gray-600">
               <li>
-                <strong>Status:</strong> &nbsp; Available
+                <strong>
+                  Status:
+                  {equipment && equipment.available > 0
+                    ? " Available"
+                    : " Not available"}
+                </strong>{" "}
               </li>
               <li>
-                <strong>Stock:</strong> &nbsp; 10
+                <strong>Stock: {equipment && equipment.available}</strong>{" "}
               </li>
               <li>
-                <strong>Borrowed:</strong> &nbsp; 2
+                <strong>Borrowed: {equipment && equipment.borrowed}</strong>{" "}
               </li>
             </ul>
 
@@ -99,7 +121,6 @@ export function ProductDetail(props) {
                 >
                   {selectedOption || "Select an option"}
                 </button>
-
                 {isOpen && (
                   <div className="absolute top-full left-0 mt-2 w-full bg-white border border-gray-300 rounded-md shadow-md">
                     <ul>

@@ -16,7 +16,7 @@ export function Layout() {
         <Topbar />
         <Routes>
           <Route path="" element={<StduentDashboard />} />
-          <Route path="/details" element={<ProductDetail />} />
+          <Route path="details/:id" element={<ProductDetail />} />
 
           <Route path="addRequest" element={<AddRequest />} />
         </Routes>

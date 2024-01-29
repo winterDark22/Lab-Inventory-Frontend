@@ -32,7 +32,7 @@ export function Home() {
 
   return (
     <div>
-      <div className="ml-96">
+      <div className="ml-96 mt-14">
         <input
           type="text"
           placeholder="Search..."
