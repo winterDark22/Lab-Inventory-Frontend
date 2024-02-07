@@ -5,6 +5,7 @@ export const StorageContext = createContext();
 export const ACTION = {
   SET_STORAGE: "set-all-storage",
   ADD_IN_STORAGE: "add-new-item",
+  UPDATE_STORAGE: "update-storage",
 };
 
 export function useStorageContext() {
@@ -27,6 +28,15 @@ export function storageReducer(state, action) {
     case ACTION.ADD_IN_STORAGE:
       return {
         storage: [action.payload, ...state.storage],
+      };
+    case ACTION.UPDATE_STORAGE:
+      return {
+        storage: state.storage.map((equipment) => {
+          if (equipment.equipment_name === action.payload.equipment_name) {
+            return action.payload;
+          }
+          return equipment;
+        }),
       };
 
     default:

@@ -44,7 +44,7 @@ function Login() {
 
         <div className="absolute inset-0 flex items-center justify-center">
           <div className="max-w-sm w-full p-4 bg-white rounded-lg shadow-md">
-            <div className="bg-red-600 p-4 rounded-xl mb-3">
+            <div className="bg-red-800 p-4 rounded-xl mb-3">
               <h2 className="text-2xl font-bold mb-2 text-center text-white">
                 CSE Lab Inventory <br />
                 Management System

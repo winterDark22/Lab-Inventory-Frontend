@@ -6,6 +6,7 @@ module.exports = {
       gridTemplateColumns: {
         auto: "auto 1fr",
       },
+
       colors: {
         primary: "#fc0330",
         pinky: "#fc0356",

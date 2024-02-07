@@ -6,19 +6,18 @@ export function ProductDetail(props) {
   const { id } = useParams();
 
   const [equipment, setequipment] = useState(null);
+
   useEffect(() => {
     const fetchData = async () => {
       const equipment = await EquipmentFinder.get(`/${id}`);
 
-      console.log(equipment.data);
+      //console.log(equipment.data);
       setequipment(equipment.data);
     };
 
     fetchData();
   }, []);
 
-  //   console.log("here it is my dear dtail");
-  //   console.log(equipment.equipment_name);
   const [quantity, setQuantity] = useState(1);
   const [selectedOption, setSelectedOption] = useState("");
   const [isOpen, setIsOpen] = useState(false);
@@ -39,7 +38,7 @@ export function ProductDetail(props) {
   };
 
   return (
-    <div className="flex-col items-center justify-center w-2/3 ml-72">
+    <div className="flex-col items-center justify-center w-2/3 ml-80">
       <div className="mx-auto bg-white p-4 rounded-md shadow-md">
         <img
           src="https://cdn.sparkfun.com/assets/learn_tutorials/4/7/12615-02_Full_Size_Breadboard_Split_Power_Rails.jpg" // Replace with the actual image URL

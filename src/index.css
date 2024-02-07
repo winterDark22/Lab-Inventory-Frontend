@@ -9,11 +9,14 @@
 }
 
 .nav-box {
-  @apply pl-8 py-2 flex items-center  hover:bg-pinky;
+  @apply pl-8 py-2 flex items-center  hover:bg-primary;
 }
 
 .nav-icon {
   @apply text-white px-4 text-lg;
+  font-family: "Material Symbols Outlined";
+}
+.icon {
   font-family: "Material Symbols Outlined";
 }
 

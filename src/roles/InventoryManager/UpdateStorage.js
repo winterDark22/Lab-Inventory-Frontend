@@ -20,6 +20,7 @@ export function UpdateStorage(params) {
     e.preventDefault();
 
     const equipment = { ...form };
+    console.log("update storage theke bolchi............");
     console.log(equipment);
 
     const response = await fetch(

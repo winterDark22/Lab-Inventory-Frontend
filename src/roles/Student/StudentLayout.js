@@ -17,7 +17,6 @@ export function Layout() {
         <Routes>
           <Route path="" element={<StduentDashboard />} />
           <Route path="details/:id" element={<ProductDetail />} />
-
           <Route path="addRequest" element={<AddRequest />} />
         </Routes>
         <Outlet />

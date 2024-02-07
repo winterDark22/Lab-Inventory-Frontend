@@ -7,6 +7,13 @@ permit change kora lageb
 in updateStorage equipment pathano hocche with all description but setar kaj koi?
 also update rakhinai storageContext e.. update kora uchit ig local storage eo
 
+mayeshar kach theke backend kore newa lagbe karon manager side er table e available and borrowed dekhacche na..
+backend e kisu habi jabi jinish print hoccche
+
+1. update er time e dropdown theke 
+2. show korbe prev ki chilo
+
+
 
 
 
