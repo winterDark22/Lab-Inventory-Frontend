@@ -13,6 +13,9 @@ module.exports = {
         pinky: "#A43535",
         //pinky: "#f71b40",
         myBG: "#f9f9f9",
+        
+        myText: "#5e5e5e",
+        myCard: "#f0e0e0",
       },
       spacing: {
         0.5: "0.125rem",
