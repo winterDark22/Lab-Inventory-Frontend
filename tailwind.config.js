@@ -6,9 +6,16 @@ module.exports = {
       gridTemplateColumns: {
         auto: "auto 1fr",
       },
+
       colors: {
-        primary: "#fc0330",
-        pinky: "#fc0356",
+        //primary: "#bf1430",
+        primary: "#991B1B",
+        pinky: "#A43535",
+        //pinky: "#f71b40",
+        myBG: "#f9f9f9",
+      },
+      spacing: {
+        0.5: "0.125rem",
       },
       boxShadow: {
         red: "0 3px 5px 2px rgba(255, 0, 0, .3)",

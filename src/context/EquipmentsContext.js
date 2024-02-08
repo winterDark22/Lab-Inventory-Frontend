@@ -3,9 +3,8 @@ import { createContext, useContext, useReducer } from "react";
 export const EquipmentsContext = createContext();
 
 export const ACTION = {
-  SET_EQUIPMENT: "set-all-workouts",
-  ADD_NEW_EQUIPMENT: "create-new-workout",
-  //   DELETE_WORKOUT: "delete-a-workout",
+  SET_EQUIPMENT: "set-all-equipments",
+  ADD_NEW_EQUIPMENT: "create-new-equipment",
 };
 
 export function useEquipmentsContext() {

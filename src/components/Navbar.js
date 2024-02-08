@@ -25,8 +25,15 @@ export function Navbar() {
 
         <li className="nav-box">
           <span className="nav-icon">add_shopping_cart</span>
-          <Link to="/manager/addItem" className="nav-link">
-            Add item
+          <Link to="/manager/addNewItem" className="nav-link">
+            Add new item
+          </Link>
+        </li>
+
+        <li className="nav-box">
+          <span className="nav-icon">add_box</span>
+          <Link to="/manager/updateStorage" className="nav-link">
+            Update storage
           </Link>
         </li>
 

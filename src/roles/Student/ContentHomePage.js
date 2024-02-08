@@ -1,26 +1,26 @@
 import { useEffect, useState } from "react";
 
-import { useStorageContext } from "../../context/StorageContext";
-import { ACTION } from "../../context/StorageContext";
+import { useEquipmentsContext } from "../../context/EquipmentsContext";
+import { ACTION } from "../../context/EquipmentsContext";
 import { useAuthContext } from "../../context/AuthContext";
 import Card from "../../components/Card";
 
-export function Home() {
+export function ContentHomePage() {
   const [searchTerm, setSearchTerm] = useState("");
-  const { storage, dispatch } = useStorageContext();
+  const { equipments, dispatch } = useEquipmentsContext();
   const { user } = useAuthContext();
 
   useEffect(() => {
     const fetchEquipments = async () => {
       try {
-        const response = await fetch(`/api/equipments/${user.username}`);
+        const response = await fetch("/api/equipments/");
 
         const json = await response.json();
 
         console.log(json);
 
         if (response.ok) {
-          dispatch({ type: ACTION.SET_STORAGE, payload: json });
+          dispatch({ type: ACTION.SET_EQUIPMENT, payload: json });
         }
       } catch (error) {
         console.log(error.message);
@@ -41,9 +41,10 @@ export function Home() {
           className="border-2 border-gray-300 bg-white h-10 px-5 pr-16 rounded-lg text-sm focus:outline-none"
         />
       </div>
-      <div className="p-2 ml-56 ">
-        {storage &&
-          storage
+
+      <div className="p-10 ml-56">
+        {equipments &&
+          equipments
             .filter((equipment) =>
               equipment.equipment_name
                 .toLowerCase()
