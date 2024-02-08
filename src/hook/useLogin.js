@@ -1,10 +1,17 @@
 import { useAuthContext } from "../context/AuthContext";
 import { AUTH_ACTION } from "../context/AuthContext";
+import { useState } from "react";
 
 export const useLogin = () => {
   const { dispatch } = useAuthContext();
 
+  const [error, seterror] = useState(null);
+  const [loading, setloading] = useState(null);
+
   const login = async (username, password) => {
+    seterror(null);
+    setloading(true);
+
     const response = await fetch("/api/user/login", {
       method: "POST",
       headers: {
@@ -15,12 +22,17 @@ export const useLogin = () => {
 
     const responseJSON = await response.json(); //now responeJSON is {username, role, token} a json obj
 
-    console.log(responseJSON);
-
-    await dispatch({ type: AUTH_ACTION.LOGIN, payload: responseJSON });
+    if (!response.ok) {
+      setloading(false);
+      seterror(responseJSON.error);
+    } else {
+      await dispatch({ type: AUTH_ACTION.LOGIN, payload: responseJSON });
+      setloading(false);
+    }
+    //console.log(responseJSON);
 
     return responseJSON;
   };
 
-  return { login };
+  return { login, error, loading };
 };

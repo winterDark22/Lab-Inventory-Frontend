@@ -4,9 +4,11 @@ import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 
 import Login from "../src/pages/Login";
 import { Layout as ManagerLayout } from "./roles/InventoryManager/ManagerLayout";
-import { Layout as StudentLayout } from "./roles/Student/StudentLayout";
+
 import { useAuthContext } from "./context/AuthContext";
 import { Register } from "./pages/Register";
+import StudentHome from "./roles/Student/Home";
+import AssistantHome from "./roles/LabAssistant/Home";
 
 function App() {
   const { user } = useAuthContext();
@@ -25,7 +27,17 @@ function App() {
             ;
             <Route
               path="/student*"
-              element={user ? <StudentLayout /> : <Navigate to="/" />}
+              element={user ? <StudentHome /> : <Navigate to="/" />}
+            />
+            ;
+            <Route
+              path="/labassistant*"
+              element={user ? <AssistantHome /> : <Navigate to="/" />}
+            />
+            ;
+            <Route
+              path="/teacher*"
+              element={user ? <StudentHome /> : <Navigate to="/" />}
             />
             ;
           </Routes>

@@ -3,6 +3,8 @@ import { Link, useNavigate } from "react-router-dom";
 import { useRegister } from "../hook/useRegister";
 
 export function Register() {
+  const { register, error, loading } = useRegister();
+
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
@@ -12,18 +14,20 @@ export function Register() {
   const [phoneNumber, setPhoneNumber] = useState("");
   const [selectedOption, setSelectedOption] = useState("");
   const [isOpen, setIsOpen] = useState(false);
+  const [passError, setPassError] = useState("");
 
   const options = ["Student", "Lab Assistant", "Inventory Manager", "Teacher"];
 
   const navigate = useNavigate();
 
-  const { register } = useRegister();
-
   const validatePassword = () => {
     if (password !== confirmPassword) {
-      alert("Passwords do not match!");
+      setPassError("Passwords do not match");
+      setPassword("");
+      setConfirmPassword("");
       return false;
     }
+    setPassError("");
     return true;
   };
 
@@ -46,6 +50,10 @@ export function Register() {
         navigate("/manager");
       } else if (responseJSON.role === "Student") {
         navigate("/student");
+      } else if (responseJSON.role === "Lab Assistant") {
+        navigate("/labassistant");
+      } else if (responseJSON.role === "Teacher") {
+        navigate("/teacher");
       }
 
       setEmail("");
@@ -196,9 +204,30 @@ export function Register() {
                 />
               </div>
 
+              {error && (
+                <div
+                  className="mb-4 p-2 bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative"
+                  role="alert"
+                >
+                  <strong className="font-bold">Error!</strong>
+                  <span className="block sm:inline"> {error}</span>
+                </div>
+              )}
+
+              {passError && (
+                <div
+                  className="mb-4 p-2 bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative"
+                  role="alert"
+                >
+                  <strong className="font-bold">Error!</strong>
+                  <span className="block sm:inline"> {passError}</span>
+                </div>
+              )}
+
               <button
                 type="submit"
                 className="text-white text-sm bg-red-600 rounded-lg px-4 ml-32 py-2 inline-block text-center hover:bg-red-500 hover:drop-shadow-xl "
+                disabled={loading}
               >
                 Register
               </button>

@@ -20,14 +20,13 @@ import { GoHomeFill } from "react-icons/go";
 
 import { Routes, Route } from "react-router-dom";
 
-import { ContentHomePage } from "./ContentHomePage";
-import { ProductDetail } from "../../components/Detail";
+import Temp from "./Temp";
 
 function StudentHome() {
   const menus = [
     {
       name: "Add Request",
-      link: "/student",
+      link: "/student/lab",
       icon: MdOutlineDashboardCustomize,
     },
     { name: "View Request", link: "/", icon: MdListAlt },
@@ -209,8 +208,7 @@ function StudentHome() {
 
             <div className="bg-orange-200">
               <Routes>
-                <Route path="" element={<ContentHomePage />} />
-                <Route path="details/:id" element={<ProductDetail />} />
+                <Route path="lab" element={<Temp />} />
               </Routes>
             </div>
 

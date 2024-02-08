@@ -33,7 +33,7 @@ function Card(props) {
             </p>
             <button
               onClick={(e) => handleClick(e, props.equipment.equipment_id)}
-              className="text-white font-bold text-sm bg-red-600 rounded-lg px-4 ml-32 py-2 inline-block text-center hover:bg-red-500 hover:drop-shadow-xl"
+              className="text-white font-bold text-sm bg-red-700 rounded-lg px-4 ml-32 py-2 inline-block text-center hover:bg-red-500 hover:drop-shadow-xl"
             >
               Details
             </button>

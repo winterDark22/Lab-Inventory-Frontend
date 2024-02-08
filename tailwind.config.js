@@ -8,8 +8,11 @@ module.exports = {
       },
 
       colors: {
-        primary: "#fc0330",
-        pinky: "#fc0356",
+        //primary: "#bf1430",
+        primary: "#991B1B",
+        pinky: "#A43535",
+        //pinky: "#f71b40",
+        myBG: "#f9f9f9",
       },
       spacing: {
         0.5: "0.125rem",

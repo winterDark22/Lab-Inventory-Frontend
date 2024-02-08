@@ -1,28 +1,38 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import EquipmentFinder from "../apis/equipmentFinder";
+import { useAuthContext } from "../context/AuthContext";
 
 export function ProductDetail(props) {
   const { id } = useParams();
+  const { user } = useAuthContext();
+  const username = user.username;
 
   const [equipment, setequipment] = useState(null);
+  const [locations, setLocations] = useState([]);
 
   useEffect(() => {
     const fetchData = async () => {
       const equipment = await EquipmentFinder.get(`/${id}`);
-
-      //console.log(equipment.data);
       setequipment(equipment.data);
+
+      const locations = await EquipmentFinder.get(`/${id}/locations`);
+      setLocations(locations.data);
+      console.log(locations.data);
     };
 
     fetchData();
   }, []);
 
-  const [quantity, setQuantity] = useState(1);
+  const [quantity, setQuantity] = useState(0);
   const [selectedOption, setSelectedOption] = useState("");
   const [isOpen, setIsOpen] = useState(false);
 
-  const options = ["Lab 1", "Lab 2", "Lab 3"];
+  const options = locations.map((location) => ({
+    locationName: location.location_name,
+    available: location.available,
+    location_id: location.location_id,
+  }));
 
   const handleQuantityChange = (e) => {
     setQuantity(parseInt(e.target.value, 10));
@@ -35,6 +45,29 @@ export function ProductDetail(props) {
   const handleOptionClick = (option) => {
     setSelectedOption(option);
     setIsOpen(false);
+  };
+
+  const handleButtonClick = async () => {
+    console.log(quantity, selectedOption.location_id);
+    const response = await fetch(
+      `/api/request/createrequest/${username}/${id}`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          quantity,
+          location: selectedOption.location_id,
+        }),
+      }
+    );
+    const responseJSON = await response.json(); //now responeJSON is {username, role, token} a json obj
+
+    console.log(responseJSON);
+
+    setSelectedOption("");
+    setQuantity(0);
   };
 
   return (
@@ -118,18 +151,20 @@ export function ProductDetail(props) {
                   type="button"
                   className="w-full bg-white border border-gray-300 p-2 rounded-md flex items-center justify-between focus:outline-none focus:ring focus:border-blue-300"
                 >
-                  {selectedOption || "Select an option"}
+                  {selectedOption
+                    ? selectedOption.locationName
+                    : "Select an option"}
                 </button>
                 {isOpen && (
                   <div className="absolute top-full left-0 mt-2 w-full bg-white border border-gray-300 rounded-md shadow-md">
                     <ul>
                       {options.map((option) => (
                         <li
-                          key={option}
+                          key={option.locationName}
                           onClick={() => handleOptionClick(option)}
                           className="px-4 py-2 cursor-pointer hover:bg-gray-100"
                         >
-                          {option}
+                          {option.locationName} - {option.available}
                         </li>
                       ))}
                     </ul>
@@ -140,7 +175,7 @@ export function ProductDetail(props) {
 
             <button
               className="text-white bg-red-600 rounded-lg px-4  py-2 inline-block text-center hover:bg-red-500 hover:drop-shadow-xl "
-              onClick={() => console.log("Add to Cart clicked")}
+              onClick={handleButtonClick}
             >
               Request
             </button>

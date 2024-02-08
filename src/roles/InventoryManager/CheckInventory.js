@@ -61,13 +61,13 @@ export function CheckInventory() {
               <span className="text-white">Name</span>
             </th>
             <th className="px-16 py-2">
-              <span className="text-gray-300">Availability</span>
+              <span className="text-white">Availability</span>
             </th>
             <th className="px-16 py-2">
-              <span className="text-gray-300">Borrowed</span>
+              <span className="text-white">Borrowed</span>
             </th>
             <th className="px-16 py-2">
-              <span className="text-gray-300">Update</span>
+              <span className="text-white">Add item</span>
             </th>
           </tr>
         </thead>
@@ -86,7 +86,8 @@ export function CheckInventory() {
                     setShowModal(true);
                     setSelectedEquipment(equipment);
                   }}
-                  className="text-white bg-indigo-500 border-0 py-2 px-8 focus:outline-none hover:bg-indigo-600 rounded text-lg"
+                  //className="text-white bg-indigo-500 border-0 py-2 px-8 focus:outline-none hover:bg-indigo-600 rounded text-lg"
+                  className="text-gray-600 font-bold text-sm bg-gray-300  rounded-lg px-8 py-2 hover:bg-red-500 hover:drop-shadow-xl"
                 >
                   Update
                 </button>

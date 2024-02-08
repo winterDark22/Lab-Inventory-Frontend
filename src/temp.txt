@@ -13,50 +13,9 @@ backend e kisu habi jabi jinish print hoccche
 1. update er time e dropdown theke 
 2. show korbe prev ki chilo
 
+lab assistant der product bonton kora hoinai except for breadboard
+
+COMMAND:
 
 
-
-
-this is a CARD
-    <div className="bg-purple-400 rounded-lg overflow-hidden m-24 shadow-lg">
-
-      <img
-        src="https://images.immediate.co.uk/production/volatile/sites/30/2020/08/chorizo-mozarella-gnocchi-bake-cropped-9ab73a3.jpg?quality=90&resize=556,505"
-        alt="breadboard"
-        className="w-full h-32 sm:h-48 object-cover"
-      />
-      <div>
-        <span className="font-bold">a nice looking breadboard</span>
-        <span className="block">hardware device</span>
-
-      </div>
-
-
-
-      
-
-      <div className="bg-yellow-100 py-[150px]">
-      <div>
-        <form onSubmit={handleSubmit}>
-          <h3>Login</h3>
-
-          <div>
-            <label>Username: </label>
-            <input type="text" ref={usernameRef} />
-          </div>
-
-          <div>
-            <label>Password: </label>
-            <input type="password" ref={passwordRef} />
-          </div>
-
-          <div>
-            <button>Login</button>
-          </div>
-        </form>
-      </div>
-    </div>
-  );
-
-
-   sudo -u postgres psql
+sudo -u postgres psql
