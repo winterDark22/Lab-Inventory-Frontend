@@ -21,22 +21,22 @@ function App() {
             <Route path="/" element={<Login />} />
             <Route path="/signup" element={<Register />} />
             <Route
-              path="/manager*"
+              path="/manager/*"
               element={user ? <ManagerLayout /> : <Navigate to="/" />}
             />
             ;
             <Route
-              path="/student*"
+              path="/student/*"
               element={user ? <StudentHome /> : <Navigate to="/" />}
             />
             ;
             <Route
-              path="/labassistant*"
+              path="/labassistant/*"
               element={user ? <AssistantHome /> : <Navigate to="/" />}
             />
             ;
             <Route
-              path="/teacher*"
+              path="/teacher/*"
               element={user ? <StudentHome /> : <Navigate to="/" />}
             />
             ;
