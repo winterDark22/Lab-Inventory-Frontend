@@ -9,6 +9,7 @@ import { useAuthContext } from "./context/AuthContext";
 import { Register } from "./pages/Register";
 import StudentHome from "./roles/Student/Home";
 import AssistantHome from "./roles/LabAssistant/Home";
+import TeacherHome from "./roles/Teacher/Home";
 
 function App() {
   const { user } = useAuthContext();
@@ -21,23 +22,23 @@ function App() {
             <Route path="/" element={<Login />} />
             <Route path="/signup" element={<Register />} />
             <Route
-              path="/manager*"
+              path="/manager/*"
               element={user ? <ManagerLayout /> : <Navigate to="/" />}
             />
             ;
             <Route
-              path="/student*"
+              path="/student/*"
               element={user ? <StudentHome /> : <Navigate to="/" />}
             />
             ;
             <Route
-              path="/labassistant*"
+              path="/labassistant/*"
               element={user ? <AssistantHome /> : <Navigate to="/" />}
             />
             ;
             <Route
-              path="/teacher*"
-              element={user ? <StudentHome /> : <Navigate to="/" />}
+              path="/teacher/*"
+              element={user ? <TeacherHome /> : <Navigate to="/" />}
             />
             ;
           </Routes>
@@ -48,24 +49,3 @@ function App() {
 }
 
 export default App;
-
-{
-  /* <Route path="/manager/*" element={<ManagerLayout />} />
-            <Route path="/student/*" element={<StudentLayout />} /> */
-}
-{
-  /* <Route path="/*" element={<Layout />} /> */
-}
-{
-  /* <Route path="/student/dashboard" element={<StudentDashboard />} /> */
-}
-{
-  /* <Route
-              path="/labAssistant/dashboard"
-              element={<LabAssistantDashboard />}
-            /> */
-}
-{
-  /* <Route path="/student/addRequest" element={<AddRequest />} />
-            <Route path="/student/details" element={<EquipmentDetail />} /> */
-}

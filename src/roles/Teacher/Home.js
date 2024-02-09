@@ -1,42 +1,53 @@
 import React from "react";
-
-import { HiMenuAlt3, HiMenu } from "react-icons/hi";
+import { Routes, Route } from "react-router-dom";
 import { Link } from "react-router-dom";
+import { useState, useEffect } from "react";
+
+//import icons
+import { HiMenuAlt3, HiMenu } from "react-icons/hi";
 import {
   MdOutlineDashboardCustomize,
   MdOutlineTableView,
-  MdArrowBackIos,
-  MdMenu,
   MdListAlt,
-  MdOutlineReceiptLong,
-  MdNotifications,
   MdOutlineLogout,
+  MdNotifications,
 } from "react-icons/md";
-import { CiViewList, CiLogout } from "react-icons/ci";
-import { IoReceiptOutline, IoNotificationsOutline } from "react-icons/io5";
-import { FaBuildingCircleArrowRight } from "react-icons/fa6";
-import { useState, useEffect } from "react";
 import { GoHomeFill } from "react-icons/go";
+import { FaSortAmountUp, FaUserAlt, FaEnvelope } from "react-icons/fa";
 
-import { Routes, Route } from "react-router-dom";
+//import pages
+import { useAuthContext } from "../../context/AuthContext";
+import { ViewRequest } from "./ViewRequest";
+import { Notification } from "./Notification";
+import { useLogout } from "../../hook/useLogout";
 
-import Temp from "./Temp";
+function TeacherHome() {
+  //user fetching
+  const { user } = useAuthContext();
+  const { username, role } = user;
+  const { logout } = useLogout();
 
-function StudentHome() {
   const menus = [
     {
-      name: "Add Request",
-      link: "/student/lab",
-      icon: MdOutlineDashboardCustomize,
+      name: "View request",
+      link: "viewRequest",
+      icon: MdListAlt,
     },
-    { name: "View Request", link: "/", icon: MdListAlt },
-    { name: "View Dues", link: "/", icon: MdOutlineTableView },
-    { name: "Moneteray Dues", link: "/", icon: MdOutlineReceiptLong },
-    { name: "Get Clearance", link: "/", icon: FaBuildingCircleArrowRight },
-    { name: "Notifications", link: "/", icon: MdNotifications },
-    { name: "Log Out", link: "/", icon: MdOutlineLogout },
+
+    { name: "Notification", link: "notification", icon: MdNotifications },
+    { name: "Log Out", link: "logout", icon: MdOutlineLogout },
   ];
   const [open, setOpen] = useState(true);
+
+  const [activeLink, setActiveLink] = useState("");
+
+  const handleLinkClick = (link) => {
+    setActiveLink(link);
+  };
+
+  const handleLogout = () => {
+    logout();
+  };
 
   const handleResize = () => {
     // Update state based on screen width
@@ -58,20 +69,20 @@ function StudentHome() {
   if (open) {
     userRole = (
       <div
-        className={`absolute w-64 bottom-5 bg-green-500 p-y-1 rounded-full
+        className={`absolute w-64 bottom-5 bg-green-600 p-y-1 rounded-full
           whitespace-pre duration-200
             ${!open && "opacity-0 translate-x-28 overflow-hidden"}
           `}
       >
         <Link to={""}>
-          <span className=" text-center block"> STUDENT HOME</span>
+          <span className=" text-center block"> {role.toUpperCase()} </span>
         </Link>
       </div>
     );
   } else {
     userRole = (
       <div
-        className={`absolute bottom-5 bg-green-500 rounded-full p-2
+        className={`absolute bottom-5 bg-green-600 rounded-full p-2
           whitespace-pre duration-200 group
             ${open && "opacity-0 translate-x-28 overflow-hidden"} 
           `}
@@ -84,19 +95,17 @@ function StudentHome() {
                   text-green-600 rounded-md drop-shadow-lg px-0 py-0 w-0 overflow-hidden
                   group-hover:px-2 group-hover:py-1 group-hover:left-14 group-hover:duration-200 group-hover:w-fit bottom-7 -translate-x-8 active:bg-violet-700 focus:outline-none focus:ring focus:ring-violet-300`}
           >
-            STUDENT HOME
+            {role.toUpperCase()}
           </h2>
         </Link>
       </div>
     );
   }
 
-  // return <>{message}</>
-
   return (
     <>
       <div className={`flex ${open ? "gap-1" : "gap-4"} bg-myBG`}>
-        <aside className={"z-10"}>
+        <aside className={"z-20"}>
           <div
             className={`sticky top-0 min-h-screen bg-primary ${
               open
@@ -107,21 +116,21 @@ function StudentHome() {
           >
             <div className={`py-3 flex justify-between items-center pt-5 `}>
               <h2
-                className={`font-bold font-roboto text-3xl pl-3 ${
+                className={`font-bold font-roboto text-2xl pl-3 ${
                   !open && "hidden"
                 }`}
               >
                 Your Options
               </h2>
               <HiMenuAlt3
-                size={40}
+                size={35}
                 className={`cursor-pointer ml-1 font-bold ${
                   !open && "hidden"
                 } p-1 hover:bg-pinky rounded-md `}
                 onClick={() => setOpen(!open)}
               />
               <HiMenu
-                size={40}
+                size={35}
                 className={`cursor-pointer ml-1 font-bold ${
                   open && "hidden"
                 } hover:bg-pinky rounded-md `}
@@ -142,7 +151,20 @@ function StudentHome() {
                 <Link
                   to={menu?.link}
                   key={i}
-                  className="group flex items-center text-medium gap-3.5 fond-medium p-3.5 hover:bg-pinky rounded-md group-focus:outline-none group-focus:ring-2 group-focus:ring-blue-500 group-focus:ring-opacity-50"
+                  onClick={() => {
+                    menu.name === "Log Out"
+                      ? handleLogout()
+                      : handleLinkClick(menu?.link);
+                    //handleLinkClick(menu?.link);
+                  }}
+                  className={`group flex items-center text-medium gap-3.5 font-medium p-3.5 rounded-md 
+                     hover:bg-pinky hover:scale-95
+                      ${
+                        activeLink === menu?.link
+                          ? "hover:shadow-xl scale-105 shadow-lg bg-pinky"
+                          : ""
+                      }
+                    active:scale-105 active:shadow-xl focus:hover:shadow-xl focus:scale-105 focus:shadow-lg focus:bg-pinky`}
                 >
                   <div className={`font-bold ${!open && "-translate-x-2"} `}>
                     {React.createElement(menu?.icon, { size: "20" })}
@@ -176,7 +198,7 @@ function StudentHome() {
 
         <main className="m-3 text-xl text-gray-900 font-semibold w-full relative">
           <div className="">
-            <nav className="h-26 sm:h-32 w-full bg-myBG border sticky -top-1 -mt-4 ">
+            <nav className="min-h-28 w-full bg-myBG border sticky -top-1 -mt-4 pt-1.5 z-10">
               <div
                 className={`flex justify-between items-center max-w-[1500px] mt-8`}
               >
@@ -184,31 +206,54 @@ function StudentHome() {
                   className={` font-bold font-roboto text-2xl md:text-3xl lg:text-[38px] text-left text-primary md:leading-[46px] leading-8`}
                 >
                   CSE Lab Inventory
-                  <br className="" /> Management System
+                  <br className="sm:hidden" /> Management System
                 </h2>
 
-                <ul className="flex flex-wrap  justify-between gap-5">
+                <ul className="flex flex-wrap  justify-between gap-2 sm:mr-10 -mr-3">
+                  <Link
+                    to={""}
+                    onClick={() => handleLinkClick("")}
+                    className={`group flex md:items-center font-medium gap-1  rounded-full  p-3 justify-center
+                     hover:scale-110 text-sm 
+                    active:scale-105 active:shadow-xl hover:shadow-xl focus:scale-125 focus:shadow-lg  text-myText `}
+                  >
+                    <div className={`font-bold`}>
+                      {React.createElement(FaEnvelope, { size: "18" })}
+                    </div>
+
+                    {/* <h2
+                      className={`whitespace-pre duration-300 hidden md:block`}>Message
+                    </h2> */}
+                  </Link>
                   <li>
-                    <a
-                      href="https://cse.buet.ac.bd/"
-                      target="_blank"
-                      className="hover:text-primary"
+                    <Link
+                      to={""}
+                      onClick={() => handleLinkClick("")}
+                      className={`group flex md:items-center font-medium gap-1 rounded-full  p-3 justify-center
+                     text-md  hover:scale-110
+                    active:scale-105 active:shadow-xl hover:shadow-xl focus:scale-125 focus:shadow-lg  text-myText `}
                     >
-                      CS
-                    </a>
-                  </li>
-                  <li class="nav-item">
-                    <a href="" target="_blank" className="hover:text-primary">
-                      Us
-                    </a>
+                      <div className={`font-bold`}>
+                        {React.createElement(FaUserAlt, { size: "18" })}
+                      </div>
+
+                      <h2
+                        className={`whitespace-pre duration-300 hidden md:block`}
+                      >
+                        {" "}
+                        {username}
+                      </h2>
+                    </Link>
                   </li>
                 </ul>
               </div>
             </nav>
 
-            <div className="bg-orange-200">
+            <div>
               <Routes>
-                <Route path="lab" element={<Temp />} />
+                <Route path="" element={<ViewRequest />} />
+                <Route path="viewRequest" element={<ViewRequest />} />
+                <Route path="notification" element={<Notification />} />
               </Routes>
             </div>
 
@@ -267,4 +312,4 @@ function StudentHome() {
   );
 }
 
-export default StudentHome;
+export default TeacherHome;

@@ -14,8 +14,107 @@ backend e kisu habi jabi jinish print hoccche
 2. show korbe prev ki chilo
 
 lab assistant der product bonton kora hoinai except for breadboard
+search kora lagbe
+
+
+***************VIEW REQUEST ASSISTANT ER HANDLE Accept
 
 COMMAND:
 
 
 sudo -u postgres psql
+
+
+
+
+
+
+view requests
+
+<div key={index} className="p-4 border-b border-gray-200">
+            <p>
+              <strong>Available:</strong> {item.available}
+            </p>
+            <p>
+              <strong>Equipment Name:</strong> {item.equipment_name}
+            </p>
+            <p>
+              <strong>Permit:</strong> {item.permit}
+            </p>
+            <p>
+              <strong>Quantity:</strong> {item.quantity}
+            </p>
+            <p>
+              <strong>Req ID:</strong> {item.req_id}
+            </p>
+            <p>
+              <strong>Req Time:</strong> {item.req_time}
+            </p>
+            <p>
+              <strong>Status Name:</strong> {item.status_name}
+            </p>
+            <p>
+              <strong>Username:</strong> {item.username}
+            </p>
+
+            <button
+              className="bg-green-500 text-white px-4 py-2 rounded mr-2"
+              onClick={() => {
+                handleAccept(item.req_id);
+              }}
+            >
+              Accept
+            </button>
+
+            <button
+              className="bg-red-500 text-white px-4 py-2 rounded mr-2"
+              onClick={() => {
+                handleDelete(item.req_id);
+              }}
+            >
+              Delete
+            </button>
+            
+            <button
+              className="bg-blue-500 text-white px-4 py-2 rounded"
+              disabled={item.permit <= 1}
+            >
+              Forward
+            </button>
+
+            {isOkClicked && (
+              <div>
+                <input
+                  type="text"
+                  className="border p-2 rounded mr-2"
+                  value={inputValue}
+                  onChange={(e) => setInputValue(e.target.value)}
+                />
+                <button
+                  className="bg-blue-500 text-white px-4 py-2 rounded"
+                  onClick={() => handleOk(item.req_id)}
+                >
+                  Ok
+                </button>
+              </div>
+            )}
+
+          </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
