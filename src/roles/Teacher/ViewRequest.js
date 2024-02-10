@@ -13,64 +13,6 @@ export function ViewRequest() {
   const [isOkClicked, setIsOkClicked] = useState(false);
   const [inputValue, setInputValue] = useState("");
 
-  //   const [req_id, setreq_id] = useState(0);
-  const handleOk = async (req_id) => {
-    setIsOkClicked(false);
-
-    const response = await fetch(
-      `/api/request/addcomment/${req_id}/${username}`,
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ comment: inputValue }),
-      }
-    );
-    const responseJSON = await response.json();
-
-    setInputValue("");
-  };
-
-  console.log(" Reques hoilo ");
-  console.log(allRequests);
-
-  const handleAccept = async (req_id) => {
-    const response = await fetch(
-      `/api/request/acceptrequest/${req_id}/${user.username}`,
-      {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      }
-    );
-    const responseJSON = await response.json();
-
-    if (response.ok) {
-      setIsOkClicked(true);
-    }
-    // console.log("acccpet korteeeeeeeeee");
-    // console.log(responseJSON);
-  };
-
-  const handleDelete = async (req_id) => {
-    const response = await fetch(
-      `/api/request/declinerequest/${req_id}/${user.username}`,
-      {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      }
-    );
-    const responseJSON = await response.json();
-
-    if (response.ok) {
-      setIsOkClicked(true);
-    }
-  };
-
   useEffect(() => {
     const fetchRequests = async () => {
       try {
@@ -90,6 +32,7 @@ export function ViewRequest() {
     };
     fetchRequests();
   }, []);
+
   return (
     <div className="border border-pinky my-2 h-[1200px] rounded-2xl ">
       <div className="flex justify-between">
@@ -135,24 +78,35 @@ export function ViewRequest() {
                       &nbsp;{request.available}
                     </span>
                   </span>
+                  <span className="text-gray-500">
+                    Status:{" "}
+                    <span className="text-myText font-bold">
+                      &nbsp;{request.status_name}
+                    </span>
+                  </span>
                 </div>
               </div>
 
               <div className="flex md:flex-row flex-col gap-3 md:gap-0">
                 <button
                   onClick={() => {
-                    handleAccept(request.req_id);
+                    // handleAccept(request.req_id);
                   }}
-                  className={`group bg-green-600 flex items-center justify-center gap-1 font-medium py-1.5 px-2.5 rounded-full
-                    shadow-lg hover:shadow-xl  hover:scale-95 h-fit md:w-[105px]
-                    active:scale-105 active:shadow-xl md:bg-transparent  md:shadow-none md:hover:scale-105 md:hover:shadow-none md:active:scale-95`}
+                  className={`group bg-green-700 flex items-center gap-1 font-medium py-1.5 px-2.5 rounded-full
+                    shadow-lg  h-fit justify-center md:w-[105px] md:bg-transparent  md:shadow-none 
+                    ${
+                      request.permit > 2
+                        ? "disabled:opacity-50 disabled:cursor-not-allowed"
+                        : "hover:shadow-xl hover:scale-95  active:scale-105 active:shadow-xl md:hover:scale-105 md:hover:shadow-none md:active:scale-95"
+                    } `}
+                  disabled={request.permit > 2}
                 >
-                  <div className={`font-bold text-white md:text-green-600`}>
+                  <div className={`font-bold text-white md:text-green-700`}>
                     {React.createElement(MdCheckBox, { size: "16" })}
                   </div>
 
                   <h2
-                    className={`whitespace-pre duration-300 text-sm uppercase text-white md:text-green-600 md:block hidden`}
+                    className={`whitespace-pre duration-300 text-sm uppercase text-white md:text-green-700 md:block hidden`}
                   >
                     accept
                   </h2>
@@ -160,7 +114,7 @@ export function ViewRequest() {
                   <h2
                     className={`
                   absolute bg-myBG whitespace-pre text-sm uppercase
-                  text-green-600 rounded-xl drop-shadow-lg px-0 py-0 w-0 overflow-hidden
+                  text-green-700 rounded-xl drop-shadow-lg px-0 py-0 w-0 overflow-hidden
                   group-hover:px-2.5 group-hover:py-1.5 group-hover:-left-20 group-hover:duration-200 group-hover:w-fit
                   md:hidden
                   `}
@@ -171,12 +125,16 @@ export function ViewRequest() {
 
                 <button
                   onClick={() => {
-                    handleDelete(request.req_id);
+                    // handleDelete(request.req_id);
                   }}
-                  className={`group bg-pinky flex items-center gap-1 font-medium py-1.5 px-2.5 md:px-0 rounded-full
-                    shadow-lg hover:shadow-xl  hover:scale-95 h-fit justify-center md:w-[105px]
-                      
-                    active:scale-105 active:shadow-xl md:bg-transparent  md:shadow-none md:hover:scale-105 md:hover:shadow-none md:active:scale-95`}
+                  className={`group bg-pinky flex items-center gap-1 font-medium py-1.5 px-2.5 rounded-full
+                    shadow-lg  h-fit justify-center md:w-[105px] md:bg-transparent  md:shadow-none 
+                    ${
+                      request.permit > 2
+                        ? "disabled:opacity-50 disabled:cursor-not-allowed"
+                        : "hover:shadow-xl hover:scale-95  active:scale-105 active:shadow-xl md:hover:scale-105 md:hover:shadow-none md:active:scale-95"
+                    } `}
+                  disabled={request.permit > 2}
                 >
                   <div className={`font-bold text-white md:text-pinky`}>
                     {React.createElement(FaSquareXmark, { size: "15" })}
@@ -205,11 +163,11 @@ export function ViewRequest() {
                   className={`group bg-blue-500 flex items-center gap-1 font-medium py-1.5 px-2.5 rounded-full
                     shadow-lg  h-fit justify-center md:w-[105px] md:bg-transparent  md:shadow-none 
                     ${
-                      request.permit <= 1
+                      request.permit === 2
                         ? "disabled:opacity-50 disabled:cursor-not-allowed"
                         : "hover:shadow-xl hover:scale-95  active:scale-105 active:shadow-xl md:hover:scale-105 md:hover:shadow-none md:active:scale-95"
                     } `}
-                  disabled={request.permit <= 1}
+                  disabled={request.permit === 2}
                 >
                   <div className={`font-bold text-white md:text-blue-500`}>
                     {React.createElement(FaSortAmountUp, { size: "15" })}

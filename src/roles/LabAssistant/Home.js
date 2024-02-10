@@ -113,7 +113,7 @@ function AssistantHome() {
       <div className={`flex ${open ? "gap-1" : "gap-4"} bg-myBG`}>
         <aside className={"z-20"}>
           <div
-            className={`sticky top-0 min-h-screen bg-primary ${
+            className={`sticky top-0 min-h-screen transition duration-100 bg-primary ${
               open
                 ? "w-[320px] rounded-[35px] border-[16px] border-myBG"
                 : "w-16 rounded-r-3xl"

@@ -24,6 +24,8 @@ COMMAND:
 
 sudo -u postgres psql
 
+psql -U postgres -h localhost -d labinventory -f mydatabase_dump.sql
+
 
 
 
