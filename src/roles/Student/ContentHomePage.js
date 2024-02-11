@@ -31,18 +31,21 @@ export function ContentHomePage() {
   }, [user.username, dispatch]);
 
   return (
-    <div>
-      <div className="ml-96 mt-14">
-        <input
-          type="text"
-          placeholder="Search..."
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
-          className="border-2 border-gray-300 bg-white h-10 px-5 pr-16 rounded-lg text-sm focus:outline-none"
-        />
+    <div className=" my-2 min-h-screen">
+      <div className="flex justify-between">
+        <h2 className="text-left text-myText mt-7 ml-5 text-2xl font-bold">
+          Popular on website
+        </h2>
+        <div className="flex ">
+          <input
+            type="text"
+            placeholder="Type here"
+            className="border border-pinky bg-myBG rounded-lg text-myText text-sm placeholder:text-bg-gray-500 w-full p-2.5 m-5 focus:ring-1 focus:ring-pinky focus:outline-none focus:shadow-inner"
+          />
+        </div>
       </div>
 
-      <div className="p-10 ml-56">
+      <div className="grid xl:grid-cols-3 md:grid-cols-4 justify-between w-full p-5 border text-left md:gap-4 lg:gap-5 xl:gap-7">
         {equipments &&
           equipments
             .filter((equipment) =>
@@ -55,6 +58,22 @@ export function ContentHomePage() {
             ))}
       </div>
     </div>
+
+    // <div>
+
+    //   <div className="p-10 ml-56">
+    //     {equipments &&
+    //       equipments
+    //         .filter((equipment) =>
+    //           equipment.equipment_name
+    //             .toLowerCase()
+    //             .startsWith(searchTerm.toLowerCase())
+    //         )
+    //         .map((equipment) => (
+    //           <Card key={equipment.equipment_id} equipment={equipment} />
+    //         ))}
+    //   </div>
+    // </div>
   );
 }
 

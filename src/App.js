@@ -3,13 +3,14 @@ import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 //pages & components
 
 import Login from "../src/pages/Login";
-import { Layout as ManagerLayout } from "./roles/InventoryManager/ManagerLayout";
 
 import { useAuthContext } from "./context/AuthContext";
 import { Register } from "./pages/Register";
 import StudentHome from "./roles/Student/Home";
 import AssistantHome from "./roles/LabAssistant/Home";
 import TeacherHome from "./roles/Teacher/Home";
+import ManagerHome from "./roles/InventoryManager/Home";
+import AdminHome from "./roles/SuperAdmin/Home";
 
 function App() {
   const { user } = useAuthContext();
@@ -23,7 +24,7 @@ function App() {
             <Route path="/signup" element={<Register />} />
             <Route
               path="/manager/*"
-              element={user ? <ManagerLayout /> : <Navigate to="/" />}
+              element={user ? <ManagerHome /> : <Navigate to="/" />}
             />
             ;
             <Route
@@ -39,6 +40,11 @@ function App() {
             <Route
               path="/teacher/*"
               element={user ? <TeacherHome /> : <Navigate to="/" />}
+            />
+            ;
+            <Route
+              path="/admin/*"
+              element={user ? <AdminHome /> : <Navigate to="/" />}
             />
             ;
           </Routes>

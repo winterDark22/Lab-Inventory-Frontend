@@ -1,3 +1,7 @@
+// date fns
+import formatDistanceToNow from "date-fns/formatDistanceToNow";
+import { format } from "date-fns";
+
 import React, { useState, useEffect } from "react";
 import { useAuthContext } from "../../context/AuthContext";
 
@@ -227,6 +231,8 @@ export function ViewRequest() {
       }
     };
 
+    console.log("ekhane sob requests");
+    console.log(allRequests);
     const fetchTeacher = async () => {
       try {
         const response = await fetch(`/api/request/getsupervisors/${username}`);
@@ -246,8 +252,9 @@ export function ViewRequest() {
     fetchRequests();
     fetchTeacher();
   }, []);
+
   return (
-    <div className="border border-pinky my-2 h-[1200px] rounded-2xl ">
+    <div className=" my-2 min-h-screen ">
       <div className="flex justify-between">
         <h2 className="text-left text-myText mt-7 ml-5 text-2xl font-bold">
           All Requests
@@ -301,6 +308,14 @@ export function ViewRequest() {
                       Status:{" "}
                       <span className="text-myText font-bold">
                         &nbsp;{request.status_name}
+                      </span>
+                    </span>
+
+                    <span className="text-gray-500">
+                      Requested:{" "}
+                      <span className="text-myText font-bold">
+                        &nbsp;
+                        {format(new Date(request.req_time), "dd/MM/yyyy")}
                       </span>
                     </span>
                   </div>
@@ -459,12 +474,12 @@ export function ViewRequest() {
                   <button
                     onClick={() => handleCancel()}
                     // onClick={() => handleUpdate(selectedEquipment)}
-                    className="text-white bg-green-600 border-0 py-1 sm:px-4 px-2 focus:outline-none hover:bg-green-700 rounded-lg text-base"
+                    className="text-white bg-pinky  border-0 py-1 sm:px-4 px-2 focus:outline-none hover:bg-primary rounded-lg text-base"
                   >
                     Cancel
                   </button>
                   <button
-                    className="text-white bg-pinky border-0 sm:px-4 px-2 py-1 focus:outline-none hover:bg-primary rounded-lg text-base"
+                    className="text-white  bg-green-600 border-0 sm:px-4 px-2 py-1 focus:outline-none  hover:bg-green-700 rounded-lg text-base"
                     onClick={() => handleOk()}
                   >
                     Send

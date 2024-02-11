@@ -44,99 +44,71 @@ export function CheckInventory() {
   };
 
   return (
-    <div className=" ml-72 p-6">
-      <h1 className="text-2xl font-bold mb-4">This is CheckInventory page</h1>
+    <div className="border border-pinky my-2 min-h-screen rounded-2xl ">
+      <div className="flex justify-between">
+        <h2 className="text-left text-myText mt-7 ml-5 text-2xl font-bold">
+          Your Lab Equipments
+        </h2>
+        <div className="flex ">
+          <input
+            type="text"
+            placeholder="Type here"
+            className="border border-pinky bg-myBG rounded-lg text-myText text-sm placeholder:text-bg-gray-500 w-full p-2.5 m-5 focus:ring-1 focus:ring-pinky focus:outline-none focus:shadow-inner"
+          />
+        </div>
+      </div>
 
-      <input
-        type="text"
-        placeholder="Search..."
-        onChange={(event) => setSearchTerm(event.target.value)}
-        className="mb-4 p-2 border rounded"
-      />
-
-      <table className="min-w-full table-auto">
-        <thead className="justify-between">
-          <tr className="bg-red-800">
-            <th className="px-16 py-2">
-              <span className="text-white">Name</span>
-            </th>
-            <th className="px-16 py-2">
-              <span className="text-white">Availability</span>
-            </th>
-            <th className="px-16 py-2">
-              <span className="text-white">Borrowed</span>
-            </th>
-            <th className="px-16 py-2">
-              <span className="text-white">Add item</span>
-            </th>
-          </tr>
-        </thead>
-        <tbody className="bg-gray-200">
-          {filteredStorage.map((equipment) => (
-            <tr
-              key={equipment.equipment_id}
-              className="bg-white border-4 border-gray-200 text-center"
-            >
-              <td className="px-16 py-2">{equipment.equipment_name}</td>
-              <td className="px-16 py-2">{equipment.available}</td>
-              <td className="px-16 py-2">{equipment.borrowed}</td>
-              <td className="px-16 py-2">
+      <div className="relative overflow-x-auto sm:rounded-xl m-5 ">
+        <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
+          <thead className="text-xs text-white uppercase bg-primary">
+            <tr className="border-b-[6px] border-myBG">
+              <th scope="col" className="px-6 py-3">
+                <span className="sr-only">Image</span>
+              </th>
+              <th scope="col" className="px-6 py-3 text-center">
+                Equipment
+              </th>
+              <th scope="col" className="px-6 py-3 text-center">
+                Availability
+              </th>
+              <th scope="col" className="px-6 py-3 text-center">
+                Borrowed
+              </th>
+              <th scope="col" className="px-6 py-3 text-center">
+                Action
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr className="bg-myCard border-b-8 border-myBG text-myText">
+              <td className="flex items-center justify-center rounded-lg overflow-hidden p-2">
+                <img
+                  src="https://www.robotechbd.com/wp-content/uploads/2021/07/frosted-leds-red-green-blue-yellow-white-800x800-1.jpg"
+                  className="w-24 md:w-28 rounded-sm sm:rounded-lg hover:scale-105 transition duration-100"
+                  alt="LED"
+                />
+              </td>
+              <td className="px-6 py-4 font-semibold text-center text-base">
+                LED
+              </td>
+              <td className="px-6 py-4 font-semibold  text-center text-base">
+                50
+              </td>
+              <td className="px-6 py-4 font-semibold  text-center text-base">
+                10
+              </td>
+              <td className="px-6 py-4 text-center">
                 <button
-                  onClick={() => {
-                    setShowModal(true);
-                    setSelectedEquipment(equipment);
-                  }}
-                  //className="text-white bg-indigo-500 border-0 py-2 px-8 focus:outline-none hover:bg-indigo-600 rounded text-lg"
-                  className="text-gray-600 font-bold text-sm bg-gray-300  rounded-lg px-8 py-2 hover:bg-red-500 hover:drop-shadow-xl"
+                  href="#"
+                  className="font-medium text-green-500 hover:scale-105 transition duration-100 text-base"
                 >
                   Update
                 </button>
               </td>
             </tr>
-          ))}
-        </tbody>
-        {showModal && selectedEquipment && (
-          <div className="fixed w-full bg-slate-800 bg-opacity-80 top-0 left-0">
-            <div className="flex items-center justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
-              {/* ...rest of the modal code... */}
-              <div className="bg-white ml-[500px] px-10 rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full">
-                <div className="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
-                  <div className="sm:flex sm:items-start">
-                    <div className="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left">
-                      <h3 className="text-lg leading-6 font-medium text-gray-900">
-                        {selectedEquipment.equipment_name}
-                      </h3>
-                      <div className="mt-4">
-                        <input
-                          type="text"
-                          value={quantity}
-                          placeholder="Quantity"
-                          onChange={(e) => setQuantity(e.target.value)}
-                          className="p-2 border rounded text-sm w-full"
-                        />
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <div className="bg-gray-50 px-4 py-4 sm:px-6 sm:flex ">
-                  <button
-                    onClick={() => handleUpdate(selectedEquipment)}
-                    className="text-white bg-green-500 border-0 py-2 px-8 focus:outline-none hover:bg-green-600 rounded text-lg ml-4"
-                  >
-                    Update
-                  </button>
-                  <button
-                    onClick={() => setShowModal(false)}
-                    className="text-white bg-indigo-500 border-0 py-2 px-8 focus:outline-none hover:bg-indigo-600 rounded text-lg"
-                  >
-                    cancel
-                  </button>
-                </div>
-              </div>
-            </div>
-          </div>
-        )}
-      </table>
+          </tbody>
+        </table>
+      </div>
     </div>
   );
 }

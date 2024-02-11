@@ -285,7 +285,7 @@ function AssistantHome() {
               </Routes>
             </div>
 
-            <footer className="bg-myBG border sm:h-16 w-full absolute -bottom-2">
+            <footer className="bg-myBG border sm:h-16 w-full">
               <div
                 className={`flex flex-wrap sm:justify-between items-center max-w-[1240px] ${
                   open ? "mx-7" : "mx-auto"
