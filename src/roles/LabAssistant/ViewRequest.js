@@ -10,6 +10,7 @@ export function ViewRequest() {
   const username = user.username;
 
   const [allRequests, setallRequests] = useState([]);
+  const [forwardRequests, setForwardRequests] = useState([]); //for forward modal
   const [teachers, setTeachers] = useState([]);
 
   const [selectedTeachers, setSelectedTeachers] = useState([]);
@@ -19,8 +20,21 @@ export function ViewRequest() {
   const [showModal, setShowModal] = useState(false);
   const [showModalForward, setShowModalForward] = useState(false);
 
+  const [rejection, setRejection] = useState(false);
+
   //   const [req_id, setreq_id] = useState(0);
   const handleOk = async () => {
+    if (inputValue.trim() === "") {
+      // Handle the situation when inputValue is an empty string
+      if (rejection) {
+        setInputValue(
+          "Your request has been rejected. Please contact the lab supervisor for more details."
+        );
+      } else {
+        setInputValue("Your request has accepted. Collect it from the lab");
+      }
+    }
+
     const req_id = selectedRequest.req_id;
 
     const response = await fetch(
@@ -45,14 +59,21 @@ export function ViewRequest() {
     setSelectedRequest(null);
     setShowModal(false);
     setInputValue("");
+    setRejection(false);
   };
 
   const handleCancel = async () => {
     const req_id = selectedRequest.req_id;
-    console.log(inputValue);
+
     setInputValue("");
-    setInputValue("Your request has accepted");
-    // route
+
+    if (rejection) {
+      setInputValue(
+        "Your request has been rejected. Please contact the lab supervisor for more details."
+      );
+    } else {
+      setInputValue("Your request has accepted. Collect it from the lab");
+    }
 
     const response = await fetch(
       `/api/request/addcomment/${req_id}/${username}`,
@@ -71,14 +92,17 @@ export function ViewRequest() {
       );
       // Set the filtered list as the new value of allRequests
       setallRequests(updatedRequests);
+      setRejection(false);
     }
 
     setSelectedRequest(null);
     setShowModal(false);
     setInputValue("");
+    setRejection(false);
   };
 
   const handleAccept = async (req_id) => {
+    //accept request
     const response = await fetch(
       `/api/request/acceptrequest/${req_id}/${user.username}`,
       {
@@ -96,6 +120,7 @@ export function ViewRequest() {
   };
 
   const handleDelete = async (req_id) => {
+    //reject request
     const response = await fetch(
       `/api/request/declinerequest/${req_id}/${user.username}`,
       {
@@ -113,6 +138,7 @@ export function ViewRequest() {
   };
 
   const handleForward = async (req_id) => {
+    //forward request
     setSelectedTeachers([]);
 
     const response = await fetch(
@@ -128,14 +154,12 @@ export function ViewRequest() {
 
     if (response.ok) {
       setShowModalForward(true);
-      setallRequests(responseJSON);
+      setForwardRequests(responseJSON);
     }
   };
 
   const handleModalForward = async () => {
     setShowModalForward(false);
-    console.log("teachers");
-    console.log(selectedTeachers);
 
     const req_id = selectedRequest.req_id;
 
@@ -149,7 +173,7 @@ export function ViewRequest() {
     const responseJSON = await response.json();
 
     if (response.ok) {
-      setShowModalForward(false);
+      setallRequests(responseJSON);
     }
     setSelectedTeachers([]);
     setSelectedRequest(null);
@@ -163,6 +187,30 @@ export function ViewRequest() {
         prevTeachers.filter((id) => id !== teacherId)
       );
     }
+  };
+
+  const handleForwardCancel = async () => {
+    setShowModalForward(false);
+
+    const req_id = selectedRequest.req_id;
+    const username = user.username;
+
+    const response = await fetch(
+      `/api/request/cancelforwardrequest/${req_id}/${username}`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
+    const responseJSON = await response.json();
+
+    if (response.ok) {
+      setallRequests(responseJSON);
+    }
+    setSelectedTeachers([]);
+    setSelectedRequest(null);
   };
 
   useEffect(() => {
@@ -264,16 +312,25 @@ export function ViewRequest() {
                       setSelectedRequest(request);
                       handleAccept(request.req_id);
                     }}
-                    className={`group bg-green-600 flex items-center justify-center gap-1 font-medium py-1.5 px-2.5 rounded-full
-                    shadow-lg hover:shadow-xl  hover:scale-95 h-fit md:w-[105px]
-                    active:scale-105 active:shadow-xl md:bg-transparent  md:shadow-none md:hover:scale-105 md:hover:shadow-none md:active:scale-95`}
+                    className={`group bg-green-700 flex items-center gap-1 font-medium py-1.5 px-2.5 rounded-full
+                    shadow-lg  h-fit justify-center md:w-[105px] md:bg-transparent  md:shadow-none 
+                    ${
+                      request.status_name ===
+                        "Waiting for Supervisor approval" || request.permit > 1
+                        ? "disabled:opacity-50 disabled:cursor-not-allowed"
+                        : "hover:shadow-xl hover:scale-95  active:scale-105 active:shadow-xl md:hover:scale-105 md:hover:shadow-none md:active:scale-95"
+                    } `}
+                    disabled={
+                      request.status_name ===
+                        "Waiting for Supervisor approval" || request.permit > 1
+                    }
                   >
-                    <div className={`font-bold text-white md:text-green-600`}>
+                    <div className={`font-bold text-white md:text-green-700`}>
                       {React.createElement(MdCheckBox, { size: "16" })}
                     </div>
 
                     <h2
-                      className={`whitespace-pre duration-300 text-sm uppercase text-white md:text-green-600 md:block hidden`}
+                      className={`whitespace-pre duration-300 text-sm uppercase text-white md:text-green-700 md:block hidden`}
                     >
                       accept
                     </h2>
@@ -281,7 +338,7 @@ export function ViewRequest() {
                     <h2
                       className={`
                   absolute bg-myBG whitespace-pre text-sm uppercase
-                  text-green-600 rounded-xl drop-shadow-lg px-0 py-0 w-0 overflow-hidden
+                  text-green-700 rounded-xl drop-shadow-lg px-0 py-0 w-0 overflow-hidden
                   group-hover:px-2.5 group-hover:py-1.5 group-hover:-left-20 group-hover:duration-200 group-hover:w-fit
                   md:hidden
                   `}
@@ -294,11 +351,20 @@ export function ViewRequest() {
                     onClick={() => {
                       setSelectedRequest(request);
                       handleDelete(request.req_id);
+                      setRejection(true);
                     }}
-                    className={`group bg-pinky flex items-center gap-1 font-medium py-1.5 px-2.5 md:px-0 rounded-full
-                    shadow-lg hover:shadow-xl  hover:scale-95 h-fit justify-center md:w-[105px]
-                      
-                    active:scale-105 active:shadow-xl md:bg-transparent  md:shadow-none md:hover:scale-105 md:hover:shadow-none md:active:scale-95`}
+                    className={`group bg-pinky flex items-center gap-1 font-medium py-1.5 px-2.5 rounded-full
+                    shadow-lg  h-fit justify-center md:w-[105px] md:bg-transparent  md:shadow-none 
+                    ${
+                      request.status_name ===
+                        "Waiting for Supervisor approval" || request.permit > 1
+                        ? "disabled:opacity-50 disabled:cursor-not-allowed"
+                        : "hover:shadow-xl hover:scale-95  active:scale-105 active:shadow-xl md:hover:scale-105 md:hover:shadow-none md:active:scale-95"
+                    } `}
+                    disabled={
+                      request.status_name ===
+                        "Waiting for Supervisor approval" || request.permit > 1
+                    }
                   >
                     <div className={`font-bold text-white md:text-pinky`}>
                       {React.createElement(FaSquareXmark, { size: "15" })}
@@ -327,21 +393,25 @@ export function ViewRequest() {
                       setSelectedRequest(request);
                       handleForward(request.req_id);
                     }}
-                    className={`group bg-blue-500 flex items-center gap-1 font-medium py-1.5 px-2.5 rounded-full
+                    className={`group bg-blue-600 flex items-center gap-1 font-medium py-1.5 px-2.5 rounded-full
                     shadow-lg  h-fit justify-center md:w-[105px] md:bg-transparent  md:shadow-none 
                     ${
-                      request.permit <= 1
+                      request.permit <= 1 ||
+                      request.status_name === "Waiting for Supervisor approval"
                         ? "disabled:opacity-50 disabled:cursor-not-allowed"
                         : "hover:shadow-xl hover:scale-95  active:scale-105 active:shadow-xl md:hover:scale-105 md:hover:shadow-none md:active:scale-95"
                     } `}
-                    disabled={request.permit <= 1}
+                    disabled={
+                      request.permit <= 1 ||
+                      request.status_name === "Waiting for Supervisor approval"
+                    }
                   >
-                    <div className={`font-bold text-white md:text-blue-500`}>
+                    <div className={`font-bold text-white md:text-blue-600`}>
                       {React.createElement(FaSortAmountUp, { size: "15" })}
                     </div>
 
                     <h2
-                      className={`whitespace-pre duration-300 text-sm uppercase text-white md:text-blue-500 md:block hidden`}
+                      className={`whitespace-pre duration-300 text-sm uppercase text-white md:text-blue-600  md:block hidden`}
                     >
                       forward
                     </h2>
@@ -349,7 +419,7 @@ export function ViewRequest() {
                     <h2
                       className={`
                   absolute bg-myBG whitespace-pre text-sm uppercase
-                  text-blue-500 rounded-xl drop-shadow-lg px-0 py-0 w-0 overflow-hidden
+                  text-blue-600 rounded-xl drop-shadow-lg px-0 py-0 w-0 overflow-hidden
                   group-hover:px-2.5 group-hover:py-1.5 group-hover:-left-24 group-hover:duration-200 group-hover:w-fit
                   md:hidden
                   `}
@@ -389,12 +459,12 @@ export function ViewRequest() {
                   <button
                     onClick={() => handleCancel()}
                     // onClick={() => handleUpdate(selectedEquipment)}
-                    className="text-white bg-green-600 border-0 py-2 sm:px-8 px-2 focus:outline-none hover:bg-green-700 rounded text-lg ml-4"
+                    className="text-white bg-green-600 border-0 py-1 sm:px-4 px-2 focus:outline-none hover:bg-green-700 rounded-lg text-base"
                   >
                     Cancel
                   </button>
                   <button
-                    className="text-white bg-pinky border-0 py-2 sm:px-8 px-2 focus:outline-none hover:bg-primary rounded text-lg"
+                    className="text-white bg-pinky border-0 sm:px-4 px-2 py-1 focus:outline-none hover:bg-primary rounded-lg text-base"
                     onClick={() => handleOk()}
                   >
                     Send
@@ -416,6 +486,9 @@ export function ViewRequest() {
                   <h3 className="mb-4 font-semibold text-gray-900 dark:text-white text-start">
                     ~~~ Lab Supervisors ~~~
                   </h3>
+                  <h4 className="mb-4 font-semibold text-gray-900 dark:text-white text-start">
+                    ( At least select one supervisor )
+                  </h4>
 
                   <ul className="w-48 text-sm font-medium text-gray-900 bg-white border border-gray-200 rounded-lg dark:bg-gray-700 dark:border-gray-600 dark:text-white">
                     {teachers.map((teacher, index) => (
@@ -446,7 +519,10 @@ export function ViewRequest() {
                 </div>
                 <div className="bg-gray-50 px-4 py-4 sm:px-6 sm:flex justify-center gap-12 ">
                   <button
-                    onClick={() => setShowModalForward(false)}
+                    onClick={() => {
+                      setShowModalForward(false);
+                      handleForwardCancel();
+                    }}
                     // onClick={() => handleUpdate(selectedEquipment)}
                     className="text-white bg-green-600 border-0 py-1 sm:px-4 px-2 focus:outline-none hover:bg-green-700 rounded-lg text-base"
                   >
