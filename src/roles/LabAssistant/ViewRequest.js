@@ -231,8 +231,8 @@ export function ViewRequest() {
       }
     };
 
-    console.log("ekhane sob requests");
-    console.log(allRequests);
+    // console.log("ekhane sob requests");
+    // console.log(allRequests);
     const fetchTeacher = async () => {
       try {
         const response = await fetch(`/api/request/getsupervisors/${username}`);

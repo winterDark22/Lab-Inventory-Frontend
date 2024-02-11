@@ -12,13 +12,14 @@ function Card(props) {
   return (
     // from ALINA
 
-    <div className="xl:col-span-1 overflow-hidden md:col-span-2 bg-myCard border-2 border-gray-300  shadow-xl dark:bg-gray-800 dark:border-gray-700">
-      <img
-        className="transition hover:scale-105 duration-200 hover:shadow-lg"
-        src="https://cdn.sparkfun.com/assets/learn_tutorials/4/7/12615-02_Full_Size_Breadboard_Split_Power_Rails.jpg"
-        alt=""
-      />
-
+    <div className="xl:col-span-1 h-[450px] overflow-hidden md:col-span-2 bg-myCard border-2 border-gray-300  shadow-xl dark:bg-gray-800 dark:border-gray-700">
+      <div className="h-[250px] bg-white overflow-hidden flex items-center justify-center">
+        <img
+          className="transition hover:scale-105 duration-200 w-96  aspect-auto hover:shadow-lg "
+          src={props.equipment.image_link}
+          alt=""
+        />
+      </div>
       <div className="p-5">
         <h5 className="mb-2 text-2xl font-bold tracking-tight text-myText dark:text-white">
           {props.equipment.equipment_name}
