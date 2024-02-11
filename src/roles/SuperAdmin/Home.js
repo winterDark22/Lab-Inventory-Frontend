@@ -102,7 +102,7 @@ function AdminHome() {
             ${!open && "opacity-0 translate-x-28 overflow-hidden"}
           `}
       >
-        <Link to={""}>
+        <Link to={""} onClick={() => handleLinkClick("")}>
           <span className=" text-center block"> {role.toUpperCase()} </span>
         </Link>
       </div>
@@ -115,7 +115,7 @@ function AdminHome() {
             ${open && "opacity-0 translate-x-28 overflow-hidden"} 
           `}
       >
-        <Link to={"/"}>
+        <Link to={""} onClick={() => handleLinkClick("")}>
           <GoHomeFill size={20} />
           <h2
             className={`${open && "hidden"}
@@ -281,7 +281,7 @@ function AdminHome() {
               <Routes>
                 <Route path="" element={<ContentHomePage />} />
                 <Route
-                  path="CheckLabEquipments"
+                  path="checkLabEquipments"
                   element={<CheckLabEquipments />}
                 />
                 <Route

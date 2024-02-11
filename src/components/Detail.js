@@ -98,7 +98,7 @@ export function ProductDetail(props) {
     <div className="flex-col items-center justify-center w-2/3 ml-80">
       <div className="mx-auto bg-white p-4 rounded-md shadow-md">
         <img
-          src="https://cdn.sparkfun.com/assets/learn_tutorials/4/7/12615-02_Full_Size_Breadboard_Split_Power_Rails.jpg" // Replace with the actual image URL
+          src={equipment && equipment.image_link} // Replace with the actual image URL
           alt="Product"
           className="w-full h-40 object-cover mb-4 rounded-md"
         />
