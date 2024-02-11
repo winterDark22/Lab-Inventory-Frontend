@@ -11,19 +11,29 @@ import {
   MdListAlt,
   MdOutlineLogout,
   MdNotifications,
+  MdPeopleAlt,
+  MdOutlineReceiptLong,
 } from "react-icons/md";
 import { GoHomeFill } from "react-icons/go";
-import { FaSortAmountUp, FaUserAlt, FaEnvelope } from "react-icons/fa";
+import {
+  FaSortAmountUp,
+  FaUserAlt,
+  FaEnvelope,
+  FaCalculator,
+} from "react-icons/fa";
+import { FaBuildingCircleArrowRight } from "react-icons/fa6";
 
 //import pages
 import { useAuthContext } from "../../context/AuthContext";
-import { ViewRequest } from "./ViewRequest";
-import { AddRequest } from "./AddRequest";
-import { ViewMyLab } from "./ViewMyLab";
+import { CheckLabEquipments } from "./CheckLabEquipments";
+import { LabEquipmentRequests } from "./LabEquipmentRequests";
+import { ClearanceRequests } from "./ClearanceRequests";
+import { ShowUsers } from "./ShowUsers";
 import { Notification } from "./Notification";
 import { useLogout } from "../../hook/useLogout";
+import { ContentHomePage } from "./ContentHomePage";
 
-function AssistantHome() {
+function AdminHome() {
   //user fetching
   const { user } = useAuthContext();
   const { username, role } = user;
@@ -31,14 +41,26 @@ function AssistantHome() {
 
   const menus = [
     {
-      name: "View request",
-      link: "viewRequest",
-      icon: MdListAlt,
+      name: "Check on lab equipments",
+      link: "CheckLabEquipments",
+      icon: MdOutlineTableView,
+    },
+
+    {
+      name: "Lab equipment requests",
+      link: "labEquipmentRequests",
+      icon: MdOutlineReceiptLong,
     },
     {
-      name: "Add request",
-      link: "addRequest",
-      icon: MdOutlineDashboardCustomize,
+      name: "Show users",
+      link: "ShowUsers",
+      icon: MdPeopleAlt,
+    },
+
+    {
+      name: "Clearance requests",
+      link: "clearanceRequests",
+      icon: FaBuildingCircleArrowRight,
     },
     { name: "Notification", link: "notification", icon: MdNotifications },
     { name: "Log Out", link: "logout", icon: MdOutlineLogout },
@@ -257,9 +279,20 @@ function AssistantHome() {
 
             <div>
               <Routes>
-                <Route path="" element={<ViewMyLab />} />
-                <Route path="viewRequest" element={<ViewRequest />} />
-                <Route path="addRequest" element={<AddRequest />} />
+                <Route path="" element={<ContentHomePage />} />
+                <Route
+                  path="CheckLabEquipments"
+                  element={<CheckLabEquipments />}
+                />
+                <Route
+                  path="labEquipmentRequests"
+                  element={<LabEquipmentRequests />}
+                />
+                <Route path="ShowUsers" element={<ShowUsers />} />
+                <Route
+                  path="clearanceRequests"
+                  element={<ClearanceRequests />}
+                />
                 <Route path="notification" element={<Notification />} />
               </Routes>
             </div>
@@ -319,4 +352,4 @@ function AssistantHome() {
   );
 }
 
-export default AssistantHome;
+export default AdminHome;

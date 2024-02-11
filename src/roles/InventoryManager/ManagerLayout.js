@@ -5,8 +5,8 @@ import { Outlet, Routes, Route } from "react-router-dom";
 import { Home as ManagerDashboard } from "./Home";
 import { CheckInventory } from "./CheckInventory";
 import { ViewRequests } from "./ViewRequests";
-import { UpdateStorage } from "./UpdateStorage";
 import { AddNewItem } from "./AddNewItem";
+import { UpdateStorage } from "./UpdateStorage";
 
 export function Layout() {
   return (

@@ -30,6 +30,8 @@ function Login() {
       navigate("/teacher");
     } else if (responseJSON.role === "Lab Assistant") {
       navigate("/labassistant");
+    } else if (responseJSON.role === "Super Admin") {
+      navigate("/admin");
     }
 
     usernameRef.current.value = "";

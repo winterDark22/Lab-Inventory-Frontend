@@ -7,6 +7,7 @@ export function ProductDetail(props) {
   const { id } = useParams();
   const { user } = useAuthContext();
   const username = user.username;
+  const role = user.role;
 
   const [equipment, setequipment] = useState(null);
   const [locations, setLocations] = useState([]);
@@ -16,9 +17,15 @@ export function ProductDetail(props) {
       const equipment = await EquipmentFinder.get(`/${id}`);
       setequipment(equipment.data);
 
-      const locations = await EquipmentFinder.get(`/${id}/locations`);
-      setLocations(locations.data);
-      console.log(locations.data);
+      if (role === "Student") {
+        const locations = await EquipmentFinder.get(`/${id}/locations`);
+        setLocations(locations.data);
+        console.log(locations.data);
+      } else if (role === "Lab Assistant") {
+        const locations = await EquipmentFinder.get(`/${id}/inventories`);
+        setLocations(locations.data);
+        console.log(locations.data);
+      }
     };
 
     fetchData();
@@ -48,23 +55,40 @@ export function ProductDetail(props) {
   };
 
   const handleButtonClick = async () => {
-    console.log(quantity, selectedOption.location_id);
-    const response = await fetch(
-      `/api/request/createrequest/${username}/${id}`,
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          quantity,
-          location: selectedOption.location_id,
-        }),
-      }
-    );
-    const responseJSON = await response.json(); //now responeJSON is {username, role, token} a json obj
+    //console.log(quantity, selectedOption.location_id);
 
-    console.log(responseJSON);
+    if (role === "Student") {
+      const response = await fetch(
+        `/api/request/createrequest/${username}/${id}`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            quantity,
+            location: selectedOption.location_id,
+          }),
+        }
+      );
+
+      const responseJSON = await response.json(); //now responeJSON is {username, role, token} a json obj
+    } else if (role === "Lab Assistant") {
+      const response = await fetch(
+        `/api/request/sendrequesttoinventorymanager/${username}/${id}`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            quantity,
+            location: selectedOption.location_id,
+          }),
+        }
+      );
+      const responseJSON = await response.json(); //now responeJSON is {username, role, token} a json obj
+    }
 
     setSelectedOption("");
     setQuantity(0);
@@ -115,9 +139,6 @@ export function ProductDetail(props) {
               </li>
               <li>
                 <strong>Stock: {equipment && equipment.available}</strong>{" "}
-              </li>
-              <li>
-                <strong>Borrowed: {equipment && equipment.borrowed}</strong>{" "}
               </li>
             </ul>
 
