@@ -12,16 +12,13 @@ module.exports = {
         primary: "#991B1B",
         pinky: "#A43535",
         //pinky: "#f71b40",
-<<<<<<< HEAD
+
         myBG: "#f9f9f9",
-        
+
         myText: "#5e5e5e",
-=======
+
         //myBG: "#f9f9f9",
 
-        myBG: "#f4eaea",
-        myText: "#343638",
->>>>>>> 638411fe08f6e9e0b603c7fc5d304dea9984bc08
         myCard: "#f0e0e0",
       },
       spacing: {
