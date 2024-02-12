@@ -1,12 +1,17 @@
 import { useNavigate } from "react-router-dom";
 
 import { Link } from "react-router-dom";
+
+import { useAuthContext } from "../context/AuthContext";
 function Card(props) {
+  const { user } = useAuthContext();
+  const { role } = user.role;
+
   const navigate = useNavigate();
 
   const handleClick = async (e, id) => {
     e.stopPropagation();
-    //navigate(`/student/details/${id}`);
+    navigate(`/student/details/${id}`);
   };
 
   return (

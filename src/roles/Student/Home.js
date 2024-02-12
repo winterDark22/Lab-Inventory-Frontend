@@ -44,7 +44,7 @@ function AssistantHome() {
       link: "addRequest",
       icon: MdOutlineDashboardCustomize,
     },
-    { name: "View Request", link: "viewRequest", icon: MdListAlt },
+    { name: "View sent request", link: "viewRequest", icon: MdListAlt },
     { name: "View Dues", link: "viewDue", icon: MdOutlineTableView },
     {
       name: "Moneteray Dues",

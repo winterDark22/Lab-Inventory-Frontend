@@ -263,7 +263,7 @@ function AssistantHome() {
 
             <div>
               <Routes>
-                <Route path="" element={<ContentHomePage />} />
+                <Route path="" element={<CheckInventory />} />
                 <Route path="checkInventory" element={<CheckInventory />} />
                 <Route path="viewRequests" element={<ViewRequests />} />
                 <Route path="addNewItem" element={<AddNewItem />} />

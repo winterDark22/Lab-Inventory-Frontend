@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 
-import Card from "../../components/Card";
+import Card from "./Card";
 
 export function AddRequest(params) {
   const [allEquipments, setAllEquipments] = useState([]);
@@ -12,6 +12,8 @@ export function AddRequest(params) {
 
         const json = await response.json();
 
+        console.log("alasys kn");
+        console.log(json);
         if (response.ok) {
           setAllEquipments(json);
         }
@@ -41,7 +43,7 @@ export function AddRequest(params) {
       <div className="grid xl:grid-cols-3 md:grid-cols-4 justify-between w-full p-5 border text-left md:gap-4 lg:gap-5 xl:gap-7">
         {allEquipments &&
           allEquipments.map((equipment) => (
-            <Card key={allEquipments.equipment_id} equipment={equipment} />
+            <Card key={equipment.equipment_id} equipment={equipment} />
           ))}
       </div>
     </div>

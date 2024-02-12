@@ -1,27 +1,30 @@
-import { useStorageContext } from "../../context/StorageContext";
-import { ACTION } from "../../context/StorageContext";
 import { Link } from "react-router-dom";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useAuthContext } from "../../context/AuthContext";
 
 export function CheckInventory() {
   const { user } = useAuthContext();
 
-  const { storage, dispatch } = useStorageContext();
+  const [inputValues, setInputValues] = useState({});
+
+  const [storage, setStorage] = useState([]);
+
   const [searchTerm, setSearchTerm] = useState("");
-  const [showModal, setShowModal] = useState(false);
+
   const [selectedEquipment, setSelectedEquipment] = useState(null);
-  const [quantity, setQuantity] = useState("");
 
   const filteredStorage = storage.filter((equipment) =>
     equipment.equipment_name.toLowerCase().startsWith(searchTerm.toLowerCase())
   );
 
-  const handleUpdate = async (equipment) => {
+  const handleUpdate = async (equipment, index) => {
     const equip = {
       name: equipment.equipment_name,
-      quantity: quantity,
+      quantity: inputValues[index],
     };
+
+    console.log("banano equio");
+    console.log(equip);
 
     const response = await fetch(
       `/api/storage/updatestorage/${user.username}`,
@@ -35,13 +38,43 @@ export function CheckInventory() {
     );
 
     const responseJSON = await response.json();
+    console.log("reakjf");
+    console.log(responseJSON);
+
+    setInputValues(
+      Object.keys(inputValues).reduce((obj, key) => {
+        obj[key] = 0;
+        return obj;
+      }, {})
+    );
 
     if (response.ok) {
-      dispatch({ type: ACTION.UPDATE_STORAGE, payload: responseJSON });
-      setQuantity("");
-      setShowModal(false);
+      setStorage((prevStorage) =>
+        prevStorage.map((item) =>
+          item.equipment_id === responseJSON.equipment_id ? responseJSON : item
+        )
+      );
     }
   };
+
+  useEffect(() => {
+    const fetchRequests = async () => {
+      try {
+        const response = await fetch(`/api/equipments/${user.username}`);
+        const json = await response.json();
+
+        console.log("nehiii");
+        console.log(json);
+
+        if (response.ok) {
+          setStorage(json);
+        }
+      } catch (error) {
+        console.log(error.message);
+      }
+    };
+    fetchRequests();
+  }, []);
 
   return (
     <div className="border border-pinky my-2 min-h-screen rounded-2xl ">
@@ -71,8 +104,9 @@ export function CheckInventory() {
               <th scope="col" className="px-6 py-3 text-center">
                 Availability
               </th>
+
               <th scope="col" className="px-6 py-3 text-center">
-                Borrowed
+                Quantity Added
               </th>
               <th scope="col" className="px-6 py-3 text-center">
                 Action
@@ -81,7 +115,7 @@ export function CheckInventory() {
           </thead>
           <tbody>
             {storage &&
-              storage.map((equipment) => (
+              storage.map((equipment, index) => (
                 <tr className="bg-myCard border-b-8 border-myBG text-myText">
                   {/* <td className="flex items-center justify-center rounded-lg overflow-hidden p-2">
                     <img
@@ -96,13 +130,28 @@ export function CheckInventory() {
                   <td className="px-6 py-4 font-semibold  text-center text-base">
                     {equipment.available}
                   </td>
-                  <td className="px-6 py-4 font-semibold  text-center text-base">
-                    {equipment.borrowed}
+
+                  <td className="px-4 py-4 font-semibold text-center text-base">
+                    <input
+                      type="number"
+                      value={inputValues[index] || ""}
+                      onChange={(e) =>
+                        setInputValues({
+                          ...inputValues,
+                          [index]: e.target.value,
+                        })
+                      }
+                      className=""
+                    />
                   </td>
+
                   <td className="px-6 py-4 text-center">
                     <button
                       href="#"
-                      className="font-medium text-green-500 hover:scale-105 transition duration-100 text-base"
+                      className="font-medium text-green-700 hover:scale-105 transition duration-100 text-base"
+                      onClick={() => {
+                        handleUpdate(equipment, index);
+                      }}
                     >
                       Update
                     </button>

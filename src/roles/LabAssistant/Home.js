@@ -21,6 +21,8 @@ import { ViewRequest } from "./ViewRequest";
 import { AddRequest } from "./AddRequest";
 import { ViewMyLab } from "./ViewMyLab";
 import { Notification } from "./Notification";
+import { ProductDetails } from "./Details";
+import { ViewSentRequest } from "./ViewSentRequest";
 import { useLogout } from "../../hook/useLogout";
 
 function AssistantHome() {
@@ -39,6 +41,11 @@ function AssistantHome() {
       name: "Add request",
       link: "addRequest",
       icon: MdOutlineDashboardCustomize,
+    },
+    {
+      name: "View sent request",
+      link: "viewSentRequest",
+      icon: MdListAlt,
     },
     { name: "Notification", link: "notification", icon: MdNotifications },
     { name: "Log Out", link: "logout", icon: MdOutlineLogout },
@@ -260,7 +267,9 @@ function AssistantHome() {
                 <Route path="" element={<ViewMyLab />} />
                 <Route path="viewRequest" element={<ViewRequest />} />
                 <Route path="addRequest" element={<AddRequest />} />
+                <Route path="viewSentRequest" element={<ViewSentRequest />} />
                 <Route path="notification" element={<Notification />} />
+                <Route path="details/:id" element={<ProductDetails />} />
               </Routes>
             </div>
 
