@@ -2,6 +2,9 @@
 import formatDistanceToNow from "date-fns/formatDistanceToNow";
 import { format } from "date-fns";
 
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
+
 import React, { useState, useEffect } from "react";
 import { useAuthContext } from "../../context/AuthContext";
 
@@ -30,6 +33,34 @@ export function ViewRequest() {
 
   const [rejection, setRejection] = useState(false);
 
+  const [searchDate, setSearchDate] = useState("");
+  const [isDatePickerOpen, setDatePickerOpen] = useState(null);
+
+  const [buttonState, setButtonState] = useState({});
+
+  const setDate = (event) => {
+    setSearchDate(event.target.value);
+  };
+
+  const setDueDate = async (req_id) => {
+    console.log("this is id of the request");
+    console.log(req_id);
+    console.log("date dekho sobai");
+    console.log(searchDate);
+
+    const response = await fetch(`/api/due/createdue/${username}/${req_id}`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ dueDate: searchDate }),
+    });
+
+    const responseJSON = await response.json();
+
+    console.log(responseJSON);
+    setSearchDate("");
+  };
   //   const [req_id, setreq_id] = useState(0);
   const handleOk = async () => {
     if (inputValue.trim() === "") {
@@ -394,13 +425,22 @@ export function ViewRequest() {
                   className={`group bg-green-700 flex items-center gap-1 font-medium py-1.5 px-2.5 rounded-full
                     shadow-lg  h-fit justify-center md:w-[105px] md:bg-transparent  md:shadow-none 
                     ${
+                      request.status_name === "Accepted" ||
+                      request.status_name === "Rejected" ||
                       request.status_name ===
-                        "Waiting for Supervisor approval" || request.permit > 1
+                        "Waiting for Supervisor approval" ||
+                      request.status_name ===
+                        "Waiting for Head of Department approval" ||
+                      request.permit > 1
                         ? "disabled:opacity-50 disabled:cursor-not-allowed"
                         : "hover:shadow-xl hover:scale-95  active:scale-105 active:shadow-xl md:hover:scale-105 md:hover:shadow-none md:active:scale-95"
                     } `}
                   disabled={
+                    request.status_name === "Accepted" ||
+                    request.status_name === "Rejected" ||
                     request.status_name === "Waiting for Supervisor approval" ||
+                    request.status_name ===
+                      "Waiting for Head of Department approval" ||
                     request.permit > 1
                   }
                 >
@@ -435,13 +475,22 @@ export function ViewRequest() {
                   className={`group bg-pinky flex items-center gap-1 font-medium py-1.5 px-2.5 rounded-full
                     shadow-lg  h-fit justify-center md:w-[105px] md:bg-transparent  md:shadow-none 
                     ${
+                      request.status_name === "Accepted" ||
+                      request.status_name === "Rejected" ||
                       request.status_name ===
-                        "Waiting for Supervisor approval" || request.permit > 1
+                        "Waiting for Supervisor approval" ||
+                      request.status_name ===
+                        "Waiting for Head of Department approval" ||
+                      request.permit > 1
                         ? "disabled:opacity-50 disabled:cursor-not-allowed"
                         : "hover:shadow-xl hover:scale-95  active:scale-105 active:shadow-xl md:hover:scale-105 md:hover:shadow-none md:active:scale-95"
                     } `}
                   disabled={
+                    request.status_name === "Accepted" ||
+                    request.status_name === "Rejected" ||
                     request.status_name === "Waiting for Supervisor approval" ||
+                    request.status_name ===
+                      "Waiting for Head of Department approval" ||
                     request.permit > 1
                   }
                 >
@@ -476,13 +525,22 @@ export function ViewRequest() {
                     shadow-lg  h-fit justify-center md:w-[105px] md:bg-transparent  md:shadow-none 
                     ${
                       request.permit <= 1 ||
-                      request.status_name === "Waiting for Supervisor approval"
+                      request.status_name === "Accepted" ||
+                      request.status_name === "Rejected" ||
+                      request.status_name ===
+                        "Waiting for Supervisor approval" ||
+                      request.status_name ===
+                        "Waiting for Head of Department approval"
                         ? "disabled:opacity-50 disabled:cursor-not-allowed"
                         : "hover:shadow-xl hover:scale-95  active:scale-105 active:shadow-xl md:hover:scale-105 md:hover:shadow-none md:active:scale-95"
                     } `}
                   disabled={
                     request.permit <= 1 ||
-                    request.status_name === "Waiting for Supervisor approval"
+                    request.status_name === "Accepted" ||
+                    request.status_name === "Rejected" ||
+                    request.status_name === "Waiting for Supervisor approval" ||
+                    request.status_name ===
+                      "Waiting for Head of Department approval"
                   }
                 >
                   <div className={`font-bold text-white md:text-blue-600`}>
@@ -506,6 +564,76 @@ export function ViewRequest() {
                     forward
                   </h2>
                 </button>
+
+                <button
+                  onClick={() => {
+                    if (
+                      !buttonState[request.req_id] ||
+                      buttonState[request.req_id] === "Select Date"
+                    ) {
+                      setDatePickerOpen(request.req_id);
+                      setButtonState((prevState) => ({
+                        ...prevState,
+                        [request.req_id]: "Add Due",
+                      }));
+
+                      // action
+                    } else if (buttonState[request.req_id] === "Add Due") {
+                      setDatePickerOpen(null);
+                      setButtonState((prevState) => ({
+                        ...prevState,
+                        [request.req_id]: "Select Date",
+                      }));
+                      setDueDate(request.req_id);
+                    }
+                    // handle your action here
+                  }}
+                  className={`group bg-black flex items-center gap-1 font-medium py-1.5 px-2.5 rounded-full
+                  shadow-lg  h-fit justify-center md:w-[105px] md:bg-transparent  md:shadow-none 
+                  ${
+                    request.status_name !== "Accepted"
+                      ? "hidden"
+                      : "hover:shadow-xl hover:scale-95  active:scale-105 active:shadow-xl md:hover:scale-105 md:hover:shadow-none md:active:scale-95"
+                  } `}
+                >
+                  <div className={`font-bold text-white md:text-black`}>
+                    {React.createElement(FaSortAmountUp, { size: "15" })}
+                  </div>
+
+                  <h2
+                    className={`whitespace-pre duration-300 text-sm uppercase text-white md:text-black  md:block hidden`}
+                  >
+                    {buttonState[request.req_id] || "Select Date"}
+                  </h2>
+
+                  <h2
+                    className={`
+                            absolute bg-myBG whitespace-pre text-sm uppercase
+                            text-black rounded-xl drop-shadow-lg px-0 py-0 w-0 overflow-hidden
+                            group-hover:px-2.5 group-hover:py-1.5 group-hover:-left-24 group-hover:duration-200 group-hover:w-fit
+                            md:hidden
+                            `}
+                  >
+                    {buttonState[request.req_id] || "Select Date"}
+                  </h2>
+                </button>
+
+                {isDatePickerOpen === request.req_id &&
+                  request.status_name === "Accepted" && (
+                    <input
+                      type="date"
+                      value={searchDate}
+                      onChange={(event) => {
+                        setDate(event);
+
+                        setButtonState((prevState) => ({
+                          ...prevState,
+                          [request.req_id]: "Add Due",
+                        }));
+                      }}
+                      className="ml-4 border-2 border-gray-300 bg-white h-10 px-5 pr-16 rounded-lg text-sm focus:outline-none"
+                    />
+                  )}
               </div>
             </div>
           ))}
@@ -603,12 +731,12 @@ export function ViewRequest() {
                       handleForwardCancel();
                     }}
                     // onClick={() => handleUpdate(selectedEquipment)}
-                    className="text-white bg-green-600 border-0 py-1 sm:px-4 px-2 focus:outline-none hover:bg-green-700 rounded-lg text-base"
+                    className="text-white bg-pinky border-0 sm:px-4 px-2 py-1 focus:outline-none hover:bg-primary rounded-lg text-base"
                   >
                     Cancel
                   </button>
                   <button
-                    className="text-white bg-pinky border-0 sm:px-4 px-2 py-1 focus:outline-none hover:bg-primary rounded-lg text-base"
+                    className="text-white bg-green-600 border-0 py-1 sm:px-4 px-2 focus:outline-none hover:bg-green-700 rounded-lg text-base"
                     onClick={handleModalForward}
                   >
                     Forward

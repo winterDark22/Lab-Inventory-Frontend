@@ -364,21 +364,27 @@ export function ViewRequest() {
                   setSelectedRequest(request);
                   handleForward(request.req_id);
                 }}
-                className={`group bg-blue-500 flex items-center gap-1 font-medium py-1.5 px-2.5 rounded-full
+                className={`group bg-blue-600 flex items-center gap-1 font-medium py-1.5 px-2.5 rounded-full
                     shadow-lg  h-fit justify-center md:w-[105px] md:bg-transparent  md:shadow-none 
                     ${
-                      request.permit === 2
+                      request.permit === 2 ||
+                      request.status_name ===
+                        "Waiting for Head of Department approval"
                         ? "disabled:opacity-50 disabled:cursor-not-allowed"
                         : "hover:shadow-xl hover:scale-95  active:scale-105 active:shadow-xl md:hover:scale-105 md:hover:shadow-none md:active:scale-95"
                     } `}
-                disabled={request.permit === 2}
+                disabled={
+                  request.permit === 2 ||
+                  request.status_name ===
+                    "Waiting for Head of Department approval"
+                }
               >
-                <div className={`font-bold text-white md:text-blue-500`}>
+                <div className={`font-bold text-white md:text-blue-600`}>
                   {React.createElement(FaSortAmountUp, { size: "15" })}
                 </div>
 
                 <h2
-                  className={`whitespace-pre duration-300 text-sm uppercase text-white md:text-blue-500 md:block hidden`}
+                  className={`whitespace-pre duration-300 text-sm uppercase text-white md:text-blue-600 md:block hidden`}
                 >
                   forward
                 </h2>

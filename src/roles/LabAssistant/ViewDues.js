@@ -1,47 +1,39 @@
 import { useEffect, useState } from "react";
 import { useAuthContext } from "../../context/AuthContext";
+import formatDistanceToNow from "date-fns/formatDistanceToNow";
 
-export function ViewRequest(params) {
+export function ViewDues(params) {
   const { user } = useAuthContext();
 
-  const [allRequests, setAllRequests] = useState([]);
-
-  let hashMap = new Map();
-  hashMap.set("waiting for supervisor approval", "blue-600");
-  hashMap.set("waiting for lab assistant approval", "blue-600");
-  hashMap.set("waiting for head of department approval", "blue-600");
-  hashMap.set("waiting for inventory manager approval", "blue-600");
-  hashMap.set("accepted", "green-600");
-  hashMap.set("rejected", "pinky");
+  const [allDues, setAllDues] = useState([]);
 
   useEffect(() => {
-    const fetchEquipments = async () => {
+    const fetchDues = async () => {
       try {
         const response = await fetch(
-          `/api/request/showsentrequests/${user.username}`
+          `/api/due/viewdueslocation/${user.username}`
         );
 
         const json = await response.json();
-
-        console.log("studeh log");
+        console.log("here are teh dues of the lab assistant");
         console.log(json);
 
         if (response.ok) {
-          setAllRequests(json);
+          setAllDues(json);
         }
       } catch (error) {
         console.log(error.message);
       }
     };
 
-    fetchEquipments();
+    fetchDues();
   }, []);
 
   return (
-    <div className=" my-2 min-h-screen rounded-2xl ">
+    <div className="border border-pinky my-2 min-h-screen rounded-2xl ">
       <div className="flex justify-between">
         <h2 className="text-left text-myText mt-7 ml-5 text-2xl font-bold">
-          Hardware
+          Your DUES
         </h2>
         <div className="flex ">
           <input
@@ -56,44 +48,48 @@ export function ViewRequest(params) {
         <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
           <thead className="text-xs text-white uppercase bg-primary">
             <tr className="border-b-[6px] border-myBG">
+              {/* <th scope="col" className="px-6 py-3">
+                <span className="sr-only">Image</span>
+              </th> */}
               <th scope="col" className="px-6 py-3 text-center">
                 Equipment
               </th>
               <th scope="col" className="px-6 py-3 text-center">
-                Lab
+                Student
               </th>
-              <th scope="col" className="pl-6 py-3 text-center">
+
+              <th scope="col" className="px-6 py-3 text-center">
                 Quantity
               </th>
-              <th scope="col" className=" py-3 text-center">
-                Status
+              <th scope="col" className="px-6 py-3 text-center">
+                Due Date
               </th>
             </tr>
           </thead>
           <tbody>
-            {allRequests &&
-              allRequests.map((request) => (
+            {allDues &&
+              allDues.map((due, index) => (
                 <tr className="bg-myCard border-b-8 border-myBG text-myText">
+                  {/* <td className="flex items-center justify-center rounded-lg overflow-hidden p-2">
+                    <img
+                      src="https://www.robotechbd.com/wp-content/uploads/2021/07/frosted-leds-red-green-blue-yellow-white-800x800-1.jpg"
+                      className="w-24 md:w-28 rounded-sm sm:rounded-lg hover:scale-105 transition duration-100"
+                      alt="LED"
+                    />
+                  </td> */}
                   <td className="px-6 py-4 font-semibold text-center text-base">
-                    {" "}
-                    {request.equipment_name}{" "}
+                    {due.equipment_name}
                   </td>
                   <td className="px-6 py-4 font-semibold  text-center text-base">
-                    {request.location_name}
+                    {due.username}
                   </td>
-                  <td className="pl-6 py-4 font-semibold  text-center text-base">
-                    {request.quantity}
+                  <td className="px-6 py-4 font-semibold  text-center text-base">
+                    {due.quantity}
                   </td>
-                  <td
-                    className={` py-4 text-center flex items-center justify-center`}
-                  >
-                    <div
-                      className={` bg-${hashMap.get(
-                        request.status_name.toLowerCase()
-                      )} text-white w-fit px-7 py-1 rounded-lg`}
-                    >
-                      {request.status_name}
-                    </div>
+                  <td className="px-6 py-4 font-semibold  text-center text-base">
+                    {formatDistanceToNow(new Date(due.due_date), {
+                      addSuffix: true,
+                    })}
                   </td>
                 </tr>
               ))}

@@ -24,6 +24,7 @@ import { Notification } from "./Notification";
 import { ProductDetails } from "./Details";
 import { ViewSentRequest } from "./ViewSentRequest";
 import { useLogout } from "../../hook/useLogout";
+import { ViewDues } from "./ViewDues";
 
 function AssistantHome() {
   //user fetching
@@ -42,6 +43,7 @@ function AssistantHome() {
       link: "addRequest",
       icon: MdOutlineDashboardCustomize,
     },
+    { name: "View Dues", link: "viewDues", icon: FaSortAmountUp },
     {
       name: "View sent request",
       link: "viewSentRequest",
@@ -268,6 +270,7 @@ function AssistantHome() {
                 <Route path="viewRequest" element={<ViewRequest />} />
                 <Route path="addRequest" element={<AddRequest />} />
                 <Route path="viewSentRequest" element={<ViewSentRequest />} />
+                <Route path="viewDues" element={<ViewDues />} />
                 <Route path="notification" element={<Notification />} />
                 <Route path="details/:id" element={<ProductDetails />} />
               </Routes>
