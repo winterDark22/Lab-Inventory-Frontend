@@ -14,6 +14,17 @@ export function ViewRequests(params) {
   const [allRequests, setallRequests] = useState([]); // all requests fetch from db
   const [filter, setFilter] = useState("Pending"); // filter requests by status
 
+  const [searchTerm, setSearchTerm] = useState("");
+  const [searchType, setSearchType] = useState("Equipment name");
+  const [searchDate, setSearchDate] = useState("");
+
+  const handleDateSearch = (event) => {
+    setSearchDate(event.target.value);
+  };
+  const handleSearch = (event) => {
+    setSearchTerm(event.target.value);
+  };
+
   const handleAccept = async (req_id) => {
     //accept request
     const response = await fetch(
@@ -66,6 +77,8 @@ export function ViewRequests(params) {
         const response = await fetch(`/api/request/showrequests/${username}`);
         const json = await response.json();
 
+        console.log("ekhane ljflkjd");
+        console.log(json);
         if (response.ok) {
           setallRequests(json);
         }
@@ -77,13 +90,44 @@ export function ViewRequests(params) {
     fetchRequests();
   }, []);
 
-  const filteredRequests = allRequests.filter((request) => {
+  const filteredRequestsByStatus = allRequests.filter((request) => {
     if (filter === "All") return true;
     if (filter === "Pending")
       return (
         request.status_name !== "Accepted" && request.status_name !== "Rejected"
       );
     return request.status_name === filter;
+  });
+
+  const filteredRequests = filteredRequestsByStatus.filter((request) => {
+    let matchesSearchTerm = true;
+    switch (searchType) {
+      case "Equipment name":
+        matchesSearchTerm = request.equipment_name
+          ? request.equipment_name
+              .toLowerCase()
+              .startsWith(searchTerm.toLowerCase())
+          : false;
+        break;
+      case "Lab assistant name":
+        matchesSearchTerm = request.username
+          ? request.username.toLowerCase().startsWith(searchTerm.toLowerCase())
+          : false;
+        break;
+      default:
+      // Add more cases as needed
+    }
+
+    let matchesSearchDate = true;
+    if (searchDate) {
+      const recordDate = new Date(request.req_time);
+      const searchDateObj = new Date(searchDate);
+      matchesSearchDate =
+        recordDate.getFullYear() === searchDateObj.getFullYear() &&
+        recordDate.getMonth() === searchDateObj.getMonth() &&
+        recordDate.getDate() === searchDateObj.getDate();
+    }
+    return matchesSearchTerm && matchesSearchDate;
   });
 
   return (
@@ -169,6 +213,30 @@ export function ViewRequests(params) {
               </div>
             </button>
           </div> */}
+          <input
+            type="text"
+            placeholder="Search..."
+            value={searchTerm}
+            onChange={handleSearch}
+            className="ml-4 border-2 border-gray-300 bg-white h-10 px-5 pr-16 rounded-lg text-sm focus:outline-none"
+          />
+
+          <select
+            value={searchType}
+            onChange={(e) => setSearchType(e.target.value)}
+            className="border-2 border-gray-300 bg-white h-10 px-5 pr-16 rounded-lg text-sm focus:outline-none"
+          >
+            <option value="Equipment name">Equipment name</option>
+            <option value="Lab assistant name">Lab assistant name</option>
+            {/* Add more options as needed */}
+          </select>
+
+          <input
+            type="date"
+            value={searchDate}
+            onChange={handleDateSearch}
+            className="ml-4 border-2 border-gray-300 bg-white h-10 px-5 pr-16 rounded-lg text-sm focus:outline-none"
+          />
         </div>
       </div>
 

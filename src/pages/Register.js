@@ -54,6 +54,8 @@ export function Register() {
         navigate("/labassistant");
       } else if (responseJSON.role === "Teacher") {
         navigate("/teacher");
+      } else if (responseJSON.role === "Super Admin") {
+        navigate("/admin");
       }
 
       setEmail("");

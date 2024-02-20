@@ -2,37 +2,52 @@ import { useEffect, useState } from "react";
 
 export function ShowUsers(params) {
   const [allUsers, setallUsers] = useState([]);
+  //const [selectedLab, setSelectedLab] = useState(null);
 
   const [labs, setLabs] = useState([]);
-  const [selectedLab, setSelectedLab] = useState("");
-  const [isOpen, setIsOpen] = useState(false);
+  const [searchType, setSearchType] = useState("");
+  const [selectedLabs, setSelectedLabs] = useState({});
 
-  const toggleDropdown = () => {
-    setIsOpen(!isOpen);
-  };
+  //const [selectedLab, setSelectedLab] = useState("");
+  //const [isOpen, setIsOpen] = useState(false);
 
-  const handleOptionClick = (option) => {
-    setSelectedLab(option);
-    setIsOpen(false);
-  };
+  // const toggleDropdown = () => {
+  //   setIsOpen(!isOpen);
+  // };
+
+  // const handleOptionClick = (option) => {
+  //   setSelectedLab(option);
+  //   setIsOpen(false);
+  // };
 
   const handleAssign = async (user_id) => {
-    console.log("knoooooooooo");
-    console.log(selectedLab);
+    // const location = labs.find((lab) => lab.location_name === searchType);
+    const location = labs.find(
+      (lab) => lab.location_name === selectedLabs[user_id]
+    );
+
+    console.log("sommaaksdfjlksd");
+    console.log(location);
     const response = await fetch(`/api/adminjobs/assignlocation/${user_id}`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        location_id: selectedLab.location_id,
+        location_id: location.location_id,
       }),
     });
 
     if (response.ok) {
-      alert("Lab assigned successfully");
+      //alert("Lab assigned successfully");
+      setallUsers(allUsers.filter((user) => user.user_id !== user_id));
+      setSelectedLabs((prevLabs) => {
+        const newLabs = { ...prevLabs };
+        delete newLabs[user_id];
+        return newLabs;
+      });
     }
-    setSelectedLab("");
+    //setSelectedLab("");
   };
 
   useEffect(() => {
@@ -42,17 +57,37 @@ export function ShowUsers(params) {
         const json = await response.json();
 
         if (response.ok) {
+          console.log("usesrsssss");
+          console.log(json);
           setallUsers(json);
         }
       } catch (error) {
         console.log(error.message);
       }
     };
+
+    const fetchLabs = async () => {
+      try {
+        const response = await fetch("/api/adminjobs/getlabs");
+        const json = await response.json();
+
+        if (response.ok) {
+          setLabs(json);
+        }
+
+        console.log("khklfdh");
+        console.log(json);
+      } catch (error) {
+        console.log(error.message);
+      }
+    };
+
     fetchRequests();
+    fetchLabs();
   }, []);
 
-  console.log("ekhane all user");
-  console.log(allUsers);
+  // console.log("ekhane all user");
+  // console.log(allUsers);
 
   return (
     <div className=" my-2 min-h-screen rounded-2xl ">
@@ -164,6 +199,9 @@ export function ShowUsers(params) {
               <th scope="col" className="px-6 py-3 text-center">
                 Action
               </th>
+              <th scope="col" className="px-6 py-3 text-center">
+                id
+              </th>
             </tr>
           </thead>
           <tbody>
@@ -186,15 +224,38 @@ export function ShowUsers(params) {
                   </td>
 
                   <td className="px-6 py-4 text-center">
-                    <button
+                    <select
+                      value={selectedLabs[user.user_id] || ""}
+                      onChange={(e) =>
+                        setSelectedLabs({
+                          ...selectedLabs,
+                          [user.user_id]: e.target.value,
+                        })
+                      }
+                      className="border-2 border-gray-300 bg-white h-10 px-5 pr-16 rounded-lg text-sm focus:outline-none"
+                    >
+                      <option value="" disabled>
+                        Select Lab
+                      </option>
+                      {/* Add more options as needed */}
+                      {labs.map((option) => (
+                        <option
+                          key={option.location_id}
+                          value={option.location_name}
+                        >
+                          {option.location_name}
+                        </option>
+                      ))}
+                    </select>
+                    {/* <button
                       onClick={toggleDropdown}
                       type="button"
                       className="w-full bg-white border border-gray-300 p-2 rounded-md flex items-center justify-between focus:outline-none focus:ring focus:border-blue-300"
                     >
                       Select Lab
-                    </button>
+                    </button> */}
 
-                    {isOpen && (
+                    {/* {isOpen && (
                       <div className="absolute top-full left-0 mt-2 w-full bg-white border border-gray-300 rounded-md shadow-md">
                         <ul>
                           {labs.map((option) => (
@@ -208,18 +269,22 @@ export function ShowUsers(params) {
                           ))}
                         </ul>
                       </div>
-                    )}
+                    )} */}
                   </td>
                   <td className="px-6 py-4 text-center">
                     <button
                       href="#"
                       onClick={() => {
+                        setSelectedLabs(selectedLabs[user.user_id]);
                         handleAssign(user.user_id);
                       }}
                       className="font-medium text-green-500 hover:scale-105 transition duration-100 text-base"
                     >
                       Update
                     </button>
+                  </td>
+                  <td className="px-6 py-4 font-semibold text-center text-base">
+                    {user.user_id}
                   </td>
                 </tr>
               ))}

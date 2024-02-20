@@ -1,34 +1,45 @@
 import { useState, useEffect } from "react";
+
 export function ContentHomePage(params) {
   const [pendingUsers, setPendingUsers] = useState([]);
   const [labs, setLabs] = useState([]);
-  const [selectedLab, setSelectedLab] = useState("");
+  const [selectedLab, setSelectedLab] = useState(null);
   const [isOpen, setIsOpen] = useState(false);
 
-  const toggleDropdown = () => {
-    setIsOpen(!isOpen);
-  };
+  const [searchType, setSearchType] = useState("");
 
-  const handleOptionClick = (option) => {
-    setSelectedLab(option);
-    setIsOpen(false);
-  };
+  // const toggleDropdown = () => {
+  //   setIsOpen(!isOpen);
+  // };
+
+  // const handleOptionClick = (option) => {
+  //   setSelectedLab(option);
+  //   setIsOpen(false);
+  // };
 
   const handleAssign = async (user_id) => {
-    console.log("knoooooooooo");
-    console.log(selectedLab);
+    console.log("searh      type");
+    console.log(searchType);
+
+    const location = labs.find((lab) => lab.location_name === searchType);
+
+    console.log("location");
+    console.log(location);
+
     const response = await fetch(`/api/adminjobs/assignlocation/${user_id}`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        location_id: selectedLab.location_id,
+        location_id: location.location_id,
       }),
     });
 
     if (response.ok) {
-      alert("Lab assigned successfully");
+      //alert("Lab assigned successfully");
+
+      setPendingUsers(pendingUsers.filter((user) => user.user_id !== user_id));
     }
     setSelectedLab("");
   };
@@ -39,6 +50,7 @@ export function ContentHomePage(params) {
         const response = await fetch("/api/adminjobs/seependingregistrations");
         const json = await response.json();
 
+        console.log("nehiii");
         console.log(json);
         if (response.ok) {
           setPendingUsers(json);
@@ -106,15 +118,35 @@ export function ContentHomePage(params) {
                   </td>
 
                   <td className="px-6 py-4 text-center">
-                    <button
+                    <select
+                      value={searchType}
+                      onChange={(e) => setSearchType(e.target.value)}
+                      placeholder="Select Lab"
+                      className="border-2 border-gray-300 bg-white h-10 px-5 pr-16 rounded-lg text-sm focus:outline-none"
+                    >
+                      <option value="" disabled>
+                        Select Lab
+                      </option>
+                      {/* Add more options as needed */}
+                      {labs.map((option) => (
+                        <option
+                          key={option.location_id}
+                          value={option.location_name}
+                        >
+                          {option.location_name}
+                        </option>
+                      ))}
+                    </select>
+
+                    {/* <button
                       onClick={toggleDropdown}
                       type="button"
                       className="w-full bg-white border border-gray-300 p-2 rounded-md flex items-center justify-between focus:outline-none focus:ring focus:border-blue-300"
                     >
                       Select Lab
-                    </button>
+                    </button> */}
 
-                    {isOpen && (
+                    {/* {isOpen && (
                       <div className="absolute top-full left-0 mt-2 w-full bg-white border border-gray-300 rounded-md shadow-md">
                         <ul>
                           {labs.map((option) => (
@@ -128,12 +160,13 @@ export function ContentHomePage(params) {
                           ))}
                         </ul>
                       </div>
-                    )}
+                    )} */}
                   </td>
                   <td className="px-6 py-4 text-center">
                     <button
                       href="#"
                       onClick={() => {
+                        setSelectedLab(searchType);
                         handleAssign(user.user_id);
                       }}
                       className="font-medium text-green-500 hover:scale-105 transition duration-100 text-base"

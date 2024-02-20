@@ -34,7 +34,7 @@ export function ContentHomePage() {
     <div className=" my-2 min-h-screen">
       <div className="flex justify-between">
         <h2 className="text-left text-myText mt-7 ml-5 text-2xl font-bold">
-          Popular on website
+          On Our Website
         </h2>
         <div className="flex ">
           <input

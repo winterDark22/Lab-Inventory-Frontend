@@ -1,25 +1,33 @@
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useAuthContext } from "../../context/AuthContext";
 
-export function ViewMyLab(params) {
+export function ViewSentRequest(params) {
   const { user } = useAuthContext();
 
-  const [labEquipments, setLabEquipments] = useState([]);
+  const [allRequests, setAllRequests] = useState([]);
 
-  const [searchTerm, setSearchTerm] = useState("");
+  let hashMap = new Map();
+  hashMap.set("waiting for supervisor approval", "blue-500");
+  hashMap.set("waiting for lab assistant approval", "blue-500");
+  hashMap.set("waiting for head of department approval", "blue-500");
+  hashMap.set("waiting for inventory manager approval", "blue-500");
+  hashMap.set("accepted", "green-600");
+  hashMap.set("rejected", "pinky");
 
   useEffect(() => {
     const fetchEquipments = async () => {
       try {
         const response = await fetch(
-          `/api/equipments/labassistant/${user.username}`
+          `/api/request/showsentrequests/${user.username}`
         );
 
         const json = await response.json();
+
+        console.log("studeh log");
         console.log(json);
 
         if (response.ok) {
-          setLabEquipments(json);
+          setAllRequests(json);
         }
       } catch (error) {
         console.log(error.message);
@@ -29,16 +37,10 @@ export function ViewMyLab(params) {
     fetchEquipments();
   }, []);
 
-  const filteredStorage = labEquipments.filter((equipment) =>
-    equipment.equipment_name.toLowerCase().startsWith(searchTerm.toLowerCase())
-  );
-
   return (
-    <div className="border border-pinky my-2 min-h-screen rounded-2xl ">
+    <div className=" my-2 min-h-screen rounded-2xl ">
       <div className="flex justify-between">
-        <h2 className="text-left text-myText mt-7 ml-5 text-2xl font-bold">
-          Your Lab Equipments
-        </h2>
+        <h2 className="text-left text-myText mt-7 ml-5 text-2xl font-bold"></h2>
         <div className="flex ">
           <input
             type="text"
@@ -52,40 +54,44 @@ export function ViewMyLab(params) {
         <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
           <thead className="text-xs text-white uppercase bg-primary">
             <tr className="border-b-[6px] border-myBG">
-              {/* <th scope="col" className="px-6 py-3">
-                <span className="sr-only">Image</span>
-              </th> */}
               <th scope="col" className="px-6 py-3 text-center">
                 Equipment
               </th>
               <th scope="col" className="px-6 py-3 text-center">
-                Availability
+                Lab
               </th>
-
-              <th scope="col" className="px-6 py-3 text-center">
-                Borrowed
+              <th scope="col" className="pl-6 py-3 text-center">
+                Quantity
+              </th>
+              <th scope="col" className=" py-3 text-center">
+                Status
               </th>
             </tr>
           </thead>
           <tbody>
-            {labEquipments &&
-              labEquipments.map((equipment, index) => (
+            {allRequests &&
+              allRequests.map((request) => (
                 <tr className="bg-myCard border-b-8 border-myBG text-myText">
-                  {/* <td className="flex items-center justify-center rounded-lg overflow-hidden p-2">
-                    <img
-                      src="https://www.robotechbd.com/wp-content/uploads/2021/07/frosted-leds-red-green-blue-yellow-white-800x800-1.jpg"
-                      className="w-24 md:w-28 rounded-sm sm:rounded-lg hover:scale-105 transition duration-100"
-                      alt="LED"
-                    />
-                  </td> */}
                   <td className="px-6 py-4 font-semibold text-center text-base">
-                    {equipment.equipment_name}
+                    {" "}
+                    {request.equipment_name}{" "}
                   </td>
                   <td className="px-6 py-4 font-semibold  text-center text-base">
-                    {equipment.available}
+                    {request.location_name}
                   </td>
-                  <td className="px-6 py-4 font-semibold  text-center text-base">
-                    {equipment.borrowed}
+                  <td className="pl-6 py-4 font-semibold  text-center text-base">
+                    {request.quantity}
+                  </td>
+                  <td
+                    className={` py-4 text-center flex items-center justify-center`}
+                  >
+                    <div
+                      className={` bg-${hashMap.get(
+                        request.status_name.toLowerCase()
+                      )} text-white w-fit px-7 py-1 rounded-lg`}
+                    >
+                      {request.status_name}
+                    </div>
                   </td>
                 </tr>
               ))}

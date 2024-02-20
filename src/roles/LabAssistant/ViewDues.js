@@ -1,43 +1,39 @@
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useAuthContext } from "../../context/AuthContext";
+import formatDistanceToNow from "date-fns/formatDistanceToNow";
 
-export function ViewMyLab(params) {
+export function ViewDues(params) {
   const { user } = useAuthContext();
 
-  const [labEquipments, setLabEquipments] = useState([]);
-
-  const [searchTerm, setSearchTerm] = useState("");
+  const [allDues, setAllDues] = useState([]);
 
   useEffect(() => {
-    const fetchEquipments = async () => {
+    const fetchDues = async () => {
       try {
         const response = await fetch(
-          `/api/equipments/labassistant/${user.username}`
+          `/api/due/viewdueslocation/${user.username}`
         );
 
         const json = await response.json();
+        console.log("here are teh dues of the lab assistant");
         console.log(json);
 
         if (response.ok) {
-          setLabEquipments(json);
+          setAllDues(json);
         }
       } catch (error) {
         console.log(error.message);
       }
     };
 
-    fetchEquipments();
+    fetchDues();
   }, []);
-
-  const filteredStorage = labEquipments.filter((equipment) =>
-    equipment.equipment_name.toLowerCase().startsWith(searchTerm.toLowerCase())
-  );
 
   return (
     <div className="border border-pinky my-2 min-h-screen rounded-2xl ">
       <div className="flex justify-between">
         <h2 className="text-left text-myText mt-7 ml-5 text-2xl font-bold">
-          Your Lab Equipments
+          Your DUES
         </h2>
         <div className="flex ">
           <input
@@ -59,17 +55,20 @@ export function ViewMyLab(params) {
                 Equipment
               </th>
               <th scope="col" className="px-6 py-3 text-center">
-                Availability
+                Student
               </th>
 
               <th scope="col" className="px-6 py-3 text-center">
-                Borrowed
+                Quantity
+              </th>
+              <th scope="col" className="px-6 py-3 text-center">
+                Due Date
               </th>
             </tr>
           </thead>
           <tbody>
-            {labEquipments &&
-              labEquipments.map((equipment, index) => (
+            {allDues &&
+              allDues.map((due, index) => (
                 <tr className="bg-myCard border-b-8 border-myBG text-myText">
                   {/* <td className="flex items-center justify-center rounded-lg overflow-hidden p-2">
                     <img
@@ -79,13 +78,18 @@ export function ViewMyLab(params) {
                     />
                   </td> */}
                   <td className="px-6 py-4 font-semibold text-center text-base">
-                    {equipment.equipment_name}
+                    {due.equipment_name}
                   </td>
                   <td className="px-6 py-4 font-semibold  text-center text-base">
-                    {equipment.available}
+                    {due.username}
                   </td>
                   <td className="px-6 py-4 font-semibold  text-center text-base">
-                    {equipment.borrowed}
+                    {due.quantity}
+                  </td>
+                  <td className="px-6 py-4 font-semibold  text-center text-base">
+                    {formatDistanceToNow(new Date(due.due_date), {
+                      addSuffix: true,
+                    })}
                   </td>
                 </tr>
               ))}
