@@ -11,6 +11,7 @@ import AssistantHome from "./roles/LabAssistant/Home";
 import TeacherHome from "./roles/Teacher/Home";
 import ManagerHome from "./roles/InventoryManager/Home";
 import AdminHome from "./roles/SuperAdmin/Home";
+import HeadHome from "./roles/DeptHead/Home";
 
 function App() {
   const { user } = useAuthContext();
@@ -45,6 +46,11 @@ function App() {
             <Route
               path="/admin/*"
               element={user ? <AdminHome /> : <Navigate to="/" />}
+            />
+            ;
+            <Route
+              path="/head/*"
+              element={user ? <HeadHome /> : <Navigate to="/" />}
             />
             ;
           </Routes>

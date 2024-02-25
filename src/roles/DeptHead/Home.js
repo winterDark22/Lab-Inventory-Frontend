@@ -1,73 +1,42 @@
 import React from "react";
 import { Routes, Route } from "react-router-dom";
-
-import { HiMenuAlt3, HiMenu } from "react-icons/hi";
 import { Link } from "react-router-dom";
+import { useState, useEffect } from "react";
+
+//import icons
+import { HiMenuAlt3, HiMenu } from "react-icons/hi";
 import {
   MdOutlineDashboardCustomize,
   MdOutlineTableView,
-  MdArrowBackIos,
-  MdMenu,
   MdListAlt,
-  MdOutlineReceiptLong,
-  MdNotifications,
   MdOutlineLogout,
+  MdNotifications,
 } from "react-icons/md";
-import { FaEnvelope, FaUserAlt } from "react-icons/fa";
-import { CiViewList, CiLogout } from "react-icons/ci";
-import { IoReceiptOutline, IoNotificationsOutline } from "react-icons/io5";
-import { FaBuildingCircleArrowRight } from "react-icons/fa6";
-import { useState, useEffect } from "react";
 import { GoHomeFill } from "react-icons/go";
+import { FaSortAmountUp, FaUserAlt, FaEnvelope } from "react-icons/fa";
 
 //import pages
 import { useAuthContext } from "../../context/AuthContext";
-import { useNotificationContext } from "../../context/NotificationContext";
 import { ViewRequest } from "./ViewRequest";
-import { AddRequest } from "./AddRequest";
-import { ViewDue } from "./ViewDue";
-import { ViewMonetaryDue } from "./ViewMonetaryDue";
-import { GetClearance } from "./GetClearance";
 import { Notification } from "./Notification";
 import { useLogout } from "../../hook/useLogout";
-import { ContentHomePage } from "./ContentHomePage";
-import { ProductDetail } from "../../components/Detail";
 
-function AssistantHome() {
+function TeacherHome() {
   //user fetching
   const { user } = useAuthContext();
   const { username, role } = user;
-  const { newNotificationCnt, setNewNotificationCnt } =
-    useNotificationContext();
   const { logout } = useLogout();
 
   const menus = [
     {
-      name: "Add Request",
-      link: "addRequest",
-      icon: MdOutlineDashboardCustomize,
+      name: "View request",
+      link: "viewRequest",
+      icon: MdListAlt,
     },
-    { name: "View sent request", link: "viewRequest", icon: MdListAlt },
-    { name: "View Dues", link: "viewDue", icon: MdOutlineTableView },
-    {
-      name: "Moneteray Dues",
-      link: "viewMonetaryDue",
-      icon: MdOutlineReceiptLong,
-    },
-    {
-      name: "Get Clearance",
-      link: "getClearance",
-      icon: FaBuildingCircleArrowRight,
-    },
-    {
-      name: "Notifications",
-      link: "notification",
-      icon: MdNotifications,
-      newNotificationCnt: newNotificationCnt,
-    },
+
+    { name: "Notification", link: "notification", icon: MdNotifications },
     { name: "Log Out", link: "logout", icon: MdOutlineLogout },
   ];
-
   const [open, setOpen] = useState(true);
 
   const [activeLink, setActiveLink] = useState("");
@@ -105,7 +74,7 @@ function AssistantHome() {
             ${!open && "opacity-0 translate-x-28 overflow-hidden"}
           `}
       >
-        <Link to={""} onClick={() => handleLinkClick("")}>
+        <Link to={""}>
           <span className=" text-center block"> {role.toUpperCase()} </span>
         </Link>
       </div>
@@ -118,7 +87,7 @@ function AssistantHome() {
             ${open && "opacity-0 translate-x-28 overflow-hidden"} 
           `}
       >
-        <Link to={"/"} onClick={() => handleLinkClick("")}>
+        <Link to={"/"}>
           <GoHomeFill size={20} />
           <h2
             className={`${open && "hidden"}
@@ -138,7 +107,7 @@ function AssistantHome() {
       <div className={`flex ${open ? "gap-1" : "gap-4"} bg-myBG`}>
         <aside className={"z-20"}>
           <div
-            className={`sticky top-0 min-h-screen transition duration-100 bg-primary ${
+            className={`sticky top-0 min-h-screen bg-primary ${
               open
                 ? "w-[320px] rounded-[35px] border-[16px] border-myBG"
                 : "w-16 rounded-r-3xl"
@@ -209,10 +178,6 @@ function AssistantHome() {
                   ${!open && "opacity-0 translate-x-28 overflow-hidden"} `}
                   >
                     {menu?.name}
-                    {menu.name === "Notifications" &&
-                      newNotificationCnt > 0 && (
-                        <span>({newNotificationCnt})</span>
-                      )}
                   </h2>
 
                   <h2
@@ -286,18 +251,13 @@ function AssistantHome() {
 
             <div>
               <Routes>
-                <Route path="" element={<ContentHomePage />} />
-                <Route path="addRequest" element={<AddRequest />} />
+                <Route path="" element={<ViewRequest />} />
                 <Route path="viewRequest" element={<ViewRequest />} />
-                <Route path="viewDue" element={<ViewDue />} />
-                <Route path="viewMonetaryDue" element={<ViewMonetaryDue />} />
-                <Route path="getClearance" element={<GetClearance />} />
                 <Route path="notification" element={<Notification />} />
-                <Route path="details/:id" element={<ProductDetail />} />
               </Routes>
             </div>
 
-            <footer className="bg-myBG border sm:h-16 w-full">
+            <footer className="bg-myBG border sm:h-16 w-full absolute">
               <div
                 className={`flex flex-wrap sm:justify-between items-center max-w-[1240px] ${
                   open ? "mx-7" : "mx-auto"
@@ -307,7 +267,7 @@ function AssistantHome() {
                   {" "}
                   © {new Date().getFullYear()}
                   <a
-                    href="https://www.buet.ac.bd/web/#/"
+                    href="https://ww  w.buet.ac.bd/web/#/"
                     className="font-bold hover:text-primary text-black"
                     target="_blank"
                   >
@@ -352,4 +312,4 @@ function AssistantHome() {
   );
 }
 
-export default AssistantHome;
+export default TeacherHome;

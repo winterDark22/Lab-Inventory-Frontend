@@ -2,6 +2,7 @@ import { useAuthContext } from "../context/AuthContext";
 import { AUTH_ACTION } from "../context/AuthContext";
 import { useEquipmentsContext } from "../context/EquipmentsContext";
 import { useStorageContext } from "../context/StorageContext";
+import { useNotificationContext } from "../context/NotificationContext";
 
 import { ACTION as STORAGE_ACTION } from "../context/StorageContext";
 import { ACTION as EQUIPMENT_ACTION } from "../context/EquipmentsContext";
@@ -13,11 +14,13 @@ export const useLogout = () => {
   const { dispatch } = useAuthContext();
   const { dispatch: dispatchEquipment } = useEquipmentsContext();
   const { dispatch: dispatchStorage } = useStorageContext();
+  const { setNewNotificationCnt } = useNotificationContext();
 
   const logout = () => {
     dispatch({ type: AUTH_ACTION.LOGOUT });
     dispatch({ type: EQUIPMENT_ACTION.SET_EQUIPMENT, payload: null });
     dispatch({ type: STORAGE_ACTION.SET_STORAGE, payload: null });
+    setNewNotificationCnt(0);
   };
 
   return { logout };

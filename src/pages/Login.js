@@ -32,6 +32,8 @@ function Login() {
       navigate("/labassistant");
     } else if (responseJSON.role === "Super Admin") {
       navigate("/admin");
+    } else if (responseJSON.role === "Department Head") {
+      navigate("/head");
     }
 
     usernameRef.current.value = "";

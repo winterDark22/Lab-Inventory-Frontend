@@ -5,10 +5,14 @@ import { ACTION } from "../../context/EquipmentsContext";
 import { useAuthContext } from "../../context/AuthContext";
 import Card from "../../components/Card";
 
+import { useNotificationContext } from "../../context/NotificationContext";
+
 export function ContentHomePage() {
   const [searchTerm, setSearchTerm] = useState("");
   const { equipments, dispatch } = useEquipmentsContext();
   const { user } = useAuthContext();
+  const { newNotificationCnt, setNewNotificationCnt } =
+    useNotificationContext();
 
   useEffect(() => {
     const fetchEquipments = async () => {
@@ -27,7 +31,28 @@ export function ContentHomePage() {
       }
     };
 
+    const fetchUnseenNotification = async () => {
+      try {
+        const response = await fetch(
+          `/api/notification/getunseennotificationcount/${user.username}`
+        );
+
+        const json = await response.json();
+
+        console.log(json);
+
+        if (response.ok) {
+          // console.log("noti count ");
+          // console.log(json);
+          setNewNotificationCnt(json.unseen_notification_count);
+        }
+      } catch (error) {
+        console.log(error.message);
+      }
+    };
+
     fetchEquipments();
+    fetchUnseenNotification();
   }, [user.username, dispatch]);
 
   return (

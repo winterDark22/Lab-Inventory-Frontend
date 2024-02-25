@@ -1,11 +1,19 @@
 import { useEffect, useState } from "react";
 import { useAuthContext } from "../../context/AuthContext";
 import formatDistanceToNow from "date-fns/formatDistanceToNow";
+import { format } from "date-fns";
+import { differenceInDays } from "date-fns";
 
 export function ViewDues(params) {
   const { user } = useAuthContext();
 
+  const [seacrchByUser, setSeacrchByUser] = useState("");
+
   const [allDues, setAllDues] = useState([]);
+
+  const handleSearch = (event) => {
+    setSeacrchByUser(event.target.value);
+  };
 
   useEffect(() => {
     const fetchDues = async () => {
@@ -29,6 +37,10 @@ export function ViewDues(params) {
     fetchDues();
   }, []);
 
+  const filteredDues = allDues.filter((due) => {
+    return due.username.toLowerCase().startsWith(seacrchByUser.toLowerCase());
+  });
+
   return (
     <div className="border border-pinky my-2 min-h-screen rounded-2xl ">
       <div className="flex justify-between">
@@ -38,7 +50,8 @@ export function ViewDues(params) {
         <div className="flex ">
           <input
             type="text"
-            placeholder="Type here"
+            placeholder="Search by student"
+            onChange={handleSearch}
             className="border border-pinky bg-myBG rounded-lg text-myText text-sm placeholder:text-bg-gray-500 w-full p-2.5 m-5 focus:ring-1 focus:ring-pinky focus:outline-none focus:shadow-inner"
           />
         </div>
@@ -67,32 +80,65 @@ export function ViewDues(params) {
             </tr>
           </thead>
           <tbody>
-            {allDues &&
-              allDues.map((due, index) => (
-                <tr className="bg-myCard border-b-8 border-myBG text-myText">
-                  {/* <td className="flex items-center justify-center rounded-lg overflow-hidden p-2">
+            {filteredDues &&
+              [...filteredDues]
+                .sort((a, b) => {
+                  const dueDateA = new Date(a.due_date);
+                  const dueDateB = new Date(b.due_date);
+                  const today = new Date();
+                  const daysUntilDueA = differenceInDays(dueDateA, today);
+                  const daysUntilDueB = differenceInDays(dueDateB, today);
+                  return daysUntilDueA - daysUntilDueB;
+                })
+                .map((due, index) => {
+                  const dueDate = new Date(due.due_date);
+                  const today = new Date();
+                  const daysUntilDue = differenceInDays(dueDate, today);
+
+                  let colorClass;
+
+                  if (daysUntilDue < 0) {
+                    colorClass = "pinky"; // overdue
+                  } else if (daysUntilDue <= 1) {
+                    colorClass = "blue-600"; // due in 3 days or less
+                  } else {
+                    colorClass = "green-600"; // due in more than 7 days
+                  }
+
+                  return (
+                    <tr className="bg-myCard border-b-8 border-myBG text-myText">
+                      {/* <td className="flex items-center justify-center rounded-lg overflow-hidden p-2">
                     <img
                       src="https://www.robotechbd.com/wp-content/uploads/2021/07/frosted-leds-red-green-blue-yellow-white-800x800-1.jpg"
                       className="w-24 md:w-28 rounded-sm sm:rounded-lg hover:scale-105 transition duration-100"
                       alt="LED"
                     />
                   </td> */}
-                  <td className="px-6 py-4 font-semibold text-center text-base">
-                    {due.equipment_name}
-                  </td>
-                  <td className="px-6 py-4 font-semibold  text-center text-base">
-                    {due.username}
-                  </td>
-                  <td className="px-6 py-4 font-semibold  text-center text-base">
-                    {due.quantity}
-                  </td>
-                  <td className="px-6 py-4 font-semibold  text-center text-base">
-                    {formatDistanceToNow(new Date(due.due_date), {
-                      addSuffix: true,
-                    })}
-                  </td>
-                </tr>
-              ))}
+                      <td className="px-6 py-4 font-semibold text-center text-base">
+                        {due.equipment_name}
+                        <p className="text-sm text-gray-500">
+                          Issued:&nbsp;
+                          {format(new Date(due.issue_date), "dd/MM/yyyy")}
+                        </p>
+                      </td>
+                      <td className="px-6 py-4 font-semibold  text-center text-base">
+                        {due.username}
+                      </td>
+                      <td className="px-6 py-4 font-semibold  text-center text-base">
+                        {due.quantity}
+                      </td>
+                      <td
+                        className={` py-4 text-center flex items-center justify-center`}
+                      >
+                        <div
+                          className={` bg-${colorClass} text-white w-fit px-7 py-1 rounded-lg`}
+                        >
+                          {formatDistanceToNow(dueDate, { addSuffix: true })}
+                        </div>
+                      </td>
+                    </tr>
+                  );
+                })}
           </tbody>
         </table>
       </div>

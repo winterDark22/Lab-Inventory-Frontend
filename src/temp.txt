@@ -17,12 +17,26 @@ lab assistant der product bonton kora hoinai except for breadboard
 search kora lagbe
 
 
+
+-----------------------------my comments now----------------
+viewRequest page from student size e mone hocche enough information nai. 
+comment ta thaka lagto na?
+
+
 ***************VIEW REQUEST ASSISTANT ER HANDLE Accept
 
 COMMAND:
 
 
-sudo -u postgres psql
+  sudo -u postgres psql
+
+psql e dhuke
+drop database labinventory;
+create database labinvebtory;
+psql -U postgres -h localhost -d labinventory -f mydatabase_dump.sql
+
+
+
 
 psql -U postgres -h localhost -d labinventory -f mydatabase_dump.sql
 
