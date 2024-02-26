@@ -2,9 +2,20 @@ import { useEffect, useState } from "react";
 import { useAuthContext } from "../../context/AuthContext";
 import formatDistanceToNow from "date-fns/formatDistanceToNow";
 import { differenceInDays } from "date-fns";
+import { format } from "date-fns";
+import { useLocation } from "react-router-dom";
+
+import { useNotificationContext } from "../../context/NotificationContext";
 
 export function ViewDue(params) {
+  const location = useLocation();
+  const notification = location.state ? location.state.notification : null;
+
+  //console.log("noti aya gaya");
+  //notification && console.log(notification);
+
   const { user } = useAuthContext();
+  const { setNewNotificationCnt } = useNotificationContext();
 
   const [allDues, setAllDues] = useState([]);
 
@@ -27,7 +38,25 @@ export function ViewDue(params) {
       }
     };
 
+    const fetchUnseenNotification = async () => {
+      try {
+        const response = await fetch(
+          `/api/notification/getunseennotificationcount/${user.username}`
+        );
+        const json = await response.json();
+
+        console.log(json);
+
+        if (response.ok) {
+          setNewNotificationCnt(json.unseen_notification_count);
+        }
+      } catch (error) {
+        console.log(error.message);
+      }
+    };
+
     fetchDues();
+    fetchUnseenNotification();
   }, []);
 
   return (
@@ -69,44 +98,66 @@ export function ViewDue(params) {
           </thead>
           <tbody>
             {allDues &&
-              allDues.map((due, index) => {
-                const dueDate = new Date(due.due_date);
-                const today = new Date();
-                const daysUntilDue = differenceInDays(dueDate, today);
+              [...allDues]
+                .sort((a, b) => {
+                  const dueDateA = new Date(a.due_date);
+                  const dueDateB = new Date(b.due_date);
+                  const today = new Date();
+                  const daysUntilDueA = differenceInDays(dueDateA, today);
+                  const daysUntilDueB = differenceInDays(dueDateB, today);
+                  return daysUntilDueA - daysUntilDueB;
+                })
+                .map((due, index) => {
+                  const dueDate = new Date(due.due_date);
+                  const today = new Date();
+                  const daysUntilDue = differenceInDays(dueDate, today);
 
-                let colorClass;
+                  let colorClass;
 
-                if (daysUntilDue < 0) {
-                  colorClass = "pinky"; // overdue
-                } else if (daysUntilDue <= 3) {
-                  colorClass = "green-600"; // due in 3 days or less
-                } else {
-                  colorClass = "blue-600"; // due in more than 3 days
-                }
+                  if (daysUntilDue < 0) {
+                    colorClass = "pinky"; // overdue
+                  } else if (daysUntilDue <= 1) {
+                    colorClass = "green-600"; // due in 3 days or less
+                  } else if (daysUntilDue <= 7) {
+                    colorClass = "blue-600"; // due in 7 days or less
+                  } else {
+                    colorClass = "green-600"; // due in more than 7 days
+                  }
 
-                return (
-                  <tr className="bg-myCard border-b-8 border-myBG text-myText">
-                    <td className="px-6 py-4 font-semibold text-center text-base">
-                      {due.equipment_name}
-                    </td>
-                    <td className="px-6 py-4 font-semibold  text-center text-base">
-                      {due.location_name}
-                    </td>
-                    <td className="px-6 py-4 font-semibold  text-center text-base">
-                      {due.quantity}
-                    </td>
-                    <td
-                      className={` py-4 text-center flex items-center justify-center`}
+                  const isHighlighted =
+                    notification && due.due_id === notification.type_id;
+
+                  return (
+                    <tr
+                      className={`bg-myCard border-b-8 border-myBG text-myText ${
+                        isHighlighted ? "bg-red-800" : ""
+                      }`}
                     >
-                      <div
-                        className={` bg-${colorClass} text-white w-fit px-7 py-1 rounded-lg`}
+                      <td className="px-6 py-4 font-semibold text-center text-base">
+                        {due.equipment_name}
+                        <p className="text-sm text-gray-500">
+                          Issued:&nbsp;
+                          {format(new Date(due.issue_date), "dd/MM/yyyy")}
+                        </p>
+                      </td>
+                      <td className="px-6 py-4 font-semibold  text-center text-base">
+                        {due.location_name}
+                      </td>
+                      <td className="px-6 py-4 font-semibold  text-center text-base">
+                        {due.quantity}
+                      </td>
+                      <td
+                        className={` py-4 text-center flex items-center justify-center`}
                       >
-                        {formatDistanceToNow(dueDate, { addSuffix: true })}
-                      </div>
-                    </td>
-                  </tr>
-                );
-              })}
+                        <div
+                          className={` bg-${colorClass} text-white w-fit px-7 py-1 rounded-lg`}
+                        >
+                          {formatDistanceToNow(dueDate, { addSuffix: true })}
+                        </div>
+                      </td>
+                    </tr>
+                  );
+                })}
           </tbody>
         </table>
       </div>

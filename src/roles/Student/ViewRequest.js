@@ -1,8 +1,14 @@
 import { useEffect, useState } from "react";
 import { useAuthContext } from "../../context/AuthContext";
+import { useNotificationContext } from "../../context/NotificationContext";
+import { useLocation } from "react-router-dom";
 
 export function ViewRequest(params) {
+  const location = useLocation();
+  const notification = location.state ? location.state.notification : null;
+
   const { user } = useAuthContext();
+  const { setNewNotificationCnt } = useNotificationContext();
 
   const [allRequests, setAllRequests] = useState([]);
 
@@ -34,7 +40,25 @@ export function ViewRequest(params) {
       }
     };
 
+    const fetchUnseenNotification = async () => {
+      try {
+        const response = await fetch(
+          `/api/notification/getunseennotificationcount/${user.username}`
+        );
+        const json = await response.json();
+
+        console.log(json);
+
+        if (response.ok) {
+          setNewNotificationCnt(json.unseen_notification_count);
+        }
+      } catch (error) {
+        console.log(error.message);
+      }
+    };
+
     fetchEquipments();
+    fetchUnseenNotification();
   }, []);
 
   return (
@@ -72,31 +96,42 @@ export function ViewRequest(params) {
           </thead>
           <tbody>
             {allRequests &&
-              allRequests.map((request) => (
-                <tr className="bg-myCard border-b-8 border-myBG text-myText">
-                  <td className="px-6 py-4 font-semibold text-center text-base">
-                    {" "}
-                    {request.equipment_name}{" "}
-                  </td>
-                  <td className="px-6 py-4 font-semibold  text-center text-base">
-                    {request.location_name}
-                  </td>
-                  <td className="pl-6 py-4 font-semibold  text-center text-base">
-                    {request.quantity}
-                  </td>
-                  <td
-                    className={` py-4 text-center flex items-center justify-center`}
-                  >
-                    <div
-                      className={` bg-${hashMap.get(
-                        request.status_name.toLowerCase()
-                      )} text-white w-fit px-7 py-1 rounded-lg`}
+              allRequests
+                .sort((a, b) => new Date(b.req_time) - new Date(a.req_time))
+                .map((request) => {
+                  const isHighlighted =
+                    notification && request.req_id === notification.type_id;
+
+                  return (
+                    <tr
+                      className={`bg-myCard border-b-8 border-myBG text-myText ${
+                        isHighlighted ? "bg-red-800" : ""
+                      }`}
                     >
-                      {request.status_name}
-                    </div>
-                  </td>
-                </tr>
-              ))}
+                      <td className="px-6 py-4 font-semibold text-center text-base">
+                        {" "}
+                        {request.equipment_name}{" "}
+                      </td>
+                      <td className="px-6 py-4 font-semibold  text-center text-base">
+                        {request.location_name}
+                      </td>
+                      <td className="pl-6 py-4 font-semibold  text-center text-base">
+                        {request.quantity}
+                      </td>
+                      <td
+                        className={`py-4 text-center flex items-center justify-center`}
+                      >
+                        <div
+                          className={` bg-${hashMap.get(
+                            request.status_name.toLowerCase()
+                          )} text-white w-fit px-7 py-1 rounded-lg`}
+                        >
+                          {request.status_name}
+                        </div>
+                      </td>
+                    </tr>
+                  );
+                })}
           </tbody>
         </table>
       </div>

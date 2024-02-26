@@ -7,10 +7,10 @@ export function ViewSentRequest(params) {
   const [allRequests, setAllRequests] = useState([]);
 
   let hashMap = new Map();
-  hashMap.set("waiting for supervisor approval", "blue-500");
-  hashMap.set("waiting for lab assistant approval", "blue-500");
-  hashMap.set("waiting for head of department approval", "blue-500");
-  hashMap.set("waiting for inventory manager approval", "blue-500");
+  hashMap.set("waiting for supervisor approval", "blue-600");
+  hashMap.set("waiting for lab assistant approval", "blue-600");
+  hashMap.set("waiting for head of department approval", "blue-600");
+  hashMap.set("waiting for inventory manager approval", "blue-600");
   hashMap.set("accepted", "green-600");
   hashMap.set("rejected", "pinky");
 

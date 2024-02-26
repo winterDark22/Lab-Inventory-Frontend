@@ -25,6 +25,7 @@ import { ProductDetails } from "./Details";
 import { ViewSentRequest } from "./ViewSentRequest";
 import { useLogout } from "../../hook/useLogout";
 import { ViewDues } from "./ViewDues";
+// import { Chart } from "./Chart";
 
 function AssistantHome() {
   //user fetching
@@ -50,6 +51,7 @@ function AssistantHome() {
       icon: MdListAlt,
     },
     { name: "Notification", link: "notification", icon: MdNotifications },
+    // { name: "Chart", link: "chart", icon: MdListAlt },
     { name: "Log Out", link: "logout", icon: MdOutlineLogout },
   ];
   const [open, setOpen] = useState(true);
@@ -273,6 +275,7 @@ function AssistantHome() {
                 <Route path="viewDues" element={<ViewDues />} />
                 <Route path="notification" element={<Notification />} />
                 <Route path="details/:id" element={<ProductDetails />} />
+                {/* <Route path="chart" element={<Chart />} /> */}
               </Routes>
             </div>
 
