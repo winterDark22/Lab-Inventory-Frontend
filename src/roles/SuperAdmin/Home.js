@@ -32,6 +32,7 @@ import { ShowUsers } from "./ShowUsers";
 import { Notification } from "./Notification";
 import { useLogout } from "../../hook/useLogout";
 import { ContentHomePage } from "./ContentHomePage";
+import { UnAthorizedUserList } from "./UnAuthorizedUserList";
 
 function AdminHome() {
   //user fetching
@@ -40,6 +41,11 @@ function AdminHome() {
   const { logout } = useLogout();
 
   const menus = [
+    {
+      name: "Unauthorized user list",
+      link: "unlist",
+      icon: MdOutlineTableView,
+    },
     {
       name: "Check on lab equipments",
       link: "CheckLabEquipments",
@@ -135,33 +141,29 @@ function AdminHome() {
       <div className={`flex ${open ? "gap-1" : "gap-4"} bg-myBG`}>
         <aside className={"z-20"}>
           <div
-            className={`sticky top-0 min-h-screen transition duration-100 bg-primary ${
-              open
+            className={`sticky top-0 min-h-screen transition duration-100 bg-primary ${open
                 ? "w-[320px] rounded-[35px] border-[16px] border-myBG"
                 : "w-16 rounded-r-3xl"
-            }
+              }
             duration-200 text-gray-100 px-4 relative  `}
           >
             <div className={`py-3 flex justify-between items-center pt-5 `}>
               <h2
-                className={`font-bold font-roboto text-2xl pl-3 ${
-                  !open && "hidden"
-                }`}
+                className={`font-bold font-roboto text-2xl pl-3 ${!open && "hidden"
+                  }`}
               >
                 Your Options
               </h2>
               <HiMenuAlt3
                 size={35}
-                className={`cursor-pointer ml-1 font-bold ${
-                  !open && "hidden"
-                } p-1 hover:bg-pinky rounded-md `}
+                className={`cursor-pointer ml-1 font-bold ${!open && "hidden"
+                  } p-1 hover:bg-pinky rounded-md `}
                 onClick={() => setOpen(!open)}
               />
               <HiMenu
                 size={35}
-                className={`cursor-pointer ml-1 font-bold ${
-                  open && "hidden"
-                } hover:bg-pinky rounded-md `}
+                className={`cursor-pointer ml-1 font-bold ${open && "hidden"
+                  } hover:bg-pinky rounded-md `}
                 onClick={() => setOpen(!open)}
               />
 
@@ -187,11 +189,10 @@ function AdminHome() {
                   }}
                   className={`group flex items-center text-medium gap-3.5 font-medium p-3.5 rounded-md 
                      hover:bg-pinky hover:scale-95
-                      ${
-                        activeLink === menu?.link
-                          ? "hover:shadow-xl scale-105 shadow-lg bg-pinky"
-                          : ""
-                      }
+                      ${activeLink === menu?.link
+                      ? "hover:shadow-xl scale-105 shadow-lg bg-pinky"
+                      : ""
+                    }
                     active:scale-105 active:shadow-xl focus:hover:shadow-xl focus:scale-105 focus:shadow-lg focus:bg-pinky`}
                 >
                   <div className={`font-bold ${!open && "-translate-x-2"} `}>
@@ -238,7 +239,7 @@ function AdminHome() {
                 </h2>
 
                 <ul className="flex flex-wrap  justify-between gap-2 sm:mr-10 -mr-3">
-                  <Link
+                  {/* <Link
                     to={""}
                     onClick={() => handleLinkClick("")}
                     className={`group flex md:items-center font-medium gap-1  rounded-full  p-3 justify-center
@@ -249,10 +250,9 @@ function AdminHome() {
                       {React.createElement(FaEnvelope, { size: "18" })}
                     </div>
 
-                    {/* <h2
-                      className={`whitespace-pre duration-300 hidden md:block`}>Message
-                    </h2> */}
-                  </Link>
+                    
+                  </Link> */}
+
                   <li>
                     <Link
                       to={""}
@@ -280,6 +280,8 @@ function AdminHome() {
             <div>
               <Routes>
                 <Route path="" element={<ContentHomePage />} />
+                <Route path="/unlist" element={<UnAthorizedUserList />} />
+
                 <Route
                   path="checkLabEquipments"
                   element={<CheckLabEquipments />}
@@ -299,9 +301,8 @@ function AdminHome() {
 
             <footer className="bg-myBG border sm:h-16 w-full ">
               <div
-                className={`flex flex-wrap sm:justify-between items-center max-w-[1240px] ${
-                  open ? "mx-7" : "mx-auto"
-                }  text-gray-500 font-normal text-base mt-5`}
+                className={`flex flex-wrap sm:justify-between items-center max-w-[1240px] ${open ? "mx-7" : "mx-auto"
+                  }  text-gray-500 font-normal text-base mt-5`}
               >
                 <h2 className=" ml-16 sm:ml-0">
                   {" "}

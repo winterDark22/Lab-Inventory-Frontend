@@ -46,18 +46,23 @@ export function Register() {
 
       const responseJSON = await register(user);
 
-      if (responseJSON.role === "Inventory Manager") {
-        navigate("/manager");
-      } else if (responseJSON.role === "Student") {
-        navigate("/student");
-      } else if (responseJSON.role === "Lab Assistant") {
-        navigate("/labassistant");
-      } else if (responseJSON.role === "Teacher") {
-        navigate("/teacher");
-      } else if (responseJSON.role === "Super Admin") {
-        navigate("/admin");
+      if (responseJSON.assigned === 2 || responseJSON.assigned === 0) {
+        navigate("/assigned");
+      } else if (responseJSON.assigned === 1) {
+        if (responseJSON.role === "Inventory Manager") {
+          navigate("/manager");
+        } else if (responseJSON.role === "Student") {
+          navigate("/student");
+        } else if (responseJSON.role === "Teacher") {
+          navigate("/teacher");
+        } else if (responseJSON.role === "Lab Assistant") {
+          navigate("/labassistant");
+        } else if (responseJSON.role === "Super Admin") {
+          navigate("/admin");
+        } else if (responseJSON.role === "Department Head") {
+          navigate("/head");
+        }
       }
-
       setEmail("");
       setPassword("");
       setConfirmPassword("");

@@ -14,6 +14,7 @@ module.exports = {
         //pinky: "#f71b40",
 
         myBG: "#f9f9f9",
+        newNoti: '#c1384e',
 
         myText: "#5e5e5e",
 

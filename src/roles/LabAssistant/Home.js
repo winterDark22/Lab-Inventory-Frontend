@@ -25,6 +25,9 @@ import { ProductDetails } from "./Details";
 import { ViewSentRequest } from "./ViewSentRequest";
 import { useLogout } from "../../hook/useLogout";
 import { ViewDues } from "./ViewDues";
+import { ViewLostDamaged } from "./ViewLostDamaged";
+import { ViewMonetaryDues } from "./ViewMonetaryDues";
+
 // import { Chart } from "./Chart";
 
 function AssistantHome() {
@@ -48,6 +51,16 @@ function AssistantHome() {
     {
       name: "View sent request",
       link: "viewSentRequest",
+      icon: MdListAlt,
+    },
+    {
+      name: "View lost/damaged",
+      link: "viewLostDamaged",
+      icon: MdListAlt,
+    },
+    {
+      name: "View monetary dues",
+      link: "viewMonetaryDues",
       icon: MdListAlt,
     },
     { name: "Notification", link: "notification", icon: MdNotifications },
@@ -227,7 +240,7 @@ function AssistantHome() {
                 </h2>
 
                 <ul className="flex flex-wrap  justify-between gap-2 sm:mr-10 -mr-3">
-                  <Link
+                  {/* <Link
                     to={""}
                     onClick={() => handleLinkClick("")}
                     className={`group flex md:items-center font-medium gap-1  rounded-full  p-3 justify-center
@@ -238,10 +251,9 @@ function AssistantHome() {
                       {React.createElement(FaEnvelope, { size: "18" })}
                     </div>
 
-                    {/* <h2
-                      className={`whitespace-pre duration-300 hidden md:block`}>Message
-                    </h2> */}
-                  </Link>
+                   
+                  </Link> */}
+
                   <li>
                     <Link
                       to={""}
@@ -272,6 +284,8 @@ function AssistantHome() {
                 <Route path="viewRequest" element={<ViewRequest />} />
                 <Route path="addRequest" element={<AddRequest />} />
                 <Route path="viewSentRequest" element={<ViewSentRequest />} />
+                <Route path="viewLostDamaged" element={<ViewLostDamaged />} />
+                <Route path="viewMonetaryDues" element={<ViewMonetaryDues />} />
                 <Route path="viewDues" element={<ViewDues />} />
                 <Route path="notification" element={<Notification />} />
                 <Route path="details/:id" element={<ProductDetails />} />
@@ -335,3 +349,4 @@ function AssistantHome() {
 }
 
 export default AssistantHome;
+

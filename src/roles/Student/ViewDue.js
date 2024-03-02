@@ -18,6 +18,52 @@ export function ViewDue(params) {
   const { setNewNotificationCnt } = useNotificationContext();
 
   const [allDues, setAllDues] = useState([]);
+  const [showModal, setShowModal] = useState(false);
+  const [comment, setComment] = useState("");
+  const [quantity, setQuantity] = useState(0);
+  const [selectedDue, setSelectedDue] = useState(null);
+
+  const handleReport = async (due) => {
+    setShowModal(true);
+    setSelectedDue(due);
+  };
+
+  const handleOk = async () => {
+    const response = await fetch(
+      `/api/due/reportlostordamaged/${user.username}/${selectedDue.due_id}`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ quantity, comment }),
+      }
+    );
+
+    const responseJSON = await response.json();
+
+    console.log("jjjjjjjjjjj");
+    console.log(responseJSON);
+    setAllDues(
+      allDues.map((due) =>
+        due.due_id === selectedDue.due_id
+          ? { ...due, status_name: "LostOrDamaged" }
+          : due
+      )
+    );
+    // clear everything
+    setShowModal(false);
+    setSelectedDue(null);
+    setComment("");
+    setQuantity(0);
+  };
+
+  const handleCancel = () => {
+    setShowModal(false);
+    setSelectedDue(null);
+    setComment("");
+    setQuantity(0);
+  };
 
   useEffect(() => {
     const fetchDues = async () => {
@@ -94,6 +140,12 @@ export function ViewDue(params) {
               <th scope="col" className="px-6 py-3 text-center">
                 Due Date
               </th>
+              <th scope="col" className="px-6 py-3 text-center">
+                Status
+              </th>
+              <th scope="col" className="px-6 py-3 text-center">
+                Report Lost Or Damaged
+              </th>
             </tr>
           </thead>
           <tbody>
@@ -130,12 +182,12 @@ export function ViewDue(params) {
                   return (
                     <tr
                       className={`bg-myCard border-b-8 border-myBG text-myText ${
-                        isHighlighted ? "bg-red-800" : ""
+                        isHighlighted ? "bg-newNoti text-white" : " text-gray-500"
                       }`}
                     >
                       <td className="px-6 py-4 font-semibold text-center text-base">
                         {due.equipment_name}
-                        <p className="text-sm text-gray-500">
+                        <p className="text-sm">
                           Issued:&nbsp;
                           {format(new Date(due.issue_date), "dd/MM/yyyy")}
                         </p>
@@ -146,6 +198,7 @@ export function ViewDue(params) {
                       <td className="px-6 py-4 font-semibold  text-center text-base">
                         {due.quantity}
                       </td>
+
                       <td
                         className={` py-4 text-center flex items-center justify-center`}
                       >
@@ -155,11 +208,75 @@ export function ViewDue(params) {
                           {formatDistanceToNow(dueDate, { addSuffix: true })}
                         </div>
                       </td>
+                      <td className="px-6 py-4 font-semibold  text-center text-base">
+                        {due.status_name}
+                      </td>
+                      <td className="px-6 py-4 font-semibold  text-center text-base">
+                        <button
+                          className="mx-2 py-1 px-3 bg-blue-500 text-white rounded"
+                          onClick={() => handleReport(due)}
+                        >
+                          Report
+                        </button>
+                      </td>
                     </tr>
                   );
                 })}
           </tbody>
         </table>
+
+        {showModal && (
+          <div className="fixed w-full bg-black bg-opacity-50 top-0 left-0 z-30">
+            <div className="flex items-center justify-center min-h-screen  sm:block sm:p-0">
+              {/* ...rest of the modal code... */}
+              <div className="bg-white ml-[35vw] rounded-lg text-left overflow-hidden sm:mt-[20vh] sm:align-middle sm:max-w-lg sm:w-full">
+                <div className="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
+                  <div className="sm:flex sm:flex-col fle items-stretch">
+                    <div className="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left flex-grow">
+                      <h3 className="text-lg leading-6 font-medium text-gray-900">
+                        Comments
+                      </h3>
+
+                      <div className="mt-4">
+                        <textarea
+                          value={comment}
+                          placeholder="Add your comments here"
+                          onChange={(e) => setComment(e.target.value)}
+                          className="p-2 border rounded text-sm w-full focus:outline-none focus:ring-1 focus:ring-pinky focus:border-transparent"
+                        />
+                      </div>
+                    </div>
+                    <div className="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left flex-grow">
+                      <h3 className="text-lg leading-6 font-medium text-gray-900">
+                        Quantity
+                      </h3>
+                      <input
+                        type="number"
+                        value={quantity}
+                        onChange={(e) => setQuantity(e.target.value)}
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                <div className="bg-gray-50 px-4 py-4 sm:px-6 sm:flex justify-center gap-12 ">
+                  <button
+                    onClick={() => handleCancel()}
+                    className="text-white bg-pinky  border-0 py-1 sm:px-4 px-2 focus:outline-none hover:bg-primary rounded-lg text-base"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    className="text-white  bg-green-600 border-0 sm:px-4 px-2 py-1 focus:outline-none  hover:bg-green-700 rounded-lg text-base"
+                    onClick={() => handleOk()}
+                  >
+                    Send
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );

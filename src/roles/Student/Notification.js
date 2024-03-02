@@ -70,13 +70,15 @@ export function Notification(params) {
                     key={notification.id}
                     onClick={() => handleClick(notification)}
                     // className="mb-8 border-b-2 bg-amber-500 hover:bg-amber-600 cursor-pointer"
-                    className={`mb-8 border-b-2 cursor-pointer ${
-                      index < newNotificationCnt ? "bg-pinky" : "bg-amber-500"
+                    className={`mb-8 border-b-2 cursor-pointer h-10 ${
+                      index < newNotificationCnt ? "bg-newNoti" : "bg-myCard"
                     }`}
                   >
-                    <td>
+                    <td className={`mb-8 border-b-3 cursor-pointer pl-3 ${index < newNotificationCnt ? "text-white" : "text-myText"
+                      }`}>
                       {notification.sender_role} {notification.sender_name} has
                       sent you a msg: "{notification.notification}"
+
                     </td>
                     <td>
                       {new Date(
