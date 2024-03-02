@@ -14,6 +14,7 @@ export const useRegister = () => {
     setloading(true);
 
     const response = await fetch("/api/user/signup", {
+      //have to change the route here.
       method: "POST",
       headers: {
         "Content-Type": "application/json",

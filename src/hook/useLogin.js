@@ -26,6 +26,8 @@ export const useLogin = () => {
       setloading(false);
       seterror(responseJSON.error);
     } else {
+      console.log("jjjjjjjjjjj");
+      console.log(responseJSON);
       await dispatch({ type: AUTH_ACTION.LOGIN, payload: responseJSON });
       setloading(false);
     }

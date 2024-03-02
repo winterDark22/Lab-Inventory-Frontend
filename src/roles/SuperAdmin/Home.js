@@ -32,6 +32,7 @@ import { ShowUsers } from "./ShowUsers";
 import { Notification } from "./Notification";
 import { useLogout } from "../../hook/useLogout";
 import { ContentHomePage } from "./ContentHomePage";
+import { UnAthorizedUserList } from "./UnAuthorizedUserList";
 
 function AdminHome() {
   //user fetching
@@ -40,6 +41,11 @@ function AdminHome() {
   const { logout } = useLogout();
 
   const menus = [
+    {
+      name: "Unauthorized user list",
+      link: "unlist",
+      icon: MdOutlineTableView,
+    },
     {
       name: "Check on lab equipments",
       link: "CheckLabEquipments",
@@ -238,7 +244,7 @@ function AdminHome() {
                 </h2>
 
                 <ul className="flex flex-wrap  justify-between gap-2 sm:mr-10 -mr-3">
-                  <Link
+                  {/* <Link
                     to={""}
                     onClick={() => handleLinkClick("")}
                     className={`group flex md:items-center font-medium gap-1  rounded-full  p-3 justify-center
@@ -249,10 +255,9 @@ function AdminHome() {
                       {React.createElement(FaEnvelope, { size: "18" })}
                     </div>
 
-                    {/* <h2
-                      className={`whitespace-pre duration-300 hidden md:block`}>Message
-                    </h2> */}
-                  </Link>
+                    
+                  </Link> */}
+
                   <li>
                     <Link
                       to={""}
@@ -280,6 +285,8 @@ function AdminHome() {
             <div>
               <Routes>
                 <Route path="" element={<ContentHomePage />} />
+                <Route path="/unlist" element={<UnAthorizedUserList />} />
+
                 <Route
                   path="checkLabEquipments"
                   element={<CheckLabEquipments />}

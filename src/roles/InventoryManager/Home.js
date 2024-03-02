@@ -24,7 +24,7 @@ import { AddNewItem } from "./AddNewItem";
 import { Notification } from "./Notification";
 import { useLogout } from "../../hook/useLogout";
 
-function AssistantHome() {
+function ManagerHome() {
   //user fetching
   const { user } = useAuthContext();
   const { username, role } = user;
@@ -222,7 +222,7 @@ function AssistantHome() {
                 </h2>
 
                 <ul className="flex flex-wrap  justify-between gap-2 sm:mr-10 -mr-3">
-                  <Link
+                  {/* <Link
                     to={""}
                     onClick={() => handleLinkClick("")}
                     className={`group flex md:items-center font-medium gap-1  rounded-full  p-3 justify-center
@@ -233,10 +233,9 @@ function AssistantHome() {
                       {React.createElement(FaEnvelope, { size: "18" })}
                     </div>
 
-                    {/* <h2
-                      className={`whitespace-pre duration-300 hidden md:block`}>Message
-                    </h2> */}
-                  </Link>
+                    
+                  </Link> */}
+
                   <li>
                     <Link
                       to={""}
@@ -326,4 +325,4 @@ function AssistantHome() {
   );
 }
 
-export default AssistantHome;
+export default ManagerHome;

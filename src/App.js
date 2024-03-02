@@ -6,6 +6,8 @@ import Login from "../src/pages/Login";
 
 import { useAuthContext } from "./context/AuthContext";
 import { Register } from "./pages/Register";
+import Assigned from "./pages/Assigned";
+
 import StudentHome from "./roles/Student/Home";
 import AssistantHome from "./roles/LabAssistant/Home";
 import TeacherHome from "./roles/Teacher/Home";
@@ -23,6 +25,7 @@ function App() {
           <Routes>
             <Route path="/" element={<Login />} />
             <Route path="/signup" element={<Register />} />
+            <Route path="/assigned" element={<Assigned />} />
             <Route
               path="/manager/*"
               element={user ? <ManagerHome /> : <Navigate to="/" />}

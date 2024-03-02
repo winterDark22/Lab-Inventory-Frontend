@@ -21,7 +21,7 @@ import { ViewRequest } from "./ViewRequest";
 import { Notification } from "./Notification";
 import { useLogout } from "../../hook/useLogout";
 
-function TeacherHome() {
+function DeptHeadHome() {
   //user fetching
   const { user } = useAuthContext();
   const { username, role } = user;
@@ -312,4 +312,4 @@ function TeacherHome() {
   );
 }
 
-export default TeacherHome;
+export default DeptHeadHome;

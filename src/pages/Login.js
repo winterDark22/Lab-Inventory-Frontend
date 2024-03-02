@@ -19,22 +19,30 @@ function Login() {
 
     const responseJSON = await login(username, password);
 
+    if (
+      responseJSON.assigned === 2 ||
+      responseJSON.assigned === 0 ||
+      responseJSON.assigned === 3
+    ) {
+      navigate("/assigned");
+    } else if (responseJSON.assigned === 1) {
+      if (responseJSON.role === "Inventory Manager") {
+        navigate("/manager");
+      } else if (responseJSON.role === "Student") {
+        navigate("/student");
+      } else if (responseJSON.role === "Teacher") {
+        navigate("/teacher");
+      } else if (responseJSON.role === "Lab Assistant") {
+        navigate("/labassistant");
+      } else if (responseJSON.role === "Super Admin") {
+        navigate("/admin");
+      } else if (responseJSON.role === "Department Head") {
+        navigate("/head");
+      }
+    }
+
     // console.log("there shoudl set the user");
     // console.log(responseJSON.role);
-
-    if (responseJSON.role === "Inventory Manager") {
-      navigate("/manager");
-    } else if (responseJSON.role === "Student") {
-      navigate("/student");
-    } else if (responseJSON.role === "Teacher") {
-      navigate("/teacher");
-    } else if (responseJSON.role === "Lab Assistant") {
-      navigate("/labassistant");
-    } else if (responseJSON.role === "Super Admin") {
-      navigate("/admin");
-    } else if (responseJSON.role === "Department Head") {
-      navigate("/head");
-    }
 
     usernameRef.current.value = "";
     passwordRef.current.value = "";

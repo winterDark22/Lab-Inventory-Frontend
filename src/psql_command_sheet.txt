@@ -1,0 +1,3 @@
+sudo -u postgres psql
+\c labinventory
+\dt                                     - shows all tables
