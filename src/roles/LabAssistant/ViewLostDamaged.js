@@ -11,7 +11,19 @@ export function ViewLostDamaged(params) {
   const [showModal, setShowModal] = useState(false);
   const [amount, setAmount] = useState(0);
   const [due, setDue] = useState({});
+  const [date, setdate] = useState("");
+
+  // searching purpose
+  const [searchTerm, setSearchTerm] = useState("");
+  const [searchType, setSearchType] = useState("Equipment name");
   const [searchDate, setSearchDate] = useState("");
+
+  const handleDateSearch = (event) => {
+    setSearchDate(event.target.value);
+  };
+  const handleSearch = (event) => {
+    setSearchTerm(event.target.value);
+  };
 
   const handleReport = async (due) => {
     try {
@@ -34,6 +46,30 @@ export function ViewLostDamaged(params) {
     }
   };
 
+  const handleClear = async (due) => {
+    try {
+      const response = await fetch(
+        `/api/due/cleardue/${user.username}/${due.due_id}`,
+        {
+          method: "POST",
+        }
+      );
+
+      const responseJSON = await response.json();
+
+      if (response.ok) {
+        // const updatedDues = allDues.filter((due) => due.due_id !== dueId);
+        // setAllDues(updatedDues);
+
+        console.log("ki hoise");
+        console.log(responseJSON);
+        setAllDamages(allDamages.filter((d) => d.due_id !== due.due_id));
+      }
+    } catch (error) {
+      console.log(error.message);
+    }
+  };
+
   const handleSend = async () => {
     const response = await fetch(
       `/api/due/createmonetarydue/${user.username}/${due.due_id}`,
@@ -42,7 +78,7 @@ export function ViewLostDamaged(params) {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ amount: amount, dueDate: searchDate }),
+        body: JSON.stringify({ amount: amount, dueDate: date }),
       }
     );
 
@@ -64,7 +100,7 @@ export function ViewLostDamaged(params) {
       setSelectedDue({});
       setDue({});
       setAmount(0);
-      setSearchDate("");
+      setdate("");
     }
   };
 
@@ -73,7 +109,7 @@ export function ViewLostDamaged(params) {
     setSelectedDue({});
     setDue({});
     setAmount(0);
-    setSearchDate("");
+    setdate("");
   };
 
   useEffect(() => {
@@ -96,17 +132,67 @@ export function ViewLostDamaged(params) {
     fetchDamages();
   }, []);
 
+  const filteredDamage = allDamages.filter((damage) => {
+    let matchesSearchTerm = true;
+    switch (searchType) {
+      case "Equipment name":
+        matchesSearchTerm = damage.equipment_name
+          ? damage.equipment_name
+              .toLowerCase()
+              .startsWith(searchTerm.toLowerCase())
+          : false;
+        break;
+      case "Student ID":
+        matchesSearchTerm = damage.username
+          ? damage.username.toLowerCase().startsWith(searchTerm.toLowerCase())
+          : false;
+        break;
+      default:
+      // Add more cases as needed
+    }
+
+    let matchesSearchDate = true;
+    if (searchDate) {
+      const recordDate = new Date(damage.issue_date);
+      const searchDateObj = new Date(searchDate);
+      matchesSearchDate =
+        recordDate.getFullYear() === searchDateObj.getFullYear() &&
+        recordDate.getMonth() === searchDateObj.getMonth() &&
+        recordDate.getDate() === searchDateObj.getDate();
+    }
+    return matchesSearchTerm && matchesSearchDate;
+  });
+
   return (
     <div className="border border-pinky my-2 min-h-screen rounded-2xl ">
       <div className="flex justify-between">
-        <h2 className="text-left text-myText mt-7 ml-5 text-2xl font-bold">
-          Lost/Damaged
-        </h2>
-        <div className="flex ">
+        <div className="flex items-center justify-between gap-4 ">
+          <h2 className="text-left text-myText mt-7 ml-5 text-2xl font-bold">
+            Lost/Damaged
+          </h2>
           <input
             type="text"
-            placeholder="Type here"
-            className="border border-pinky bg-myBG rounded-lg text-myText text-sm placeholder:text-bg-gray-500 w-full p-2.5 m-5 focus:ring-1 focus:ring-pinky focus:outline-none focus:shadow-inner"
+            placeholder="Search..."
+            value={searchTerm}
+            onChange={handleSearch}
+            className="ml-4 border-2 border-gray-300 bg-white h-10 px-5 pr-16 rounded-lg text-sm focus:outline-none"
+          />
+
+          <select
+            value={searchType}
+            onChange={(e) => setSearchType(e.target.value)}
+            className="border-2 border-gray-300 bg-white h-10 px-5 pr-16 rounded-lg text-sm focus:outline-none"
+          >
+            <option value="Equipment name">Equipment name</option>
+            <option value="Student ID">Student ID</option>
+            {/* Add more options as needed */}
+          </select>
+
+          <input
+            type="date"
+            value={searchDate}
+            onChange={handleDateSearch}
+            className="ml-4 border-2 border-gray-300 bg-white h-10 px-5 pr-16 rounded-lg text-sm focus:outline-none"
           />
         </div>
       </div>
@@ -143,15 +229,12 @@ export function ViewLostDamaged(params) {
             </tr>
           </thead>
           <tbody>
-            {allDamages &&
-              [...allDamages]
+            {filteredDamage &&
+              [...filteredDamage]
                 .sort((a, b) => {
-                  const dueDateA = new Date(a.due_date);
-                  const dueDateB = new Date(b.due_date);
-                  const today = new Date();
-                  const daysUntilDueA = differenceInDays(dueDateA, today);
-                  const daysUntilDueB = differenceInDays(dueDateB, today);
-                  return daysUntilDueA - daysUntilDueB;
+                  const dueDateA = new Date(a.issue_date);
+                  const dueDateB = new Date(b.issue_date);
+                  return dueDateB - dueDateA;
                 })
                 .map((due, index) => {
                   return (
@@ -186,7 +269,7 @@ export function ViewLostDamaged(params) {
                       <td className="px-6 py-4 font-semibold  text-center text-base">
                         <button
                           className="mx-2 py-1 px-3 bg-blue-500 text-white rounded"
-                          //onClick={() => handleReport(due)}
+                          onClick={() => handleClear(due)}
                         >
                           Clear
                         </button>
@@ -251,8 +334,8 @@ export function ViewLostDamaged(params) {
 
                 <input
                   type="date"
-                  value={searchDate}
-                  onChange={(e) => setSearchDate(e.target.value)}
+                  value={date}
+                  onChange={(e) => setdate(e.target.value)}
                   className="ml-4 border-2 border-gray-300 bg-white h-10 px-5 pr-16 rounded-lg text-sm focus:outline-none"
                 />
 

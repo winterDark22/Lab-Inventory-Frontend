@@ -8,6 +8,18 @@ export function ViewMonetaryDues(params) {
   const { user } = useAuthContext();
   const [allMonetaryDues, setallMonetaryDues] = useState([]);
 
+  const [filter, setFilter] = useState("Pending"); // filter requests by status
+  const [searchTerm, setSearchTerm] = useState("");
+  const [searchType, setSearchType] = useState("Equipment name");
+  const [searchDate, setSearchDate] = useState("");
+
+  const handleDateSearch = (event) => {
+    setSearchDate(event.target.value);
+  };
+  const handleSearch = (event) => {
+    setSearchTerm(event.target.value);
+  };
+
   const handleReport = async (due) => {
     try {
       const response = await fetch(
@@ -60,17 +72,53 @@ export function ViewMonetaryDues(params) {
     fetchDamages();
   }, []);
 
+  const filteredRequestsByStatus = allMonetaryDues.filter((request) => {
+    if (filter === "Pending") return request.status_name !== "Cleared";
+    if (filter === "Cleared") return request.status_name === "Cleared";
+  });
+
   return (
     <div className="border border-pinky my-2 min-h-screen rounded-2xl ">
       <div className="flex justify-between">
-        <h2 className="text-left text-myText mt-7 ml-5 text-2xl font-bold">
-          Lost/Damaged
-        </h2>
-        <div className="flex ">
+        <div className="flex items-center justify-between gap-4 ">
+          <button
+            onClick={() => setFilter("Pending")}
+            className={`hover:text-primary text-xs uppercase p-3 w-24 rounded-lg text-gray-600 bg-myCard  active:text-myText focus:text-primary`}
+          >
+            {" "}
+            Pending
+          </button>
+          <button
+            onClick={() => setFilter("Cleared")}
+            className={`hover:text-primary text-xs uppercase p-3 w-24 rounded-lg text-gray-600 bg-myCard  active:text-myText focus:text-primary`}
+          >
+            {" "}
+            Cleared
+          </button>
+
           <input
             type="text"
-            placeholder="Type here"
-            className="border border-pinky bg-myBG rounded-lg text-myText text-sm placeholder:text-bg-gray-500 w-full p-2.5 m-5 focus:ring-1 focus:ring-pinky focus:outline-none focus:shadow-inner"
+            placeholder="Search..."
+            value={searchTerm}
+            onChange={handleSearch}
+            className="ml-4 border-2 border-gray-300 bg-white h-10 px-5 pr-16 rounded-lg text-sm focus:outline-none"
+          />
+
+          <select
+            value={searchType}
+            onChange={(e) => setSearchType(e.target.value)}
+            className="border-2 border-gray-300 bg-white h-10 px-5 pr-16 rounded-lg text-sm focus:outline-none"
+          >
+            <option value="Equipment name">Equipment name</option>
+            <option value="Lab assistant name">Lab assistant name</option>
+            {/* Add more options as needed */}
+          </select>
+
+          <input
+            type="date"
+            value={searchDate}
+            onChange={handleDateSearch}
+            className="ml-4 border-2 border-gray-300 bg-white h-10 px-5 pr-16 rounded-lg text-sm focus:outline-none"
           />
         </div>
       </div>
@@ -112,10 +160,7 @@ export function ViewMonetaryDues(params) {
                 .sort((a, b) => {
                   const dueDateA = new Date(a.due_date);
                   const dueDateB = new Date(b.due_date);
-                  const today = new Date();
-                  const daysUntilDueA = differenceInDays(dueDateA, today);
-                  const daysUntilDueB = differenceInDays(dueDateB, today);
-                  return daysUntilDueA - daysUntilDueB;
+                  return dueDateB - dueDateA;
                 })
                 .map((due, index) => {
                   return (
@@ -135,7 +180,7 @@ export function ViewMonetaryDues(params) {
                         {due.damage_quantity}
                       </td>
                       <td className="px-6 py-4 font-semibold  text-center text-base">
-                        {due.amount}
+                        {due.amount} tk
                       </td>
                       <td
                         className={` py-4 text-center flex items-center justify-center`}

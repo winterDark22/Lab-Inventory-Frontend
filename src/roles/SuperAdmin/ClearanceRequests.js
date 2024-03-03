@@ -13,11 +13,120 @@ export function ClearanceRequests(params) {
 
   const [allRequests, setAllRequests] = useState([]);
 
-  const handleAccept = async (req) => {};
+  const [showModal, setShowModal] = useState(false);
+  const [modalContent, setModalContent] = useState("");
 
-  const handleReject = async (req) => {};
+  const handleAccept = async (req) => {
+    const response = await fetch(
+      `/api/due/acceptclearance/${username}/${req.clearance_req_id}`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
 
-  const handleSigned = async (req) => {};
+    const json = await response.json();
+    if (response.ok) {
+      setAllRequests(
+        allRequests.map((request) => {
+          if (request.clearance_req_id === req.clearance_req_id) {
+            return {
+              ...request,
+              status_name: "Waiting for Department Head Signature",
+            };
+          }
+          return request;
+        })
+      );
+    }
+  };
+
+  const handleReject = async (req) => {
+    const response = await fetch(
+      `/api/due/rejectclearance/${username}/${req.clearance_req_id}`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
+
+    const json = await response.json();
+    if (response.ok) {
+      setAllRequests(
+        allRequests.map((request) => {
+          if (request.clearance_req_id === req.clearance_req_id) {
+            return {
+              ...request,
+              status_name: "Rejected",
+            };
+          }
+          return request;
+        })
+      );
+    }
+  };
+
+  const handleSigned = async (req) => {
+    const response = await fetch(
+      `/api/due/finalcallforclearance/${username}/${req.clearance_req_id}`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
+
+    //"Ready to collect
+    const json = await response.json();
+    if (response.ok) {
+      setAllRequests(
+        allRequests.map((request) => {
+          if (request.clearance_req_id === req.clearance_req_id) {
+            return {
+              ...request,
+              status_name: "Ready to collect",
+            };
+          }
+          return request;
+        })
+      );
+    }
+  };
+
+  const handleCheck = async (req) => {
+    try {
+      const response = await fetch(
+        `/api/due/checkclearanceeligibility/${req.username}`
+      );
+
+      const json = await response.json();
+
+      console.log("cleraed done");
+      console.log(json);
+
+      if (json.dues.length === 0 && json.monetary_dues.length === 0) {
+        setModalContent("The student is eligible for clearance");
+      } else {
+        setModalContent("The student has dues to clear");
+      }
+
+      if (response.ok) {
+        setShowModal(true);
+      }
+    } catch (error) {
+      console.log(error.message);
+    }
+  };
+
+  const handleModalCancel = () => {
+    setShowModal(false);
+    setModalContent("");
+  };
 
   useEffect(() => {
     const fetchRequests = async () => {
@@ -187,7 +296,7 @@ export function ClearanceRequests(params) {
             <div className="flex md:flex-row flex-col gap-3 md:gap-0">
               <button
                 onClick={() => {
-                  handleAccept(request);
+                  handleCheck(request);
                 }}
                 className={`group bg-green-700 flex items-center gap-1 font-medium py-1.5 px-2.5 rounded-full
               shadow-lg  h-fit justify-center md:w-[105px] md:bg-transparent  md:shadow-none 
@@ -198,9 +307,53 @@ export function ClearanceRequests(params) {
                   : "hover:shadow-xl hover:scale-95  active:scale-105 active:shadow-xl md:hover:scale-105 md:hover:shadow-none md:active:scale-95"
               }
               `}
+                // disabled={
+                //   request.status_name === "Accepted" ||
+                //   request.status_name === "Rejected"
+                // }
+              >
+                <div className={`font-bold text-white md:text-green-700`}>
+                  {React.createElement(MdCheckBox, { size: "16" })}
+                </div>
+
+                <h2
+                  className={`whitespace-pre duration-300 text-sm uppercase text-white md:text-green-700 md:block hidden`}
+                >
+                  Check Eligibility
+                </h2>
+
+                <h2
+                  className={`
+            absolute bg-myBG whitespace-pre text-sm uppercase
+            text-green-700 rounded-xl drop-shadow-lg px-0 py-0 w-0 overflow-hidden
+            group-hover:px-2.5 group-hover:py-1.5 group-hover:-left-20 group-hover:duration-200 group-hover:w-fit
+            md:hidden
+            `}
+                >
+                  Check Eligibility
+                </h2>
+              </button>
+
+              <button
+                onClick={() => {
+                  handleAccept(request);
+                }}
+                className={`group bg-green-700 flex items-center gap-1 font-medium py-1.5 px-2.5 rounded-full
+              shadow-lg  h-fit justify-center md:w-[105px] md:bg-transparent  md:shadow-none 
+              ${
+                request.status_name ===
+                  "Waiting for Department Head Signature" ||
+                request.status_name === "Rejected" ||
+                request.status_name === "Ready to collect"
+                  ? "disabled:opacity-50 disabled:cursor-not-allowed"
+                  : "hover:shadow-xl hover:scale-95  active:scale-105 active:shadow-xl md:hover:scale-105 md:hover:shadow-none md:active:scale-95"
+              }
+              `}
                 disabled={
-                  request.status_name === "Accepted" ||
-                  request.status_name === "Rejected"
+                  request.status_name ===
+                    "Waiting for Department Head Signature" ||
+                  request.status_name === "Rejected" ||
+                  request.status_name === "Ready to collect"
                 }
               >
                 <div className={`font-bold text-white md:text-green-700`}>
@@ -232,15 +385,19 @@ export function ClearanceRequests(params) {
                 className={`group bg-pinky flex items-center gap-1 font-medium py-1.5 px-2.5 rounded-full
               shadow-lg  h-fit justify-center md:w-[105px] md:bg-transparent  md:shadow-none 
               ${
-                request.status_name === "Accepted" ||
-                request.status_name === "Rejected"
+                request.status_name ===
+                  "Waiting for Department Head Signature" ||
+                request.status_name === "Rejected" ||
+                request.status_name === "Ready to collect"
                   ? "disabled:opacity-50 disabled:cursor-not-allowed"
                   : "hover:shadow-xl hover:scale-95  active:scale-105 active:shadow-xl md:hover:scale-105 md:hover:shadow-none md:active:scale-95"
               }
               `}
                 disabled={
-                  request.status_name === "Accepted" ||
-                  request.status_name === "Rejected"
+                  request.status_name ===
+                    "Waiting for Department Head Signature" ||
+                  request.status_name === "Rejected" ||
+                  request.status_name === "Ready to collect"
                 }
               >
                 <div className={`font-bold text-white md:text-pinky`}>
@@ -272,15 +429,17 @@ export function ClearanceRequests(params) {
                 className={`group bg-gray-700 flex items-center gap-1 font-medium py-1.5 px-2.5 rounded-full
               shadow-lg  h-fit justify-center md:w-[105px] md:bg-transparent  md:shadow-none 
               ${
-                request.status_name === "Accepted" ||
-                request.status_name === "Rejected"
+                request.status_name === "Rejected" ||
+                request.status_name === "Ready to collect" ||
+                request.status_name === "Waiting for Superadmin Approval"
                   ? "disabled:opacity-50 disabled:cursor-not-allowed"
                   : "hover:shadow-xl hover:scale-95  active:scale-105 active:shadow-xl md:hover:scale-105 md:hover:shadow-none md:active:scale-95"
               }
               `}
                 disabled={
-                  request.status_name === "Accepted" ||
-                  request.status_name === "Rejected"
+                  request.status_name === "Rejected" ||
+                  request.status_name === "Ready to collect" ||
+                  request.status_name === "Waiting for Superadmin Approval"
                 }
               >
                 <div className={`font-bold text-white md:text-gray-700`}>
@@ -307,6 +466,40 @@ export function ClearanceRequests(params) {
             </div>
           </div>
         ))}
+
+      {showModal && (
+        <div className="fixed w-full bg-black bg-opacity-50 top-0 left-0 z-30">
+          <div className="flex items-center justify-center min-h-screen  sm:block sm:p-0">
+            {/* ...rest of the modal code... */}
+            <div className="bg-white ml-[35vw] rounded-lg text-left overflow-hidden sm:mt-[20vh] sm:align-middle sm:max-w-lg sm:w-full">
+              <div className="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
+                <div className="sm:flex sm:flex-col fle items-stretch">
+                  <div className="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left flex-grow">
+                    <h3 className="text-lg leading-6 font-medium text-gray-900">
+                      {modalContent}
+                    </h3>
+                  </div>
+                </div>
+              </div>
+
+              <div className="bg-gray-50 px-4 py-4 sm:px-6 sm:flex justify-center gap-12 ">
+                <button
+                  onClick={() => handleModalCancel()}
+                  className="text-white bg-pinky  border-0 py-1 sm:px-4 px-2 focus:outline-none hover:bg-primary rounded-lg text-base"
+                >
+                  Cancel
+                </button>
+                {/* <button
+                    className="text-white  bg-green-600 border-0 sm:px-4 px-2 py-1 focus:outline-none  hover:bg-green-700 rounded-lg text-base"
+                    onClick={() => handleSend()}
+                  >
+                    Send
+                  </button> */}
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

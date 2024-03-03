@@ -3,9 +3,15 @@ import { useAuthContext } from "../../context/AuthContext";
 import formatDistanceToNow from "date-fns/formatDistanceToNow";
 import { format } from "date-fns";
 import { differenceInDays } from "date-fns";
+import { useLocation } from "react-router-dom";
+import { useNotificationContext } from "../../context/NotificationContext";
 
 export function ViewMonetaryDue(params) {
+  const location = useLocation();
+  const notification = location.state ? location.state.notification : null;
+
   const { user } = useAuthContext();
+  const { setNewNotificationCnt } = useNotificationContext();
   const [allMonetaryDues, setallMonetaryDues] = useState([]);
 
   useEffect(() => {
@@ -25,7 +31,26 @@ export function ViewMonetaryDue(params) {
         console.log(error.message);
       }
     };
+
+    const fetchUnseenNotification = async () => {
+      try {
+        const response = await fetch(
+          `/api/notification/getunseennotificationcount/${user.username}`
+        );
+        const json = await response.json();
+
+        console.log(json);
+
+        if (response.ok) {
+          setNewNotificationCnt(json.unseen_notification_count);
+        }
+      } catch (error) {
+        console.log(error.message);
+      }
+    };
+
     fetchDamages();
+    fetchUnseenNotification();
   }, []);
 
   return (
@@ -83,8 +108,18 @@ export function ViewMonetaryDue(params) {
                   return daysUntilDueA - daysUntilDueB;
                 })
                 .map((due, index) => {
+                  const isHighlighted =
+                    notification &&
+                    due.monetary_due_id === notification.type_id;
+
                   return (
-                    <tr className="bg-myCard border-b-8 border-myBG text-myText">
+                    <tr
+                      className={`bg-myCard border-b-8 border-myBG text-myText ${
+                        isHighlighted
+                          ? "bg-gray-400 text-white"
+                          : " text-gray-500"
+                      }`}
+                    >
                       <td className="px-6 py-4 font-semibold text-center text-base">
                         {due.equipment_name}
                         <p className="text-sm text-gray-500">

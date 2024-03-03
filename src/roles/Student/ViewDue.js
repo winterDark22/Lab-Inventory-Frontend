@@ -182,7 +182,9 @@ export function ViewDue(params) {
                   return (
                     <tr
                       className={`bg-myCard border-b-8 border-myBG text-myText ${
-                        isHighlighted ? "bg-red-800" : ""
+                        isHighlighted
+                          ? "bg-gray-400 text-white"
+                          : " text-gray-500"
                       }`}
                     >
                       <td className="px-6 py-4 font-semibold text-center text-base">

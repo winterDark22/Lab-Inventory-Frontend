@@ -17,6 +17,8 @@ export function Notification(params) {
       navigate("/student/viewDue", { state: { notification } });
     } else if (notification.notification_type === 2) {
       navigate("/student/viewRequest", { state: { notification } });
+    } else if (notification.notification_type === 6) {
+      navigate("/student/viewMonetaryDue", { state: { notification } });
     }
   };
 
@@ -44,7 +46,7 @@ export function Notification(params) {
     <div className="border border-pinky my-2 min-h-screen rounded-2xl ">
       <div className="flex justify-between">
         <h2 className="text-left text-myText mt-7 ml-5 text-2xl font-bold">
-          Your DUES
+          Notifications
         </h2>
         <div className="flex ">
           <input
@@ -70,11 +72,17 @@ export function Notification(params) {
                     key={notification.id}
                     onClick={() => handleClick(notification)}
                     // className="mb-8 border-b-2 bg-amber-500 hover:bg-amber-600 cursor-pointer"
-                    className={`mb-8 border-b-2 cursor-pointer ${
-                      index < newNotificationCnt ? "bg-pinky" : "bg-amber-500"
+                    className={`mb-8 border-b-8 border-myBG cursor-pointer h-10 ${
+                      index < newNotificationCnt ? "bg-newNoti" : "bg-myCard"
                     }`}
                   >
-                    <td>
+                    <td
+                      className={`mb-8 border-b-3 cursor-pointer pl-3 ${
+                        index < newNotificationCnt
+                          ? "text-white"
+                          : "text-myText"
+                      }`}
+                    >
                       {notification.sender_role} {notification.sender_name} has
                       sent you a msg: "{notification.notification}"
                     </td>

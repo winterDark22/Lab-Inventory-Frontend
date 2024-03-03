@@ -17,6 +17,7 @@ module.exports = {
         myBG: "#f4eaea",
         myText: "#343638",
         myCard: "#f0e0e0",
+        newNoti: "#f0aaaa",
       },
       spacing: {
         0.5: "0.125rem",

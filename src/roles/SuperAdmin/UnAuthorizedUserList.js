@@ -56,6 +56,8 @@ export function UnAthorizedUserList(params) {
         );
         const json = await response.json();
 
+        console.log(json);
+
         if (response.ok) {
           setUnauthorizedUsers(json);
         }
@@ -77,6 +79,12 @@ export function UnAthorizedUserList(params) {
           <div className="w-full p-5 rounded-xl shadow-xl flex justify-between bg-myCard ">
             <div>
               <div className="mt-4 text-sm flex flex-col text-left">
+                <span className="text-gray-800 mb-3">
+                  <span className="text-lg font-bold">
+                    &nbsp;{request.username}
+                  </span>
+                </span>
+
                 <span className="text-gray-500">
                   Firstname:{" "}
                   <span className="text-myText font-bold">
