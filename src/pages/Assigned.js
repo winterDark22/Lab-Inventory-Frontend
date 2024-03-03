@@ -11,8 +11,6 @@ function Assigned() {
 
   const { user } = useAuthContext();
 
-  console.log(user.assigned);
-
   return (
     <div
       className="min-h-screen flex items-center justify-center bg-cover"
@@ -25,13 +23,13 @@ function Assigned() {
           <div className="bg-red-800 p-4 rounded-xl mb-3">
             <h2 className="text-2xl font-bold mb-2 text-center text-white">
               CSE Lab Inventory <br />
-              Management System
+              Management System4
             </h2>
           </div>
 
           <div className="flex items-center justify-center p-4">
             <p className="text-gray-700 text-xl font-semibold">
-              {user.assigned === 0
+              {user && user.assigned === 0
                 ? " Registration pending"
                 : user.assigned === 2
                 ? " Your registration has not been accepted"
@@ -45,15 +43,3 @@ function Assigned() {
 }
 
 export default Assigned;
-
-// <div className="flex items-center justify-center h-screen bg-gray-100">
-//   <div className="p-6 max-w-sm w-full shadow-md rounded-md bg-pinky">
-//     <div className="flex justify-center items-center ">
-//       <span className="text-white font-semibold text-2xl">
-//         {user.assigned === 0
-//           ? "Registration pending"
-//           : "Your registration has not been accepted"}
-//       </span>
-//     </div>
-//   </div>
-// </div>

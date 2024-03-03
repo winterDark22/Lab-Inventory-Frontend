@@ -7,6 +7,74 @@ import { differenceInDays } from "date-fns";
 export function ViewLostDamaged(params) {
   const { user } = useAuthContext();
   const [allDamages, setAllDamages] = useState([]);
+  const [selectedDue, setSelectedDue] = useState({});
+  const [showModal, setShowModal] = useState(false);
+  const [amount, setAmount] = useState(0);
+  const [due, setDue] = useState({});
+  const [searchDate, setSearchDate] = useState("");
+
+  const handleReport = async (due) => {
+    try {
+      const response = await fetch(
+        `/api/due/showestimatedue/${user.username}/${due.due_id}`
+      );
+
+      const json = await response.json();
+      if (response.ok) {
+        setSelectedDue({
+          damage_quantity: due.damage_quantity,
+          estimated_cost: json.estimated_cost,
+          assign_due: 0,
+        }); //damaged q, estimated due, assign due
+        setDue(due);
+        setShowModal(true);
+      }
+    } catch (error) {
+      console.log(error.message);
+    }
+  };
+
+  const handleSend = async () => {
+    const response = await fetch(
+      `/api/due/createmonetarydue/${user.username}/${due.due_id}`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ amount: amount, dueDate: searchDate }),
+      }
+    );
+
+    const responseJSON = await response.json();
+    console.log("dfjlkdjfl;d");
+    console.log(responseJSON);
+
+    if (response.ok) {
+      setAllDamages(
+        allDamages.map((d) => {
+          if (d.due_id === due.due_id) {
+            return { ...d, monetary_assigned: 1 };
+          }
+          return d;
+        })
+      );
+
+      setShowModal(false);
+      setSelectedDue({});
+      setDue({});
+      setAmount(0);
+      setSearchDate("");
+    }
+  };
+
+  const handleCancel = () => {
+    setShowModal(false);
+    setSelectedDue({});
+    setDue({});
+    setAmount(0);
+    setSearchDate("");
+  };
 
   useEffect(() => {
     const fetchDamages = async () => {
@@ -125,8 +193,13 @@ export function ViewLostDamaged(params) {
                       </td>
                       <td className="px-6 py-4 font-semibold  text-center text-base">
                         <button
-                          className="mx-2 py-1 px-3 bg-blue-500 text-white rounded"
-                          //onClick={() => handleReport(due)}
+                          className={`mx-2 py-1 px-3 bg-blue-500 text-white rounded ${
+                            due.monetary_assigned === 1
+                              ? "disabled:opacity-50 disabled:cursor-not-allowed"
+                              : "hover:shadow-xl hover:scale-95  active:scale-105 active:shadow-xl md:hover:scale-105 md:hover:shadow-none md:active:scale-95"
+                          }`}
+                          disabled={due.monetary_assigned === 1}
+                          onClick={() => handleReport(due)}
                         >
                           Create
                         </button>
@@ -136,8 +209,72 @@ export function ViewLostDamaged(params) {
                 })}
           </tbody>
         </table>
+
+        {showModal && (
+          <div className="fixed w-full bg-black bg-opacity-50 top-0 left-0 z-30">
+            <div className="flex items-center justify-center min-h-screen  sm:block sm:p-0">
+              {/* ...rest of the modal code... */}
+              <div className="bg-white ml-[35vw] rounded-lg text-left overflow-hidden sm:mt-[20vh] sm:align-middle sm:max-w-lg sm:w-full">
+                <div className="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
+                  <div className="sm:flex sm:flex-col fle items-stretch">
+                    <div className="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left flex-grow">
+                      <h3 className="text-lg leading-6 font-medium text-gray-900">
+                        Comments
+                      </h3>
+
+                      <div className="mt-4">
+                        <h5 className="text-lg leading-6 font-medium text-gray-900">
+                          Damaged Quantity:{" "}
+                          {selectedDue && selectedDue.damage_quantity}
+                        </h5>
+                      </div>
+
+                      <div className="mt-4">
+                        <h5 className="text-lg leading-6 font-medium text-gray-900">
+                          Estimated cost:{" "}
+                          {selectedDue && selectedDue.estimated_cost}
+                        </h5>
+                      </div>
+                    </div>
+                    <div className="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left flex-grow">
+                      <h3 className="text-lg leading-6 font-medium text-gray-900">
+                        Charged Amount:
+                      </h3>
+                      <input
+                        type="number"
+                        value={amount}
+                        onChange={(e) => setAmount(e.target.value)}
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                <input
+                  type="date"
+                  value={searchDate}
+                  onChange={(e) => setSearchDate(e.target.value)}
+                  className="ml-4 border-2 border-gray-300 bg-white h-10 px-5 pr-16 rounded-lg text-sm focus:outline-none"
+                />
+
+                <div className="bg-gray-50 px-4 py-4 sm:px-6 sm:flex justify-center gap-12 ">
+                  <button
+                    onClick={() => handleCancel()}
+                    className="text-white bg-pinky  border-0 py-1 sm:px-4 px-2 focus:outline-none hover:bg-primary rounded-lg text-base"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    className="text-white  bg-green-600 border-0 sm:px-4 px-2 py-1 focus:outline-none  hover:bg-green-700 rounded-lg text-base"
+                    onClick={() => handleSend()}
+                  >
+                    Send
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );
 }
-

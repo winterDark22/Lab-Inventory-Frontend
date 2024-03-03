@@ -245,6 +245,12 @@ export function ViewDue(params) {
                           className="p-2 border rounded text-sm w-full focus:outline-none focus:ring-1 focus:ring-pinky focus:border-transparent"
                         />
                       </div>
+                      <div className="mt-4">
+                        <h5 className="text-lg leading-6 font-medium text-gray-900">
+                          Borrowed Quantity:{" "}
+                          {selectedDue && selectedDue.quantity}
+                        </h5>
+                      </div>
                     </div>
                     <div className="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left flex-grow">
                       <h3 className="text-lg leading-6 font-medium text-gray-900">
