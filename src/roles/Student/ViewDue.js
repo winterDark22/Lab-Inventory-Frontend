@@ -22,6 +22,9 @@ export function ViewDue(params) {
   const [comment, setComment] = useState("");
   const [quantity, setQuantity] = useState(0);
   const [selectedDue, setSelectedDue] = useState(null);
+  const [hasUnseenNotifications, setHasUnseenNotifications] = useState(false);
+  const [seconds, setSeconds] = useState(0);
+  
 
   const handleReport = async (due) => {
     setShowModal(true);
@@ -84,6 +87,7 @@ export function ViewDue(params) {
       }
     };
 
+
     const fetchUnseenNotification = async () => {
       try {
         const response = await fetch(
@@ -103,6 +107,12 @@ export function ViewDue(params) {
 
     fetchDues();
     fetchUnseenNotification();
+    const interval = setInterval(() => {
+      setSeconds(seconds => seconds + 1);
+    }, 1000);
+
+    return () => clearInterval(interval); // This will clear the interval if the component unmounts
+
   }, []);
 
   return (
@@ -121,7 +131,7 @@ export function ViewDue(params) {
       </div>
 
       <div className="relative overflow-x-auto sm:rounded-xl m-5 ">
-        <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
+        <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400 ">
           <thead className="text-xs text-white uppercase bg-primary">
             <tr className="border-b-[6px] border-myBG">
               {/* <th scope="col" className="px-6 py-3">
@@ -181,9 +191,8 @@ export function ViewDue(params) {
 
                   return (
                     <tr
-                      className={`bg-myCard border-b-8 border-myBG text-myText ${
-                        isHighlighted ? "bg-newNoti text-white" : " text-gray-500"
-                      }`}
+                      className={`bg-myCard border-b-8 border-myBG text-myText  ${(isHighlighted && seconds<.1) ? " bg-newNoti shadow-md p-5 duration-300 " : "duration-500 "
+                        }`}
                     >
                       <td className="px-6 py-4 font-semibold text-center text-base">
                         {due.equipment_name}

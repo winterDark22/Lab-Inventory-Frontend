@@ -211,8 +211,9 @@ function AssistantHome() {
                     {menu?.name}
                     {menu.name === "Notifications" &&
                       newNotificationCnt > 0 && (
-                        <span>({newNotificationCnt})</span>
+                        <span className='bg-white text-primary px-2 rounded-full'>({newNotificationCnt})</span>
                       )}
+                   
                   </h2>
 
                   <h2
@@ -222,6 +223,9 @@ function AssistantHome() {
                   group-hover:px-2 group-hover:py-1 group-hover:left-14 group-hover:duration-200 group-hover:w-fit`}
                   >
                     {menu?.name}
+                    {menu.name === "Notifications" && newNotificationCnt > 0 && (
+                      <span className='bg-primary text-myCard px-2 rounded-full'>({newNotificationCnt})</span>
+                    )}
                   </h2>
                 </Link>
               ))}

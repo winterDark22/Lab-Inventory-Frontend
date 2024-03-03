@@ -104,9 +104,8 @@ export function ViewRequest(params) {
 
                   return (
                     <tr
-                      className={`bg-myCard border-b-8 border-myBG text-myText ${
-                        isHighlighted ? "bg-red-800" : ""
-                      }`}
+                      className={`bg-myCard border-b-8 border-myBG text-myText  ${isHighlighted ? "border-x-8 border-x-pinky bg-newNoti shadow-md p-5 duration-300" : ""
+                        }`}
                     >
                       <td className="px-6 py-4 font-semibold text-center text-base">
                         {" "}
