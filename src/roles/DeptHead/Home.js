@@ -21,7 +21,7 @@ import { ViewRequest } from "./ViewRequest";
 import { Notification } from "./Notification";
 import { useLogout } from "../../hook/useLogout";
 
-function TeacherHome() {
+function DeptHeadHome() {
   //user fetching
   const { user } = useAuthContext();
   const { username, role } = user;
@@ -107,33 +107,29 @@ function TeacherHome() {
       <div className={`flex ${open ? "gap-1" : "gap-4"} bg-myBG`}>
         <aside className={"z-20"}>
           <div
-            className={`sticky top-0 min-h-screen bg-primary ${
-              open
+            className={`sticky top-0 min-h-screen bg-primary ${open
                 ? "w-[320px] rounded-[35px] border-[16px] border-myBG"
                 : "w-16 rounded-r-3xl"
-            }
+              }
             duration-200 text-gray-100 px-4 relative  `}
           >
             <div className={`py-3 flex justify-between items-center pt-5 `}>
               <h2
-                className={`font-bold font-roboto text-2xl pl-3 ${
-                  !open && "hidden"
-                }`}
+                className={`font-bold font-roboto text-2xl pl-3 ${!open && "hidden"
+                  }`}
               >
                 Your Options
               </h2>
               <HiMenuAlt3
                 size={35}
-                className={`cursor-pointer ml-1 font-bold ${
-                  !open && "hidden"
-                } p-1 hover:bg-pinky rounded-md `}
+                className={`cursor-pointer ml-1 font-bold ${!open && "hidden"
+                  } p-1 hover:bg-pinky rounded-md `}
                 onClick={() => setOpen(!open)}
               />
               <HiMenu
                 size={35}
-                className={`cursor-pointer ml-1 font-bold ${
-                  open && "hidden"
-                } hover:bg-pinky rounded-md `}
+                className={`cursor-pointer ml-1 font-bold ${open && "hidden"
+                  } hover:bg-pinky rounded-md `}
                 onClick={() => setOpen(!open)}
               />
 
@@ -159,11 +155,10 @@ function TeacherHome() {
                   }}
                   className={`group flex items-center text-medium gap-3.5 font-medium p-3.5 rounded-md 
                      hover:bg-pinky hover:scale-95
-                      ${
-                        activeLink === menu?.link
-                          ? "hover:shadow-xl scale-105 shadow-lg bg-pinky"
-                          : ""
-                      }
+                      ${activeLink === menu?.link
+                      ? "hover:shadow-xl scale-105 shadow-lg bg-pinky"
+                      : ""
+                    }
                     active:scale-105 active:shadow-xl focus:hover:shadow-xl focus:scale-105 focus:shadow-lg focus:bg-pinky`}
                 >
                   <div className={`font-bold ${!open && "-translate-x-2"} `}>
@@ -229,16 +224,16 @@ function TeacherHome() {
                     <Link
                       to={""}
                       onClick={() => handleLinkClick("")}
-                      className={`group flex md:items-center font-medium gap-1 rounded-full  p-3 justify-center
-                     text-md  hover:scale-110
-                    active:scale-105 active:shadow-xl hover:shadow-xl focus:scale-125 focus:shadow-lg  text-myText `}
+                      className={`group flex md:items-center font-medium gap-1.5  rounded-lg justify-center
+                       transition duration-100  focus:bg-myCard text-sm m-1.5 p-3 hover:text-gray-500
+                       text-myText  `}
                     >
                       <div className={`font-bold`}>
                         {React.createElement(FaUserAlt, { size: "18" })}
                       </div>
 
                       <h2
-                        className={`whitespace-pre duration-300 hidden md:block`}
+                        className={`whitespace-pre duration-300 hidden md:block text-base`}
                       >
                         {" "}
                         {username}
@@ -259,9 +254,8 @@ function TeacherHome() {
 
             <footer className="bg-myBG border sm:h-16 w-full absolute">
               <div
-                className={`flex flex-wrap sm:justify-between items-center max-w-[1240px] ${
-                  open ? "mx-7" : "mx-auto"
-                }  text-gray-500 font-normal text-base mt-5`}
+                className={`flex flex-wrap sm:justify-between items-center max-w-[1240px] ${open ? "mx-7" : "mx-auto"
+                  }  text-gray-500 font-normal text-base mt-5`}
               >
                 <h2 className=" ml-16 sm:ml-0">
                   {" "}
@@ -312,4 +306,4 @@ function TeacherHome() {
   );
 }
 
-export default TeacherHome;
+export default DeptHeadHome;

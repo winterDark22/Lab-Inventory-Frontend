@@ -58,11 +58,12 @@ export function GetClearance(params) {
       className="flex items-center justify-center h-screen"
       style={{ transform: "translateY(-30%)" }}
     >
-      <div className="card bg-white shadow rounded p-16 ">
+      <div className="bg-myCard shadow-md rounded-xl p-16 text-myText">
         {clearance ? (
-          <p>
+          <p className="text-myText">
             Your request has been sent to all the labs. You will be notified
             through a message soon.
+
           </p>
         ) : (
           <>

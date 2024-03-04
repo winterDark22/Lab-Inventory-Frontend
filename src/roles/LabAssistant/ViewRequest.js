@@ -342,44 +342,47 @@ export function ViewRequest() {
   return (
     <div className="flex flex-col w-full p-5 border gap-10 min-h-screen">
       <div className="flex flex-col justify-start items-start gap-5 mt-7 mr-5">
-        <div className="flex items-center justify-between gap-4 ">
-          <button
-            onClick={() => setFilter("Pending")}
-            className={`hover:text-primary text-xs uppercase p-3 w-24 rounded-lg text-gray-600 bg-myCard  active:text-myText focus:text-primary`}
-          >
-            {" "}
-            Pending
-          </button>
-          <button
-            onClick={() => setFilter("Forwarded")}
-            className={`hover:text-primary text-xs uppercase p-3 w-24 rounded-lg text-gray-600 bg-myCard  active:text-myText focus:text-primary`}
-          >
-            {" "}
-            Forwarded
-          </button>
-          <button
-            onClick={() => setFilter("Accepted")}
-            className={`hover:text-primary text-xs uppercase p-3 w-24 rounded-lg text-gray-600 bg-myCard  active:text-myText focus:text-primary`}
-          >
-            {" "}
-            Accepted
-          </button>
-          <button
-            onClick={() => setFilter("Rejected")}
-            className={`hover:text-primary text-xs uppercase p-3 w-24 rounded-lg text-gray-600 bg-myCard  active:text-myText focus:text-primary`}
-          >
-            {" "}
-            Rejected
-          </button>
-          <button
-            onClick={() => setFilter("All")}
-            className={`hover:text-primary text-xs uppercase p-3 w-24 rounded-lg text-gray-600 bg-myCard  active:text-myText focus:text-primary`}
-          >
-            {" "}
-            All
-          </button>
+        <div className="flex items-center justify-between">
+          <div className="flex items-center justify-between gap-5 ">
+            <button
+              onClick={() => setFilter("Pending")}
+              className={`hover:text-primary text-xs uppercase p-3 w-24 rounded-lg text-gray-600 bg-myCard  active:text-myText ${filter === "Pending" ? "text-primary" : ""}`}
+            >
+              {" "}
+              Pending
+            </button>
+            <button
+              onClick={() => setFilter("Forwarded")}
+              className={`hover:text-primary text-xs uppercase p-3 w-24 rounded-lg text-gray-600 bg-myCard  active:text-myText ${filter === "Forwarded" ? "text-primary" : ""}`}
+            >
+              {" "}
+              Forwarded
+            </button>
+            <button
+              onClick={() => setFilter("Accepted")}
+              className={`hover:text-primary text-xs uppercase p-3 w-24 rounded-lg text-gray-600 bg-myCard  active:text-myText ${filter === "Accepted" ? "text-primary" : ""}`}
+            >
+              {" "}
+              Accepted
+            </button>
+            <button
+              onClick={() => setFilter("Rejected")}
+              className={`hover:text-primary text-xs uppercase p-3 w-24 rounded-lg text-gray-600 bg-myCard  active:text-myText ${filter === "Rejected" ? "text-primary" : ""}`}
+            >
+              {" "}
+              Rejected
+            </button>
+            <button
+              onClick={() => setFilter("All")}
+              className={`hover:text-primary text-xs uppercase p-3 w-24 rounded-lg text-gray-600 bg-myCard  active:text-myText ${filter === "All" ? "text-primary" : ""}`}
+            >
+              {" "}
+              All
+            </button>
 
-          <div />
+            <div />
+            <div className="flex justify-between items-center"></div>
+          </div>
         </div>
 
         {/* this is individual request card */}
@@ -442,24 +445,23 @@ export function ViewRequest() {
                     }}
                     className={`group bg-green-700 flex items-center gap-1 font-medium py-1.5 px-2.5 rounded-full
                     shadow-lg  h-fit justify-center md:w-[105px] md:bg-transparent  md:shadow-none 
-                    ${
-                      request.status_name === "Accepted" ||
-                      request.status_name === "Rejected" ||
-                      request.status_name ===
+                    ${request.status_name === "Accepted" ||
+                        request.status_name === "Rejected" ||
+                        request.status_name ===
                         "Waiting for Supervisor approval" ||
-                      request.status_name ===
+                        request.status_name ===
                         "Waiting for Head of Department approval" ||
-                      request.permit > 1
+                        request.permit > 1
                         ? "disabled:opacity-50 disabled:cursor-not-allowed"
                         : "hover:shadow-xl hover:scale-95  active:scale-105 active:shadow-xl md:hover:scale-105 md:hover:shadow-none md:active:scale-95"
-                    } `}
+                      } `}
                     disabled={
                       request.status_name === "Accepted" ||
                       request.status_name === "Rejected" ||
                       request.status_name ===
-                        "Waiting for Supervisor approval" ||
+                      "Waiting for Supervisor approval" ||
                       request.status_name ===
-                        "Waiting for Head of Department approval" ||
+                      "Waiting for Head of Department approval" ||
                       request.permit > 1
                     }
                   >
@@ -493,24 +495,23 @@ export function ViewRequest() {
                     }}
                     className={`group bg-pinky flex items-center gap-1 font-medium py-1.5 px-2.5 rounded-full
                     shadow-lg  h-fit justify-center md:w-[105px] md:bg-transparent  md:shadow-none 
-                    ${
-                      request.status_name === "Accepted" ||
-                      request.status_name === "Rejected" ||
-                      request.status_name ===
+                    ${request.status_name === "Accepted" ||
+                        request.status_name === "Rejected" ||
+                        request.status_name ===
                         "Waiting for Supervisor approval" ||
-                      request.status_name ===
+                        request.status_name ===
                         "Waiting for Head of Department approval" ||
-                      request.permit > 1
+                        request.permit > 1
                         ? "disabled:opacity-50 disabled:cursor-not-allowed"
                         : "hover:shadow-xl hover:scale-95  active:scale-105 active:shadow-xl md:hover:scale-105 md:hover:shadow-none md:active:scale-95"
-                    } `}
+                      } `}
                     disabled={
                       request.status_name === "Accepted" ||
                       request.status_name === "Rejected" ||
                       request.status_name ===
-                        "Waiting for Supervisor approval" ||
+                      "Waiting for Supervisor approval" ||
                       request.status_name ===
-                        "Waiting for Head of Department approval" ||
+                      "Waiting for Head of Department approval" ||
                       request.permit > 1
                     }
                   >
@@ -543,25 +544,24 @@ export function ViewRequest() {
                     }}
                     className={`group bg-blue-600 flex items-center gap-1 font-medium py-1.5 px-2.5 rounded-full
                     shadow-lg  h-fit justify-center md:w-[105px] md:bg-transparent  md:shadow-none 
-                    ${
-                      request.permit <= 1 ||
-                      request.status_name === "Accepted" ||
-                      request.status_name === "Rejected" ||
-                      request.status_name ===
+                    ${request.permit <= 1 ||
+                        request.status_name === "Accepted" ||
+                        request.status_name === "Rejected" ||
+                        request.status_name ===
                         "Waiting for Supervisor approval" ||
-                      request.status_name ===
+                        request.status_name ===
                         "Waiting for Head of Department approval"
                         ? "disabled:opacity-50 disabled:cursor-not-allowed"
                         : "hover:shadow-xl hover:scale-95  active:scale-105 active:shadow-xl md:hover:scale-105 md:hover:shadow-none md:active:scale-95"
-                    } `}
+                      } `}
                     disabled={
                       request.permit <= 1 ||
                       request.status_name === "Accepted" ||
                       request.status_name === "Rejected" ||
                       request.status_name ===
-                        "Waiting for Supervisor approval" ||
+                      "Waiting for Supervisor approval" ||
                       request.status_name ===
-                        "Waiting for Head of Department approval"
+                      "Waiting for Head of Department approval"
                     }
                   >
                     <div className={`font-bold text-white md:text-blue-600`}>
@@ -611,11 +611,10 @@ export function ViewRequest() {
                     }}
                     className={`group bg-black flex items-center gap-1 font-medium py-1.5 px-2.5 rounded-full
                   shadow-lg  h-fit justify-center md:w-[105px] md:bg-transparent  md:shadow-none 
-                  ${
-                    request.status_name !== "Accepted"
-                      ? "hidden"
-                      : "hover:shadow-xl hover:scale-95  active:scale-105 active:shadow-xl md:hover:scale-105 md:hover:shadow-none md:active:scale-95"
-                  } `}
+                  ${request.status_name !== "Accepted"
+                        ? "hidden"
+                        : "hover:shadow-xl hover:scale-95  active:scale-105 active:shadow-xl md:hover:scale-105 md:hover:shadow-none md:active:scale-95"
+                      } `}
                   >
                     <div className={`font-bold text-white md:text-black`}>
                       {React.createElement(FaSortAmountUp, { size: "15" })}
@@ -652,7 +651,7 @@ export function ViewRequest() {
                             [request.req_id]: "Add Due",
                           }));
                         }}
-                        className="ml-4 border-2 border-gray-300 bg-white h-10 px-5 pr-16 rounded-lg text-sm focus:outline-none"
+                        className="border border-pinky bg-myBG rounded-lg text-myText h-8 text-sm placeholder:text-bg-gray-500 w-full p-2 focus:ring-1 focus:ring-pinky focus:outline-none focus:shadow-inner"
                       />
                     )}
                 </div>

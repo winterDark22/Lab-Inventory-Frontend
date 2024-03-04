@@ -257,16 +257,16 @@ function AdminHome() {
                     <Link
                       to={""}
                       onClick={() => handleLinkClick("")}
-                      className={`group flex md:items-center font-medium gap-1 rounded-full  p-3 justify-center
-                     text-md  hover:scale-110
-                    active:scale-105 active:shadow-xl hover:shadow-xl focus:scale-125 focus:shadow-lg  text-myText `}
+                      className={`group flex md:items-center font-medium gap-1.5  rounded-lg justify-center
+                       transition duration-100  focus:bg-myCard text-sm m-1.5 p-3 hover:text-gray-500
+                       text-myText  `}
                     >
                       <div className={`font-bold`}>
                         {React.createElement(FaUserAlt, { size: "18" })}
                       </div>
 
                       <h2
-                        className={`whitespace-pre duration-300 hidden md:block`}
+                        className={`whitespace-pre duration-300 hidden md:block text-base`}
                       >
                         {" "}
                         {username}

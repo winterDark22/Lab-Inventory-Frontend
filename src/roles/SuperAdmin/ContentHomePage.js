@@ -122,7 +122,7 @@ export function ContentHomePage(params) {
                       value={searchType}
                       onChange={(e) => setSearchType(e.target.value)}
                       placeholder="Select Lab"
-                      className="border-2 border-gray-300 bg-white h-10 px-5 pr-16 rounded-lg text-sm focus:outline-none"
+                      className="border border-pinky bg-myBG rounded-lg text-myText text-sm placeholder:text-bg-gray-500 w-[200px] p-2.5 focus:ring-1 focus:ring-pinky focus:outline-none focus:shadow-inner"
                     >
                       <option value="" disabled>
                         Select Lab
