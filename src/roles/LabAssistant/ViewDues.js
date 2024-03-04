@@ -56,6 +56,8 @@ export function ViewDues(params) {
     }
   };
 
+  const handleAlert = async () => {};
+
   useEffect(() => {
     const fetchDues = async () => {
       try {

@@ -57,6 +57,9 @@ export function ShowUsers(params) {
         const response = await fetch("/api/adminjobs/showusers");
         const json = await response.json();
 
+        console.log("usersss");
+
+        console.log(json);
         if (response.ok) {
           setallUsers(json);
         }
@@ -161,8 +164,8 @@ export function ShowUsers(params) {
               </tr>
             </thead>
             <tbody>
-              {filteredUsers &&
-                filteredUsers.map((user) => (
+              {allUsers &&
+                allUsers.map((user) => (
                   <tr className="bg-myCard border-b-8 border-myBG text-myText">
                     <td className="text-start pl-24 rounded-lg overflow-hidden p-2">
                       <td className="px-6 py-4 font-semibold text-base">

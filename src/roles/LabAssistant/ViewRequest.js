@@ -419,8 +419,17 @@ export function ViewRequest() {
           filteredRequestsByStatus
             .sort((a, b) => new Date(b.req_time) - new Date(a.req_time))
             .map((request) => {
+              const isHighlighted =
+                notification && request.req_id === notification.type_id;
               return (
-                <div className="w-full p-5 rounded-xl shadow-xl flex justify-between bg-myCard ">
+                <div
+                  className={`w-full p-5 rounded-xl shadow-xl flex justify-between bg-myCard  ${
+                    isHighlighted
+                      ? " bg-newNoti shadow-md p-5 duration-300"
+                      : ""
+                  }`}
+                >
+                  {" "}
                   <div>
                     <h2 className=" text-myText text-left font-bold">
                       {" "}
@@ -461,7 +470,6 @@ export function ViewRequest() {
                       </span>
                     </div>
                   </div>
-
                   <div className="flex md:flex-row flex-col gap-3 md:gap-0">
                     <button
                       onClick={() => {

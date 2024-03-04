@@ -59,6 +59,9 @@ export function ViewRequisition(params) {
       }
     };
 
+    const interval = setInterval(() => {
+      setSeconds((seconds) => seconds + 1);
+    }, 1000);
     fetchEquipments();
     fetchUnseenNotification();
   }, []);
@@ -79,10 +82,10 @@ export function ViewRequisition(params) {
               </th>
 
               <th scope="col" className="pl-6 py-3 text-center">
-                Quantity
+                Date
               </th>
               <th scope="col" className="pl-6 py-3 text-center">
-                Date
+                Quantity
               </th>
               <th scope="col" className=" py-3 text-center">
                 Status
@@ -104,20 +107,30 @@ export function ViewRequisition(params) {
                     new Date(request.req_date),
                     "dd/MM/yyyy"
                   );
+
+                  const isHighlighted =
+                    notification &&
+                    request.requisition_id === notification.type_id;
+
                   return (
-                    <tr className="bg-myCard border-b-8 border-myBG text-myText">
+                    <tr
+                      className={`bg-myCard border-b-8 border-myBG text-myText  ${
+                        isHighlighted && seconds < 0.1
+                          ? " bg-newNoti shadow-md p-5 duration-300 "
+                          : "duration-500 "
+                      }`}
+                    >
                       <td className="px-6 py-4 font-semibold text-center text-base">
                         {" "}
                         {request.equipment_name}{" "}
                       </td>
-                      <td className="pl-6 py-4 font-semibold  text-center text-base">
-                        {request.quantity}
-                      </td>
-
                       <td
                         className={` py-4 text-center flex items-center justify-center`}
                       >
                         {displayText}
+                      </td>
+                      <td className="pl-6 py-4 font-semibold  text-center text-base">
+                        {request.quantity}
                       </td>
 
                       <td

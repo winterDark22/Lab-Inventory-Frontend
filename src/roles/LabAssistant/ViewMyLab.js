@@ -8,6 +8,18 @@ export function ViewMyLab(params) {
 
   const [searchTerm, setSearchTerm] = useState("");
 
+  const handleAlert = async (event) => {
+    const response = await fetch(`/api/due/duedatealert/${user.username}`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+    const responseJSON = await response.json();
+    console.log(" working");
+    console.log(responseJSON);
+  };
+
   useEffect(() => {
     const fetchEquipments = async () => {
       try {
@@ -35,16 +47,17 @@ export function ViewMyLab(params) {
 
   return (
     <div className="border border-pinky my-2 min-h-screen rounded-2xl ">
-      <div className="flex justify-between">
+      <div className="flex justify-between m-5">
         <h2 className="text-left text-myText mt-7 ml-5 text-2xl font-bold">
           Your Lab Equipments
         </h2>
-        <div className="flex ">
-          <input
-            type="text"
-            placeholder="Type here"
-            className="border border-pinky bg-myBG rounded-lg text-myText text-sm placeholder:text-bg-gray-500 w-full p-2.5 m-5 focus:ring-1 focus:ring-pinky focus:outline-none focus:shadow-inner"
-          />
+        <div className="flex justify-between items-center gap-5">
+          <button
+            onClick={handleAlert}
+            className="hover:text-white text-xs uppercase p-3 w-24 rounded-lg text-white bg-primary active:text-myText"
+          >
+            Send Alert
+          </button>
         </div>
       </div>
 
