@@ -16,6 +16,7 @@ export function ViewRequest(params) {
   const [searchTerm, setSearchTerm] = useState("");
   const [searchType, setSearchType] = useState("Equipment name");
   const [searchDate, setSearchDate] = useState("");
+  const [seconds, setSeconds] = useState(0);
 
   let hashMap = new Map();
   hashMap.set("waiting for supervisor approval", "blue-600");
@@ -71,6 +72,12 @@ export function ViewRequest(params) {
 
     fetchEquipments();
     fetchUnseenNotification();
+
+    const interval = setInterval(() => {
+      setSeconds((seconds) => seconds + 1);
+    }, 1000);
+
+    return () => clearInterval(interval); // This will clear the interval if the component unmounts
   }, []);
 
   const filteredRequestsByStatus = allRequests.filter((request) => {
@@ -112,49 +119,57 @@ export function ViewRequest(params) {
 
   return (
     <div className=" my-2 min-h-screen rounded-2xl ">
-      <div className="flex justify-between">
+      <div className="flex justify-between m-5">
         <div className="flex items-center justify-between gap-4 ">
           <button
             onClick={() => setFilter("All")}
-            className={`hover:text-primary text-xs uppercase p-3 w-24 rounded-lg text-gray-600 bg-myCard  active:text-myText focus:text-primary`}
+            className={`hover:text-primary text-xs uppercase p-3 w-24 rounded-lg text-gray-600 bg-myCard  active:text-myText ${
+              filter === "All" ? "text-primary" : ""
+            }`}
           >
             {" "}
             All
           </button>
           <button
             onClick={() => setFilter("Waiting")}
-            className={`hover:text-primary text-xs uppercase p-3 w-24 rounded-lg text-gray-600 bg-myCard  active:text-myText focus:text-primary`}
+            className={`hover:text-primary text-xs uppercase p-3 w-24 rounded-lg text-gray-600 bg-myCard  active:text-myText ${
+              filter === "Waiting" ? "text-primary" : ""
+            }`}
           >
             {" "}
             Waiting
           </button>
           <button
             onClick={() => setFilter("Accepted")}
-            className={`hover:text-primary text-xs uppercase p-3 w-24 rounded-lg text-gray-600 bg-myCard  active:text-myText focus:text-primary`}
+            className={`hover:text-primary text-xs uppercase p-3 w-24 rounded-lg text-gray-600 bg-myCard  active:text-myText ${
+              filter === "Accepted" ? "text-primary" : ""
+            }`}
           >
             {" "}
             Accepted
           </button>
           <button
             onClick={() => setFilter("Rejected")}
-            className={`hover:text-primary text-xs uppercase p-3 w-24 rounded-lg text-gray-600 bg-myCard  active:text-myText focus:text-primary`}
+            className={`hover:text-primary text-xs uppercase p-3 w-24 rounded-lg text-gray-600 bg-myCard  active:text-myText ${
+              filter === "Rejected" ? "text-primary" : ""
+            }`}
           >
             {" "}
             Rejected
           </button>
-
+        </div>
+        <div className="flex justify-between items-center gap-5">
           <input
             type="text"
             placeholder="Search..."
             value={searchTerm}
             onChange={handleSearch}
-            className="ml-4 border-2 border-gray-300 bg-white h-10 px-5 pr-16 rounded-lg text-sm focus:outline-none"
+            className="border border-pinky bg-myBG rounded-lg text-myText text-sm placeholder:text-bg-gray-500 w-full p-2 focus:ring-1 focus:ring-pinky focus:outline-none focus:shadow-inner"
           />
-
           <select
             value={searchType}
             onChange={(e) => setSearchType(e.target.value)}
-            className="border-2 border-gray-300 bg-white h-10 px-5 pr-16 rounded-lg text-sm focus:outline-none"
+            className="border border-pinky bg-myBG rounded-lg text-myText text-sm placeholder:text-bg-gray-500 w-full p-2.5 focus:ring-1 focus:ring-pinky focus:outline-none focus:shadow-inner"
           >
             <option value="Equipment name">Equipment name</option>
             <option value="Location">Location</option>
@@ -192,8 +207,10 @@ export function ViewRequest(params) {
 
                   return (
                     <tr
-                      className={`bg-myCard border-b-8 border-myBG text-myText ${
-                        isHighlighted ? "bg-red-800" : ""
+                      className={`bg-myCard border-b-8 border-myBG text-myText  ${
+                        isHighlighted && seconds < 0.1
+                          ? " bg-newNoti shadow-md p-5 duration-300 "
+                          : "duration-500 "
                       }`}
                     >
                       <td className="px-6 py-4 font-semibold text-center text-base">

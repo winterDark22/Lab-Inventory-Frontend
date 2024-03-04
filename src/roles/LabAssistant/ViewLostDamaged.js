@@ -12,6 +12,7 @@ export function ViewLostDamaged(params) {
   const [amount, setAmount] = useState(0);
   const [due, setDue] = useState({});
   const [date, setdate] = useState("");
+  const [seconds, setSeconds] = useState(0);
 
   // searching purpose
   const [searchTerm, setSearchTerm] = useState("");
@@ -130,6 +131,11 @@ export function ViewLostDamaged(params) {
       }
     };
     fetchDamages();
+    const interval = setInterval(() => {
+      setSeconds((seconds) => seconds + 1);
+    }, 1000);
+
+    return () => clearInterval(interval); // This will clear the interval if the component unmounts
   }, []);
 
   const filteredDamage = allDamages.filter((damage) => {
@@ -165,23 +171,21 @@ export function ViewLostDamaged(params) {
 
   return (
     <div className="border border-pinky my-2 min-h-screen rounded-2xl ">
-      <div className="flex justify-between">
-        <div className="flex items-center justify-between gap-4 ">
-          <h2 className="text-left text-myText mt-7 ml-5 text-2xl font-bold">
-            Lost/Damaged
-          </h2>
+      <div className="flex justify-between m-5">
+        <div></div>
+        <div className="flex items-center justify-between gap-5">
           <input
             type="text"
             placeholder="Search..."
             value={searchTerm}
             onChange={handleSearch}
-            className="ml-4 border-2 border-gray-300 bg-white h-10 px-5 pr-16 rounded-lg text-sm focus:outline-none"
+            className="border border-pinky bg-myBG rounded-lg text-myText text-sm placeholder:text-bg-gray-500 w-full p-2 focus:ring-1 focus:ring-pinky focus:outline-none focus:shadow-inner"
           />
 
           <select
             value={searchType}
             onChange={(e) => setSearchType(e.target.value)}
-            className="border-2 border-gray-300 bg-white h-10 px-5 pr-16 rounded-lg text-sm focus:outline-none"
+            className="border border-pinky bg-myBG rounded-lg text-myText text-sm placeholder:text-bg-gray-500 w-full p-2.5 focus:ring-1 focus:ring-pinky focus:outline-none focus:shadow-inner"
           >
             <option value="Equipment name">Equipment name</option>
             <option value="Student ID">Student ID</option>
@@ -192,7 +196,7 @@ export function ViewLostDamaged(params) {
             type="date"
             value={searchDate}
             onChange={handleDateSearch}
-            className="ml-4 border-2 border-gray-300 bg-white h-10 px-5 pr-16 rounded-lg text-sm focus:outline-none"
+            className="border border-pinky bg-myBG rounded-lg text-myText text-sm placeholder:text-bg-gray-500 w-full p-2 focus:ring-1 focus:ring-pinky focus:outline-none focus:shadow-inner"
           />
         </div>
       </div>
@@ -268,7 +272,7 @@ export function ViewLostDamaged(params) {
 
                       <td className="px-6 py-4 font-semibold  text-center text-base">
                         <button
-                          className="mx-2 py-1 px-3 bg-blue-500 text-white rounded"
+                          className={` duration-300 text-sm uppercase text-white md:text-blue-500 hover:shadow-xl hover:scale-95  active:scale-105 active:shadow-xl md:hover:scale-105 md:hover:shadow-none md:active:scale-95`}
                           onClick={() => handleClear(due)}
                         >
                           Clear
@@ -276,7 +280,7 @@ export function ViewLostDamaged(params) {
                       </td>
                       <td className="px-6 py-4 font-semibold  text-center text-base">
                         <button
-                          className={`mx-2 py-1 px-3 bg-blue-500 text-white rounded ${
+                          className={` duration-300 text-sm uppercase text-white md:text-blue-500 ${
                             due.monetary_assigned === 1
                               ? "disabled:opacity-50 disabled:cursor-not-allowed"
                               : "hover:shadow-xl hover:scale-95  active:scale-105 active:shadow-xl md:hover:scale-105 md:hover:shadow-none md:active:scale-95"

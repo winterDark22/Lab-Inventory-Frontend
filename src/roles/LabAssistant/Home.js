@@ -17,6 +17,7 @@ import { FaSortAmountUp, FaUserAlt, FaEnvelope } from "react-icons/fa";
 
 //import pages
 import { useAuthContext } from "../../context/AuthContext";
+import { useNotificationContext } from "../../context/NotificationContext";
 import { ViewRequest } from "./ViewRequest";
 import { AddRequest } from "./AddRequest";
 import { ViewMyLab } from "./ViewMyLab";
@@ -27,6 +28,8 @@ import { useLogout } from "../../hook/useLogout";
 import { ViewDues } from "./ViewDues";
 import { ViewLostDamaged } from "./ViewLostDamaged";
 import { ViewMonetaryDues } from "./ViewMonetaryDues";
+import { Requisition } from "./Requisition";
+import { ViewRequisition } from "./ViewRequisition.js";
 
 // import { Chart } from "./Chart";
 
@@ -34,6 +37,8 @@ function AssistantHome() {
   //user fetching
   const { user } = useAuthContext();
   const { username, role } = user;
+  const { newNotificationCnt, setNewNotificationCnt } =
+    useNotificationContext();
   const { logout } = useLogout();
 
   const menus = [
@@ -61,6 +66,16 @@ function AssistantHome() {
     {
       name: "View monetary dues",
       link: "viewMonetaryDues",
+      icon: MdListAlt,
+    },
+    {
+      name: "Add requisition",
+      link: "addrequisition",
+      icon: MdListAlt,
+    },
+    {
+      name: "View requisition",
+      link: "viewrequisition",
       icon: MdListAlt,
     },
     { name: "Notification", link: "notification", icon: MdNotifications },
@@ -208,6 +223,11 @@ function AssistantHome() {
                   ${!open && "opacity-0 translate-x-28 overflow-hidden"} `}
                   >
                     {menu?.name}
+
+                    {menu.name === "Notifications" &&
+                      newNotificationCnt > 0 && (
+                        <span>({newNotificationCnt})</span>
+                      )}
                   </h2>
 
                   <h2
@@ -287,8 +307,13 @@ function AssistantHome() {
                 <Route path="viewLostDamaged" element={<ViewLostDamaged />} />
                 <Route path="viewMonetaryDues" element={<ViewMonetaryDues />} />
                 <Route path="viewDues" element={<ViewDues />} />
+
+                <Route path="addrequisition" element={<Requisition />} />
+                <Route path="viewrequisition" element={<ViewRequisition />} />
+
                 <Route path="notification" element={<Notification />} />
                 <Route path="details/:id" element={<ProductDetails />} />
+
                 {/* <Route path="chart" element={<Chart />} /> */}
               </Routes>
             </div>
@@ -349,4 +374,3 @@ function AssistantHome() {
 }
 
 export default AssistantHome;
-

@@ -114,10 +114,10 @@ export function ViewMonetaryDue(params) {
 
                   return (
                     <tr
-                      className={`bg-myCard border-b-8 border-myBG text-myText ${
+                      className={`bg-myCard border-b-8 border-myBG text-myText  ${
                         isHighlighted
-                          ? "bg-gray-400 text-white"
-                          : " text-gray-500"
+                          ? "border-x-8 border-x-pinky bg-newNoti shadow-md p-5 duration-300"
+                          : ""
                       }`}
                     >
                       <td className="px-6 py-4 font-semibold text-center text-base">

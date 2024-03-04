@@ -6,6 +6,7 @@ import { format } from "date-fns";
 import { MdCheckBox, MdEditSquare } from "react-icons/md";
 import { FaSquareXmark } from "react-icons/fa6";
 import { FaSortAmountUp } from "react-icons/fa";
+import { ImCross } from "react-icons/im";
 
 export function ClearanceRequests(params) {
   const { user } = useAuthContext();
@@ -298,8 +299,8 @@ export function ClearanceRequests(params) {
                 onClick={() => {
                   handleCheck(request);
                 }}
-                className={`group bg-green-700 flex items-center gap-1 font-medium py-1.5 px-2.5 rounded-full
-              shadow-lg  h-fit justify-center md:w-[105px] md:bg-transparent  md:shadow-none 
+                className={`group bg-blue-700 flex items-center gap-1 font-medium py-1.5 px-2.5 rounded-full
+              shadow-lg  h-fit justify-center md:w-[105px] md:bg-transparent  md:shadow-none md:mr-6
               ${
                 request.status_name === "Accepted" ||
                 request.status_name === "Rejected"
@@ -312,12 +313,12 @@ export function ClearanceRequests(params) {
                 //   request.status_name === "Rejected"
                 // }
               >
-                <div className={`font-bold text-white md:text-green-700`}>
+                <div className={`font-bold text-white md:text-blue-700`}>
                   {React.createElement(MdCheckBox, { size: "16" })}
                 </div>
 
                 <h2
-                  className={`whitespace-pre duration-300 text-sm uppercase text-white md:text-green-700 md:block hidden`}
+                  className={`whitespace-pre duration-300 text-sm uppercase text-white md:text-blue-700 md:block hidden`}
                 >
                   Check Eligibility
                 </h2>
@@ -325,10 +326,9 @@ export function ClearanceRequests(params) {
                 <h2
                   className={`
             absolute bg-myBG whitespace-pre text-sm uppercase
-            text-green-700 rounded-xl drop-shadow-lg px-0 py-0 w-0 overflow-hidden
+            text-blue-700 rounded-xl drop-shadow-lg px-0 py-0 w-0 overflow-hidden
             group-hover:px-2.5 group-hover:py-1.5 group-hover:-left-20 group-hover:duration-200 group-hover:w-fit
-            md:hidden
-            `}
+            md:hidden -translate-x-16`}
                 >
                   Check Eligibility
                 </h2>
@@ -339,7 +339,7 @@ export function ClearanceRequests(params) {
                   handleAccept(request);
                 }}
                 className={`group bg-green-700 flex items-center gap-1 font-medium py-1.5 px-2.5 rounded-full
-              shadow-lg  h-fit justify-center md:w-[105px] md:bg-transparent  md:shadow-none 
+              shadow-lg  h-fit justify-center md:w-[105px] md:bg-transparent  md:shadow-none md:-mr-3
               ${
                 request.status_name ===
                   "Waiting for Department Head Signature" ||
@@ -383,7 +383,7 @@ export function ClearanceRequests(params) {
                   handleReject(request);
                 }}
                 className={`group bg-pinky flex items-center gap-1 font-medium py-1.5 px-2.5 rounded-full
-              shadow-lg  h-fit justify-center md:w-[105px] md:bg-transparent  md:shadow-none 
+              shadow-lg  h-fit justify-center md:w-[105px] md:bg-transparent  md:shadow-none md:-mr-4
               ${
                 request.status_name ===
                   "Waiting for Department Head Signature" ||
@@ -472,29 +472,22 @@ export function ClearanceRequests(params) {
           <div className="flex items-center justify-center min-h-screen  sm:block sm:p-0">
             {/* ...rest of the modal code... */}
             <div className="bg-white ml-[35vw] rounded-lg text-left overflow-hidden sm:mt-[20vh] sm:align-middle sm:max-w-lg sm:w-full">
+              <div className="bg-gray-50 px-4 justify-end sm:px-3 sm:flex gap-12 ">
+                <button
+                  onClick={() => handleModalCancel()}
+                  className="text-white bg-pinky my-1 border-0 py-1 sm:px-1 focus:outline-none hover:bg-primary rounded-full text-base"
+                >
+                  {React.createElement(ImCross, { size: "15" })}
+                </button>
+              </div>
               <div className="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
                 <div className="sm:flex sm:flex-col fle items-stretch">
                   <div className="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left flex-grow">
-                    <h3 className="text-lg leading-6 font-medium text-gray-900">
+                    <h3 className="text-lg leading-6 font-medium text-gray-900 text-center">
                       {modalContent}
                     </h3>
                   </div>
                 </div>
-              </div>
-
-              <div className="bg-gray-50 px-4 py-4 sm:px-6 sm:flex justify-center gap-12 ">
-                <button
-                  onClick={() => handleModalCancel()}
-                  className="text-white bg-pinky  border-0 py-1 sm:px-4 px-2 focus:outline-none hover:bg-primary rounded-lg text-base"
-                >
-                  Cancel
-                </button>
-                {/* <button
-                    className="text-white  bg-green-600 border-0 sm:px-4 px-2 py-1 focus:outline-none  hover:bg-green-700 rounded-lg text-base"
-                    onClick={() => handleSend()}
-                  >
-                    Send
-                  </button> */}
               </div>
             </div>
           </div>

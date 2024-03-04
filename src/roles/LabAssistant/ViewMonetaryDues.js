@@ -4,14 +4,22 @@ import formatDistanceToNow from "date-fns/formatDistanceToNow";
 import { format } from "date-fns";
 import { differenceInDays } from "date-fns";
 
+import { useLocation } from "react-router-dom";
+import { useNotificationContext } from "../../context/NotificationContext";
+
 export function ViewMonetaryDues(params) {
   const { user } = useAuthContext();
   const [allMonetaryDues, setallMonetaryDues] = useState([]);
 
   const [filter, setFilter] = useState("Pending"); // filter requests by status
   const [searchTerm, setSearchTerm] = useState("");
-  const [searchType, setSearchType] = useState("Equipment name");
+  const [searchType, setSearchType] = useState("");
   const [searchDate, setSearchDate] = useState("");
+
+  const location = useLocation();
+  const notification = location.state ? location.state.notification : null;
+  const { setNewNotificationCnt } = useNotificationContext();
+  const [seconds, setSeconds] = useState(0);
 
   const handleDateSearch = (event) => {
     setSearchDate(event.target.value);
@@ -69,7 +77,29 @@ export function ViewMonetaryDues(params) {
         console.log(error.message);
       }
     };
+
+    const fetchUnseenNotification = async () => {
+      try {
+        const response = await fetch(
+          `/api/notification/getunseennotificationcount/${user.username}`
+        );
+        const json = await response.json();
+
+        console.log(json);
+
+        if (response.ok) {
+          setNewNotificationCnt(json.unseen_notification_count);
+        }
+      } catch (error) {
+        console.log(error.message);
+      }
+    };
+
     fetchDamages();
+    fetchUnseenNotification();
+    const interval = setInterval(() => {
+      setSeconds((seconds) => seconds + 1);
+    }, 1000);
   }, []);
 
   const filteredRequestsByStatus = allMonetaryDues.filter((request) => {
@@ -77,40 +107,79 @@ export function ViewMonetaryDues(params) {
     if (filter === "Cleared") return request.status_name === "Cleared";
   });
 
+  const filteredRequests = filteredRequestsByStatus.filter((request) => {
+    let matchesSearchTerm = true;
+    switch (searchType) {
+      case "Equipment name":
+        matchesSearchTerm = request.equipment_name
+          ? request.equipment_name
+              .toLowerCase()
+              .startsWith(searchTerm.toLowerCase())
+          : false;
+        break;
+      case "Student ID":
+        matchesSearchTerm = request.username
+          ? request.username.toLowerCase().startsWith(searchTerm.toLowerCase())
+          : false;
+        break;
+      default:
+      // Add more cases as needed
+    }
+
+    let matchesSearchDate = true;
+    if (searchDate) {
+      const recordDate = new Date(request.issue_date);
+      const searchDateObj = new Date(searchDate);
+      matchesSearchDate =
+        recordDate.getFullYear() === searchDateObj.getFullYear() &&
+        recordDate.getMonth() === searchDateObj.getMonth() &&
+        recordDate.getDate() === searchDateObj.getDate();
+    }
+    return matchesSearchTerm && matchesSearchDate;
+  });
+
   return (
     <div className="border border-pinky my-2 min-h-screen rounded-2xl ">
-      <div className="flex justify-between">
+      <div className="flex justify-between m-5">
         <div className="flex items-center justify-between gap-4 ">
           <button
             onClick={() => setFilter("Pending")}
-            className={`hover:text-primary text-xs uppercase p-3 w-24 rounded-lg text-gray-600 bg-myCard  active:text-myText focus:text-primary`}
+            className={`hover:text-primary text-xs uppercase p-3 w-24 rounded-lg text-gray-600 bg-myCard  active:text-myText ${
+              filter === "Pending" ? "text-primary" : ""
+            }`}
           >
             {" "}
             Pending
           </button>
           <button
             onClick={() => setFilter("Cleared")}
-            className={`hover:text-primary text-xs uppercase p-3 w-24 rounded-lg text-gray-600 bg-myCard  active:text-myText focus:text-primary`}
+            className={`hover:text-primary text-xs uppercase p-3 w-24 rounded-lg text-gray-600 bg-myCard  active:text-myText ${
+              filter === "Cleared" ? "text-primary" : ""
+            }`}
           >
             {" "}
             Cleared
           </button>
-
+        </div>
+        <div className="flex justify-between items-center gap-5">
           <input
             type="text"
             placeholder="Search..."
             value={searchTerm}
             onChange={handleSearch}
-            className="ml-4 border-2 border-gray-300 bg-white h-10 px-5 pr-16 rounded-lg text-sm focus:outline-none"
+            className="border border-pinky bg-myBG rounded-lg text-myText text-sm placeholder:text-bg-gray-500 w-full p-2 focus:ring-1 focus:ring-pinky focus:outline-none focus:shadow-inner"
           />
 
           <select
             value={searchType}
             onChange={(e) => setSearchType(e.target.value)}
-            className="border-2 border-gray-300 bg-white h-10 px-5 pr-16 rounded-lg text-sm focus:outline-none"
+            className="border border-pinky bg-myBG rounded-lg text-myText text-sm placeholder:text-bg-gray-500 w-full p-2.5 focus:ring-1 focus:ring-pinky focus:outline-none focus:shadow-inner"
           >
+            <option value="" disabled>
+              Select type
+            </option>
             <option value="Equipment name">Equipment name</option>
-            <option value="Lab assistant name">Lab assistant name</option>
+            <option value="Student ID">Student ID</option>
             {/* Add more options as needed */}
           </select>
 
@@ -118,7 +187,7 @@ export function ViewMonetaryDues(params) {
             type="date"
             value={searchDate}
             onChange={handleDateSearch}
-            className="ml-4 border-2 border-gray-300 bg-white h-10 px-5 pr-16 rounded-lg text-sm focus:outline-none"
+            className="border border-pinky bg-myBG rounded-lg text-myText text-sm placeholder:text-bg-gray-500 w-full p-2 focus:ring-1 focus:ring-pinky focus:outline-none focus:shadow-inner"
           />
         </div>
       </div>
@@ -155,16 +224,25 @@ export function ViewMonetaryDues(params) {
             </tr>
           </thead>
           <tbody>
-            {allMonetaryDues &&
-              [...allMonetaryDues]
+            {filteredRequests &&
+              [...filteredRequests]
                 .sort((a, b) => {
                   const dueDateA = new Date(a.due_date);
                   const dueDateB = new Date(b.due_date);
                   return dueDateB - dueDateA;
                 })
                 .map((due, index) => {
+                  const isHighlighted =
+                    notification && due.due_id === notification.type_id;
+
                   return (
-                    <tr className="bg-myCard border-b-8 border-myBG text-myText">
+                    <tr
+                      className={`bg-myCard border-b-8 border-myBG text-myText  ${
+                        isHighlighted && seconds < 0.1
+                          ? " bg-newNoti shadow-md p-5 duration-300 "
+                          : "duration-500 "
+                      }`}
+                    >
                       <td className="px-6 py-4 font-semibold text-center text-base">
                         {due.equipment_name}
                         <p className="text-sm text-gray-500">
@@ -197,7 +275,7 @@ export function ViewMonetaryDues(params) {
 
                       <td className="px-6 py-4 font-semibold  text-center text-base">
                         <button
-                          className={`mx-2 py-1 px-3 bg-blue-500 text-white rounded ${
+                          className={` duration-300 text-sm uppercase text-white md:text-blue-500  ${
                             due.status_name === "Cleared"
                               ? "disabled:opacity-50 disabled:cursor-not-allowed"
                               : "hover:shadow-xl hover:scale-95  active:scale-105 active:shadow-xl md:hover:scale-105 md:hover:shadow-none md:active:scale-95"

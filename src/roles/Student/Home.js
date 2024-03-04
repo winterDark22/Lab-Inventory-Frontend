@@ -42,11 +42,11 @@ function StudentHome() {
   const { logout } = useLogout();
 
   const menus = [
-    {
-      name: "Add Request",
-      link: "addRequest",
-      icon: MdOutlineDashboardCustomize,
-    },
+    // {
+    //   name: "Add Request",
+    //   link: "addRequest",
+    //   icon: MdOutlineDashboardCustomize,
+    // },
     { name: "View sent request", link: "viewRequest", icon: MdListAlt },
     { name: "View Dues", link: "viewDue", icon: MdOutlineTableView },
     {
@@ -286,7 +286,7 @@ function StudentHome() {
             <div>
               <Routes>
                 <Route path="" element={<ContentHomePage />} />
-                <Route path="addRequest" element={<AddRequest />} />
+                {/* <Route path="addRequest" element={<AddRequest />} /> */}
                 <Route path="viewRequest" element={<ViewRequest />} />
                 <Route path="viewDue" element={<ViewDue />} />
                 <Route path="viewMonetaryDue" element={<ViewMonetaryDue />} />

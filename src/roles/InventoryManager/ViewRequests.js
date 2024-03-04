@@ -15,7 +15,7 @@ export function ViewRequests(params) {
   const [filter, setFilter] = useState("Pending"); // filter requests by status
 
   const [searchTerm, setSearchTerm] = useState("");
-  const [searchType, setSearchType] = useState("Equipment name");
+  const [searchType, setSearchType] = useState("");
   const [searchDate, setSearchDate] = useState("");
 
   const handleDateSearch = (event) => {
@@ -226,8 +226,12 @@ export function ViewRequests(params) {
             onChange={(e) => setSearchType(e.target.value)}
             className="border-2 border-gray-300 bg-white h-10 px-5 pr-16 rounded-lg text-sm focus:outline-none"
           >
+            <option value="" disabled>
+              Select type
+            </option>
             <option value="Equipment name">Equipment name</option>
             <option value="Lab assistant name">Lab assistant name</option>
+
             {/* Add more options as needed */}
           </select>
 

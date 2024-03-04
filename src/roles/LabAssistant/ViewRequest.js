@@ -12,9 +12,17 @@ import { MdCheckBox, MdEditSquare } from "react-icons/md";
 import { FaSquareXmark } from "react-icons/fa6";
 import { FaSortAmountUp } from "react-icons/fa";
 
+import { useLocation } from "react-router-dom";
+import { useNotificationContext } from "../../context/NotificationContext";
+
 export function ViewRequest() {
   const { user } = useAuthContext();
   const username = user.username;
+
+  const location = useLocation();
+  const notification = location.state ? location.state.notification : null;
+  const { setNewNotificationCnt } = useNotificationContext();
+  const [seconds, setSeconds] = useState(0);
 
   const [searchTerm, setSearchTerm] = useState("");
   const [searchType, setSearchType] = useState("Equipment name");
@@ -22,7 +30,7 @@ export function ViewRequest() {
   //Mother of all requests
   const [allRequests, setallRequests] = useState([]);
   //filter requests by status
-  const [filter, setFilter] = useState("Pending");
+  const [filter, setFilter] = useState("All");
 
   const [forwardRequests, setForwardRequests] = useState([]); //for forward modal
   const [teachers, setTeachers] = useState([]);
@@ -323,6 +331,28 @@ export function ViewRequest() {
 
     fetchRequests();
     fetchTeacher();
+
+    const fetchUnseenNotification = async () => {
+      try {
+        const response = await fetch(
+          `/api/notification/getunseennotificationcount/${user.username}`
+        );
+        const json = await response.json();
+
+        console.log(json);
+
+        if (response.ok) {
+          setNewNotificationCnt(json.unseen_notification_count);
+        }
+      } catch (error) {
+        console.log(error.message);
+      }
+    };
+
+    fetchUnseenNotification();
+    const interval = setInterval(() => {
+      setSeconds((seconds) => seconds + 1);
+    }, 1000);
   }, []);
 
   const filteredRequestsByStatus = allRequests.filter((request) => {
@@ -387,60 +417,58 @@ export function ViewRequest() {
         {/*   </div><div className="flex flex-col w-full p-5 border gap-10"> */}
         {filteredRequestsByStatus &&
           filteredRequestsByStatus
-            .sort(
-              (a, b) =>
-                new Date(b.notification_time) - new Date(a.notification_time)
-            )
-            .map((request) => (
-              <div className="w-full p-5 rounded-xl shadow-xl flex justify-between bg-myCard ">
-                <div>
-                  <h2 className=" text-myText text-left font-bold">
-                    {" "}
-                    {request.equipment_name}
-                  </h2>
-                  <div className="mt-4 text-sm flex flex-col text-left">
-                    <span className="text-gray-500">
-                      Student Id:{" "}
-                      <span className="text-myText font-bold">
-                        &nbsp;{request.username}
+            .sort((a, b) => new Date(b.req_time) - new Date(a.req_time))
+            .map((request) => {
+              return (
+                <div className="w-full p-5 rounded-xl shadow-xl flex justify-between bg-myCard ">
+                  <div>
+                    <h2 className=" text-myText text-left font-bold">
+                      {" "}
+                      {request.equipment_name}
+                    </h2>
+                    <div className="mt-4 text-sm flex flex-col text-left">
+                      <span className="text-gray-500">
+                        Student Id:{" "}
+                        <span className="text-myText font-bold">
+                          &nbsp;{request.username}
+                        </span>
                       </span>
-                    </span>
-                    <span className="text-gray-500">
-                      Quantity:{" "}
-                      <span className="text-myText font-bold">
-                        &nbsp;{request.quantity}
+                      <span className="text-gray-500">
+                        Quantity:{" "}
+                        <span className="text-myText font-bold">
+                          &nbsp;{request.quantity}
+                        </span>
                       </span>
-                    </span>
-                    <span className="text-gray-500">
-                      Stock:{" "}
-                      <span className="text-myText font-bold">
-                        &nbsp;{request.available}
+                      <span className="text-gray-500">
+                        Stock:{" "}
+                        <span className="text-myText font-bold">
+                          &nbsp;{request.available}
+                        </span>
                       </span>
-                    </span>
-                    <span className="text-gray-500">
-                      Status:{" "}
-                      <span className="text-myText font-bold">
-                        &nbsp;{request.status_name}
+                      <span className="text-gray-500">
+                        Status:{" "}
+                        <span className="text-myText font-bold">
+                          &nbsp;{request.status_name}
+                        </span>
                       </span>
-                    </span>
 
-                    <span className="text-gray-500">
-                      Requested:{" "}
-                      <span className="text-myText font-bold">
-                        &nbsp;
-                        {format(new Date(request.req_time), "dd/MM/yyyy")}
+                      <span className="text-gray-500">
+                        Requested:{" "}
+                        <span className="text-myText font-bold">
+                          &nbsp;
+                          {format(new Date(request.req_time), "dd/MM/yyyy")}
+                        </span>
                       </span>
-                    </span>
+                    </div>
                   </div>
-                </div>
 
-                <div className="flex md:flex-row flex-col gap-3 md:gap-0">
-                  <button
-                    onClick={() => {
-                      setSelectedRequest(request);
-                      handleAccept(request.req_id);
-                    }}
-                    className={`group bg-green-700 flex items-center gap-1 font-medium py-1.5 px-2.5 rounded-full
+                  <div className="flex md:flex-row flex-col gap-3 md:gap-0">
+                    <button
+                      onClick={() => {
+                        setSelectedRequest(request);
+                        handleAccept(request.req_id);
+                      }}
+                      className={`group bg-green-700 flex items-center gap-1 font-medium py-1.5 px-2.5 rounded-full
                     shadow-lg  h-fit justify-center md:w-[105px] md:bg-transparent  md:shadow-none 
                     ${
                       request.status_name === "Accepted" ||
@@ -453,45 +481,45 @@ export function ViewRequest() {
                         ? "disabled:opacity-50 disabled:cursor-not-allowed"
                         : "hover:shadow-xl hover:scale-95  active:scale-105 active:shadow-xl md:hover:scale-105 md:hover:shadow-none md:active:scale-95"
                     } `}
-                    disabled={
-                      request.status_name === "Accepted" ||
-                      request.status_name === "Rejected" ||
-                      request.status_name ===
-                        "Waiting for Supervisor approval" ||
-                      request.status_name ===
-                        "Waiting for Head of Department approval" ||
-                      request.permit > 1
-                    }
-                  >
-                    <div className={`font-bold text-white md:text-green-700`}>
-                      {React.createElement(MdCheckBox, { size: "16" })}
-                    </div>
-
-                    <h2
-                      className={`whitespace-pre duration-300 text-sm uppercase text-white md:text-green-700 md:block hidden`}
+                      disabled={
+                        request.status_name === "Accepted" ||
+                        request.status_name === "Rejected" ||
+                        request.status_name ===
+                          "Waiting for Supervisor approval" ||
+                        request.status_name ===
+                          "Waiting for Head of Department approval" ||
+                        request.permit > 1
+                      }
                     >
-                      accept
-                    </h2>
+                      <div className={`font-bold text-white md:text-green-700`}>
+                        {React.createElement(MdCheckBox, { size: "16" })}
+                      </div>
 
-                    <h2
-                      className={`
+                      <h2
+                        className={`whitespace-pre duration-300 text-sm uppercase text-white md:text-green-700 md:block hidden`}
+                      >
+                        accept
+                      </h2>
+
+                      <h2
+                        className={`
                   absolute bg-myBG whitespace-pre text-sm uppercase
                   text-green-700 rounded-xl drop-shadow-lg px-0 py-0 w-0 overflow-hidden
                   group-hover:px-2.5 group-hover:py-1.5 group-hover:-left-20 group-hover:duration-200 group-hover:w-fit
                   md:hidden
                   `}
-                    >
-                      accept
-                    </h2>
-                  </button>
+                      >
+                        accept
+                      </h2>
+                    </button>
 
-                  <button
-                    onClick={() => {
-                      setSelectedRequest(request);
-                      handleDelete(request.req_id);
-                      setRejection(true);
-                    }}
-                    className={`group bg-pinky flex items-center gap-1 font-medium py-1.5 px-2.5 rounded-full
+                    <button
+                      onClick={() => {
+                        setSelectedRequest(request);
+                        handleDelete(request.req_id);
+                        setRejection(true);
+                      }}
+                      className={`group bg-pinky flex items-center gap-1 font-medium py-1.5 px-2.5 rounded-full
                     shadow-lg  h-fit justify-center md:w-[105px] md:bg-transparent  md:shadow-none 
                     ${
                       request.status_name === "Accepted" ||
@@ -504,44 +532,44 @@ export function ViewRequest() {
                         ? "disabled:opacity-50 disabled:cursor-not-allowed"
                         : "hover:shadow-xl hover:scale-95  active:scale-105 active:shadow-xl md:hover:scale-105 md:hover:shadow-none md:active:scale-95"
                     } `}
-                    disabled={
-                      request.status_name === "Accepted" ||
-                      request.status_name === "Rejected" ||
-                      request.status_name ===
-                        "Waiting for Supervisor approval" ||
-                      request.status_name ===
-                        "Waiting for Head of Department approval" ||
-                      request.permit > 1
-                    }
-                  >
-                    <div className={`font-bold text-white md:text-pinky`}>
-                      {React.createElement(FaSquareXmark, { size: "15" })}
-                    </div>
-
-                    <h2
-                      className={`whitespace-pre duration-300 text-sm uppercase text-white  md:text-pinky md:block hidden`}
+                      disabled={
+                        request.status_name === "Accepted" ||
+                        request.status_name === "Rejected" ||
+                        request.status_name ===
+                          "Waiting for Supervisor approval" ||
+                        request.status_name ===
+                          "Waiting for Head of Department approval" ||
+                        request.permit > 1
+                      }
                     >
-                      reject
-                    </h2>
+                      <div className={`font-bold text-white md:text-pinky`}>
+                        {React.createElement(FaSquareXmark, { size: "15" })}
+                      </div>
 
-                    <h2
-                      className={`
+                      <h2
+                        className={`whitespace-pre duration-300 text-sm uppercase text-white  md:text-pinky md:block hidden`}
+                      >
+                        reject
+                      </h2>
+
+                      <h2
+                        className={`
                   absolute bg-myBG whitespace-pre text-sm uppercase
                   text-pinky rounded-xl drop-shadow-lg px-0 py-0 w-0 overflow-hidden
                   group-hover:px-2.5 group-hover:py-1.5 group-hover:-left-20 group-hover:duration-200 group-hover:w-fit
                   md:hidden
                   `}
-                    >
-                      reject
-                    </h2>
-                  </button>
+                      >
+                        reject
+                      </h2>
+                    </button>
 
-                  <button
-                    onClick={() => {
-                      setSelectedRequest(request);
-                      handleForward(request.req_id);
-                    }}
-                    className={`group bg-blue-600 flex items-center gap-1 font-medium py-1.5 px-2.5 rounded-full
+                    <button
+                      onClick={() => {
+                        setSelectedRequest(request);
+                        handleForward(request.req_id);
+                      }}
+                      className={`group bg-blue-600 flex items-center gap-1 font-medium py-1.5 px-2.5 rounded-full
                     shadow-lg  h-fit justify-center md:w-[105px] md:bg-transparent  md:shadow-none 
                     ${
                       request.permit <= 1 ||
@@ -554,110 +582,111 @@ export function ViewRequest() {
                         ? "disabled:opacity-50 disabled:cursor-not-allowed"
                         : "hover:shadow-xl hover:scale-95  active:scale-105 active:shadow-xl md:hover:scale-105 md:hover:shadow-none md:active:scale-95"
                     } `}
-                    disabled={
-                      request.permit <= 1 ||
-                      request.status_name === "Accepted" ||
-                      request.status_name === "Rejected" ||
-                      request.status_name ===
-                        "Waiting for Supervisor approval" ||
-                      request.status_name ===
-                        "Waiting for Head of Department approval"
-                    }
-                  >
-                    <div className={`font-bold text-white md:text-blue-600`}>
-                      {React.createElement(FaSortAmountUp, { size: "15" })}
-                    </div>
-
-                    <h2
-                      className={`whitespace-pre duration-300 text-sm uppercase text-white md:text-blue-600  md:block hidden`}
+                      disabled={
+                        request.permit <= 1 ||
+                        request.status_name === "Accepted" ||
+                        request.status_name === "Rejected" ||
+                        request.status_name ===
+                          "Waiting for Supervisor approval" ||
+                        request.status_name ===
+                          "Waiting for Head of Department approval"
+                      }
                     >
-                      forward
-                    </h2>
+                      <div className={`font-bold text-white md:text-blue-600`}>
+                        {React.createElement(FaSortAmountUp, { size: "15" })}
+                      </div>
 
-                    <h2
-                      className={`
+                      <h2
+                        className={`whitespace-pre duration-300 text-sm uppercase text-white md:text-blue-600  md:block hidden`}
+                      >
+                        forward
+                      </h2>
+
+                      <h2
+                        className={`
                   absolute bg-myBG whitespace-pre text-sm uppercase
                   text-blue-600 rounded-xl drop-shadow-lg px-0 py-0 w-0 overflow-hidden
                   group-hover:px-2.5 group-hover:py-1.5 group-hover:-left-24 group-hover:duration-200 group-hover:w-fit
                   md:hidden
                   `}
-                    >
-                      forward
-                    </h2>
-                  </button>
+                      >
+                        forward
+                      </h2>
+                    </button>
 
-                  <button
-                    onClick={() => {
-                      if (
-                        !buttonState[request.req_id] ||
-                        buttonState[request.req_id] === "Select Date"
-                      ) {
-                        setDatePickerOpen(request.req_id);
-                        setButtonState((prevState) => ({
-                          ...prevState,
-                          [request.req_id]: "Add Due",
-                        }));
+                    <button
+                      onClick={() => {
+                        if (
+                          !buttonState[request.req_id] ||
+                          buttonState[request.req_id] === "Select Date"
+                        ) {
+                          setDatePickerOpen(request.req_id);
+                          setButtonState((prevState) => ({
+                            ...prevState,
+                            [request.req_id]: "Add Due",
+                          }));
 
-                        // action
-                      } else if (buttonState[request.req_id] === "Add Due") {
-                        setDatePickerOpen(null);
-                        setButtonState((prevState) => ({
-                          ...prevState,
-                          [request.req_id]: "Select Date",
-                        }));
-                        setDueDate(request.req_id);
-                      }
-                      // handle your action here
-                    }}
-                    className={`group bg-black flex items-center gap-1 font-medium py-1.5 px-2.5 rounded-full
+                          // action
+                        } else if (buttonState[request.req_id] === "Add Due") {
+                          setDatePickerOpen(null);
+                          setButtonState((prevState) => ({
+                            ...prevState,
+                            [request.req_id]: "Select Date",
+                          }));
+                          setDueDate(request.req_id);
+                        }
+                        // handle your action here
+                      }}
+                      className={`group bg-black flex items-center gap-1 font-medium py-1.5 px-2.5 rounded-full
                   shadow-lg  h-fit justify-center md:w-[105px] md:bg-transparent  md:shadow-none 
                   ${
                     request.status_name !== "Accepted"
                       ? "hidden"
                       : "hover:shadow-xl hover:scale-95  active:scale-105 active:shadow-xl md:hover:scale-105 md:hover:shadow-none md:active:scale-95"
                   } `}
-                  >
-                    <div className={`font-bold text-white md:text-black`}>
-                      {React.createElement(FaSortAmountUp, { size: "15" })}
-                    </div>
-
-                    <h2
-                      className={`whitespace-pre duration-300 text-sm uppercase text-white md:text-black  md:block hidden`}
                     >
-                      {buttonState[request.req_id] || "Select Date"}
-                    </h2>
+                      <div className={`font-bold text-white md:text-black`}>
+                        {React.createElement(FaSortAmountUp, { size: "15" })}
+                      </div>
 
-                    <h2
-                      className={`
+                      <h2
+                        className={`whitespace-pre duration-300 text-sm uppercase text-white md:text-black  md:block hidden`}
+                      >
+                        {buttonState[request.req_id] || "Select Date"}
+                      </h2>
+
+                      <h2
+                        className={`
                             absolute bg-myBG whitespace-pre text-sm uppercase
                             text-black rounded-xl drop-shadow-lg px-0 py-0 w-0 overflow-hidden
                             group-hover:px-2.5 group-hover:py-1.5 group-hover:-left-24 group-hover:duration-200 group-hover:w-fit
                             md:hidden
                             `}
-                    >
-                      {buttonState[request.req_id] || "Select Date"}
-                    </h2>
-                  </button>
+                      >
+                        {buttonState[request.req_id] || "Select Date"}
+                      </h2>
+                    </button>
 
-                  {isDatePickerOpen === request.req_id &&
-                    request.status_name === "Accepted" && (
-                      <input
-                        type="date"
-                        value={searchDate}
-                        onChange={(event) => {
-                          setDate(event);
+                    {isDatePickerOpen === request.req_id &&
+                      request.status_name === "Accepted" && (
+                        <input
+                          type="date"
+                          value={searchDate}
+                          onChange={(event) => {
+                            setDate(event);
 
-                          setButtonState((prevState) => ({
-                            ...prevState,
-                            [request.req_id]: "Add Due",
-                          }));
-                        }}
-                        className="ml-4 border-2 border-gray-300 bg-white h-10 px-5 pr-16 rounded-lg text-sm focus:outline-none"
-                      />
-                    )}
+                            setButtonState((prevState) => ({
+                              ...prevState,
+                              [request.req_id]: "Add Due",
+                            }));
+                          }}
+                          className="ml-4 border-2 border-gray-300 bg-white h-10 px-5 pr-16 rounded-lg text-sm focus:outline-none"
+                        />
+                      )}
+                  </div>
                 </div>
-              </div>
-            ))}
+              );
+            })}
 
         {showModal && (
           <div className="fixed w-full bg-black bg-opacity-50 top-0 left-0 z-30">

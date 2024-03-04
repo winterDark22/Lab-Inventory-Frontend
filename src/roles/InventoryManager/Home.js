@@ -17,16 +17,21 @@ import { FaSortAmountUp, FaUserAlt, FaEnvelope } from "react-icons/fa";
 
 //import pages
 import { useAuthContext } from "../../context/AuthContext";
+import { useNotificationContext } from "../../context/NotificationContext";
+
 import { ContentHomePage } from "./ContentHomePage";
 import { CheckInventory } from "./CheckInventory";
 import { ViewRequests } from "./ViewRequests";
 import { AddNewItem } from "./AddNewItem";
 import { Notification } from "./Notification";
+import { ViewRequisition } from "./ViewRequisition";
 import { useLogout } from "../../hook/useLogout";
 
 function ManagerHome() {
   //user fetching
   const { user } = useAuthContext();
+  const { newNotificationCnt, setNewNotificationCnt } =
+    useNotificationContext();
   const { username, role } = user;
   const { logout } = useLogout();
 
@@ -44,6 +49,11 @@ function ManagerHome() {
     {
       name: "Add new item",
       link: "addNewItem",
+      icon: MdOutlineDashboardCustomize,
+    },
+    {
+      name: "View Requisition",
+      link: "viewRequisition",
       icon: MdOutlineDashboardCustomize,
     },
     { name: "Notification", link: "notification", icon: MdNotifications },
@@ -199,6 +209,10 @@ function ManagerHome() {
                   group-hover:px-2 group-hover:py-1 group-hover:left-14 group-hover:duration-200 group-hover:w-fit`}
                   >
                     {menu?.name}
+                    {menu.name === "Notifications" &&
+                      newNotificationCnt > 0 && (
+                        <span>({newNotificationCnt})</span>
+                      )}
                   </h2>
                 </Link>
               ))}
@@ -266,6 +280,8 @@ function ManagerHome() {
                 <Route path="checkInventory" element={<CheckInventory />} />
                 <Route path="viewRequests" element={<ViewRequests />} />
                 <Route path="addNewItem" element={<AddNewItem />} />
+                <Route path="viewRequisition" element={<ViewRequisition />} />
+
                 <Route path="notification" element={<Notification />} />
               </Routes>
             </div>

@@ -33,11 +33,14 @@ import { Notification } from "./Notification";
 import { useLogout } from "../../hook/useLogout";
 import { ContentHomePage } from "./ContentHomePage";
 import { UnAthorizedUserList } from "./UnAuthorizedUserList";
+import { useNotificationContext } from "../../context/NotificationContext";
 
 function AdminHome() {
   //user fetching
   const { user } = useAuthContext();
   const { username, role } = user;
+  const { newNotificationCnt, setNewNotificationCnt } =
+    useNotificationContext();
   const { logout } = useLogout();
 
   const menus = [
@@ -212,6 +215,10 @@ function AdminHome() {
                   ${!open && "opacity-0 translate-x-28 overflow-hidden"} `}
                   >
                     {menu?.name}
+                    {menu.name === "Notifications" &&
+                      newNotificationCnt > 0 && (
+                        <span>({newNotificationCnt})</span>
+                      )}
                   </h2>
 
                   <h2

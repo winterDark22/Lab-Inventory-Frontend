@@ -17,6 +17,8 @@ import { FaSortAmountUp, FaUserAlt, FaEnvelope } from "react-icons/fa";
 
 //import pages
 import { useAuthContext } from "../../context/AuthContext";
+import { useNotificationContext } from "../../context/NotificationContext";
+
 import { ViewRequest } from "./ViewRequest";
 import { Notification } from "./Notification";
 import { useLogout } from "../../hook/useLogout";
@@ -25,6 +27,8 @@ function DeptHeadHome() {
   //user fetching
   const { user } = useAuthContext();
   const { username, role } = user;
+  const { newNotificationCnt, setNewNotificationCnt } =
+    useNotificationContext();
   const { logout } = useLogout();
 
   const menus = [
@@ -178,6 +182,10 @@ function DeptHeadHome() {
                   ${!open && "opacity-0 translate-x-28 overflow-hidden"} `}
                   >
                     {menu?.name}
+                    {menu.name === "Notifications" &&
+                      newNotificationCnt > 0 && (
+                        <span>({newNotificationCnt})</span>
+                      )}
                   </h2>
 
                   <h2

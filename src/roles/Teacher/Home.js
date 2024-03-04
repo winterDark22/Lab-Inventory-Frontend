@@ -20,11 +20,14 @@ import { useAuthContext } from "../../context/AuthContext";
 import { ViewRequest } from "./ViewRequest";
 import { Notification } from "./Notification";
 import { useLogout } from "../../hook/useLogout";
+import { useNotificationContext } from "../../context/NotificationContext";
 
 function TeacherHome() {
   //user fetching
   const { user } = useAuthContext();
   const { username, role } = user;
+  const { newNotificationCnt, setNewNotificationCnt } =
+    useNotificationContext();
   const { logout } = useLogout();
 
   const menus = [
@@ -187,6 +190,10 @@ function TeacherHome() {
                   group-hover:px-2 group-hover:py-1 group-hover:left-14 group-hover:duration-200 group-hover:w-fit`}
                   >
                     {menu?.name}
+                    {menu.name === "Notifications" &&
+                      newNotificationCnt > 0 && (
+                        <span>({newNotificationCnt})</span>
+                      )}
                   </h2>
                 </Link>
               ))}
