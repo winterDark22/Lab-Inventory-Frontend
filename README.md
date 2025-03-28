@@ -2,12 +2,17 @@
 
 A comprehensive **Lab Inventory Management System** designed to efficiently track, manage, and organize laboratory equipments. This system helps lab personnel maintain accurate records, reduce waste, and ensure compliance with safety regulations.
 
+## 👨‍💻 Contributors  
+
+🔹 **[Mayesha Rashid] (https://github.com/mrashid5919/Lab-Inventory-Backend)** – Backend Development  
+
 ## 🚀 Features
 
 ✅ **Multi-Step Requisition System**  
 The Multi-Step Requisition System ensures a structured and controlled process for requesting lab items. This system follows a step-by-step approach to track, approve, and fulfill requisition requests efficiently.  
 
 **🔹 Workflow Overview:**  
+
 1️⃣ **Item Selection:**  
    - Users browse the inventory and select the required items.  
    - Each item has quantity constraints based on stock availability.  
@@ -65,5 +70,3 @@ npm install  # or yarn install
 # Start the development server
 npm start  # or yarn start
 
-👨‍💻 Contributors
-🔹 Mayesha Rashid – Backend Development (https://github.com/mrashid5919/Lab-Inventory-Backend)
