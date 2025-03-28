@@ -65,5 +65,11 @@ npm install  # or yarn install
 # Start the development server
 npm start  # or yarn start
 
-## 👨‍💻 Contributors 
-- Mayesha Rashid (https://github.com/mrashid5919/Lab-Inventory-Backend) – Backend Development 
+## 🙌 Contributors   
+
+This project was made possible by the collaborative efforts of:  
+
+- **[Mayesha Rashid](https://github.com/mrashid5919/Lab-Inventory-Backend)** – Backend Development  
+
+A huge thanks for the hard work and dedication! 🎉  
+
