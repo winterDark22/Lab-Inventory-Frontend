@@ -4,26 +4,44 @@ A comprehensive **Lab Inventory Management System** designed to efficiently trac
 
 ## 🚀 Features
 
-✅ **User Authentication & Roles**  
-- Secure login & registration system  
-- Role-based access control (Admin, Lab Manager, Teacher)  
+✅ **Multi-Step Requisition System**  
+The Multi-Step Requisition System ensures a structured and controlled process for requesting lab items. This system follows a step-by-step approach to track, approve, and fulfill requisition requests efficiently.  
 
-✅ **Inventory Management**  
-- Add, update, and delete items  
-- Categorization of equipment 
-- Set reorder levels and receive low-stock alerts  
+**🔹 Workflow Overview:**  
+1️⃣ **Item Selection:**  
+   - Users browse the inventory and select the required items.  
+   - Each item has quantity constraints based on stock availability.  
 
-✅ **Stock Tracking & Usage Logs**  
-- Track item movements and usage history  
-- View real-time stock levels  
+2️⃣ **Request Submission:**  
+   - Users submit a requisition request with item details, quantity, and priority.  
+   - Optionally, users can provide justification for their request.  
 
-✅ **Reports & Analytics**  
-- Generate reports on stock levels, usage trends, and waste  
-- Export data as CSV/PDF  
+3️⃣ **Approval Process:**  
+   - Requests are routed to authorized personnel (e.g., Lab Manager or Supervisor).  
+   - Approvers can approve, reject, or request modifications to the requisition.  
 
-✅ **Multi-User Collaboration**  
-- Assign tasks and responsibilities  
-- Maintain audit logs for accountability  
+4️⃣ **Stock Validation:**  
+   - Once approved, the system verifies stock availability.  
+   - If items are insufficient, the request may be partially fulfilled or put on hold until restocked.  
+
+5️⃣ **Issue and Acknowledgment:**  
+   - Approved requisitions are processed for issuance.  
+   - Users acknowledge receipt of the items, and the system updates inventory records accordingly.  
+
+✅ **Multi-Level Approval System**  
+- Items requiring authorization go through a structured approval process.   
+- Customizable approval chains based on item type and organization hierarchy.  
+- Automated notifications at each approval stage to ensure smooth processing.  
+
+✅ **Student Clearance Process**  
+- Students must return all borrowed items before graduation.   
+- Lab administrators can approve or reject clearance based on item returns.  
+- Integrated with student records for seamless processing.  
+
+✅ **Automated Due Date Reminders**  
+- Sends automated to users for overdue items.  
+- Configurable reminder intervals (e.g., daily, weekly, or custom).  
+- Helps prevent loss and ensures timely returns.  
 
 ## 🛠️ Tech Stack
 
@@ -46,3 +64,6 @@ npm install  # or yarn install
 
 # Start the development server
 npm start  # or yarn start
+
+## 👨‍💻 Contributors 
+- Mayesha Rashid (https://github.com/mrashid5919/Lab-Inventory-Backend) – Backend Development 
